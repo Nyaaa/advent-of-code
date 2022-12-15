@@ -1,12 +1,11 @@
-test = ['30373',
-        '25512',
-        '65332',
-        '33549',
-        '35390']
-data = test
+from itertools import chain
+from collections import Counter
 
-# with open('input08.txt') as f:
-#     data = f.read().splitlines()
+test = ['30373', '25512', '65332', '33549', '35390']
+# data = test
+
+with open('input08.txt') as f:
+    data = f.read().splitlines()
 
 
 grid = []
@@ -20,27 +19,37 @@ x = len(grid[0])
 y = len(grid)
 
 
-def check(tree, _x, _y):
-    # print(tree, grid[_y], _x, _y)
-    # detecting edges
-    if _x  == 0 or _x == x-1:
-        return True
-    elif _y == 0 or _y == y-1:
-        return True
-    else:
-        return False
+def is_visible(_tree, _x, _y):
+    # getting edges
+    if _x == 0 or _x == x-1 or _y == 0 or _y == y-1:
+        return 'Visible'
+
+    # getting rows
+    left = grid[_y][:_x]
+    right = grid[_y][_x+1:]
+
+    # getting columns
+    up = [grid[i][_x] for i in range(0, _y)]
+    down = [grid[i][_x] for i in range(_y+1, y)]
+
+    if _tree > max(left) or _tree > max(right) or _tree > max(up) or _tree > max(down):
+        return 'Visible'
+
+    return 'Hidden'
 
 
 vis = []
+score = []
 
 for _x in range(x):
-    row = []
+    vis_row = []
     for _y in range(y):
         tree = grid[_x][_y]
-        visible = check(tree, _x, _y)
-        row.append(visible)
-        # print(tree, visible)
-    vis.append(row)
+        visible = is_visible(tree, _y, _x)
+        vis_row.append(visible)
+    vis.append(vis_row)
 
-for row in vis:
-    print(row)
+# part 1
+
+result = list(chain(*vis))
+print(Counter(result))  # 1543
