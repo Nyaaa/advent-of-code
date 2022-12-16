@@ -41,8 +41,8 @@ class Rope:
         elif diff == (0, -2): ty -= 1
         # diagonal movement
         elif diff in [(1, 2), (2, 1), (2, 2)]: tx += 1; ty += 1
-        elif diff in [(2, -1), (1, -2), (2, -2)]: tx += 1; ty -= 1
-        elif diff  in [(-1, 2), (-2, 1), (-2, 2)]: tx -= 1; ty += 1
+        elif diff in [(1, -2), (2, -1), (2, -2)]: tx += 1; ty -= 1
+        elif diff in [(-1, 2), (-2, 1), (-2, 2)]: tx -= 1; ty += 1
         elif diff in [(-1, -2), (-2, -1), (-2, -2)]: tx -= 1; ty -= 1
 
         new_pos = (tx, ty)
