@@ -16,8 +16,17 @@ cmd = None
 value = None
 offset = 20
 next_line = get_next_command()
+v_line = 0
+row = -1
+image = ['', '', '', '', '', '']
+
+
 while True:
+    if tick % 40 == 0:
+        row += 1
+        v_line = 0
     tick += 1
+    v_line += 1
     if time > 1:
         time -= 1
 
@@ -48,7 +57,11 @@ while True:
         out[tick] = x
         offset += 40
 
-    # print(tick, cmd, value, x)
+    sprite = (x, x+1, x+2)
+    if v_line in sprite:
+        image[row] += '█'
+    else:
+        image[row] += '⠀'
 
 # part 1
 
@@ -56,6 +69,9 @@ result = []
 for i in out:
     step, val = i, out[i]
     result.append(step*val)
-
-print(out)
 print(sum(result))  # 15680
+
+# part 2
+
+for row in image:
+    print(row)  # ZFBFHGUP
