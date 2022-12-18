@@ -1,4 +1,5 @@
-FILENAME = 'input11.txt'
+from tools import parsers
+data = parsers.lines('input11.txt')
 
 
 class Monke:
@@ -47,12 +48,10 @@ class Main:
         self.monkeys = []
         self.modulo = 1
 
-        with open(FILENAME) as f:
-            data = f.read().splitlines()
         index = 0
 
         for line in data:
-            line = line.strip().replace(',', ' ').replace(':', ' ').split()
+            line = line.replace(',', ' ').replace(':', ' ').split()
             if not line:
                 continue
 

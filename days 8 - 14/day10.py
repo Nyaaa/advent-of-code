@@ -1,21 +1,14 @@
+from tools import parsers
+
 x = 1
 tick = 0
 out = {}
-
-with open('input10.txt') as f:
-    data = f.read().splitlines()
-
-
-def get_next_command():
-    for piece in data:
-        yield piece
-
-
 time = 0
 cmd = None
 value = None
 offset = 20
-next_line = get_next_command()
+data = parsers.lines('input10.txt')
+next_line = parsers.generator(data)
 v_line = 0
 row = -1
 image = ['', '', '', '', '', '']
