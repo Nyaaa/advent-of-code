@@ -67,13 +67,9 @@ for i in out:
 print(sum(result))  # 15680
 
 # part 2
-# for row in image:
-#     print(row)  # ZFBFHGUP
 
 for row in image:
-    vrow = ''
     for i in row:
-        vrow += i
-        print(f'\r{vrow}', end='')
-        time.sleep(0.08)
+        print(i, end='', flush=True)  # ZFBFHGUP
+        time.sleep(0.1)
     print('\r')
