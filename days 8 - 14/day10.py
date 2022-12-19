@@ -1,9 +1,11 @@
 from tools import parsers
+import time
+
 
 x = 1
 tick = 0
 out = {}
-time = 0
+timer = 0
 cmd = None
 value = None
 offset = 20
@@ -20,11 +22,11 @@ while True:
         v_line = 0
     tick += 1
     v_line += 1
-    if time > 1:
-        time -= 1
+    if timer > 1:
+        timer -= 1
 
     else:
-        if cmd == 'addx' and time == 1:
+        if cmd == 'addx' and timer == 1:
             x += value
         try:
             line = next(next_line)
@@ -39,9 +41,9 @@ while True:
             value = None
 
         if cmd == 'addx':
-            time = 2
+            timer = 2
         else:
-            time = 1
+            timer = 1
 
     if tick == 20:
         out[tick] = x
@@ -65,6 +67,13 @@ for i in out:
 print(sum(result))  # 15680
 
 # part 2
+# for row in image:
+#     print(row)  # ZFBFHGUP
 
 for row in image:
-    print(row)  # ZFBFHGUP
+    vrow = ''
+    for i in row:
+        vrow += i
+        print(f'\r{vrow}', end='')
+        time.sleep(0.08)
+    print('\r')
