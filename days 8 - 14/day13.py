@@ -3,30 +3,36 @@ from itertools import zip_longest
 
 data = parsers.blocks('input13.txt')
 
-def compare(left, right, out: bool = True):
+
+def compare(left, right):
     if not isinstance(left, list): left = [left]
     if not isinstance(right, list): right = [right]
 
     zipped = list(zip_longest(left, right))
-    print(zipped)
-    for i in zipped:
-        print(i)
-        if i[1] is None: return False
-        elif i[0] is None: return True
-        elif isinstance(i[0], int) and isinstance(i[1], int):
-            if i[0] > i[1]: return False
+    # print(zipped)
+    for i, j in zipped:
+        # print(i, j)
+        if j is None:
+            return False
+        elif i is None:
+            return True
+
+        if isinstance(i, int) and isinstance(j, int):
+            if i != j:
+                return i < j
         else:
-            return compare(i[0], i[1], out)
-    return out
+            out = compare(i, j)
+            if out is not None:
+                return out
 
 
 result = {True: [], False: []}
-for chunk in range(1, len(data) + 1):
-    c_left, c_right = data[chunk-1]
-    c_left = eval(c_left)
-    c_right = eval(c_right)
+for index in range(1, len(data) + 1):
+    c_left, c_right = data[index - 1]
+    c_left, c_right = eval(c_left), eval(c_right)
     res = compare(c_left, c_right)
-    result[res].append(chunk)
-    print('chunk', chunk, res)
+    result[res].append(index)
+    # print('index', index, res)
 
-print(sum(result[True]))  # fails
+print(result)
+print(sum(result[True]))  # 5252
