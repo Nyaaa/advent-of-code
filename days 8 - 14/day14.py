@@ -1,5 +1,6 @@
 from tools import parsers
 import numpy as np
+from tabulate import tabulate
 
 test = """498,4 -> 498,6 -> 496,6
 503,4 -> 502,4 -> 502,9 -> 494,9
@@ -13,7 +14,8 @@ np.set_printoptions(threshold=np.inf, linewidth=200)
 class Cave:
     def __init__(self, part: int):
         self.left, self.right = 500, 501
-        self.cavern = np.zeros((1, 700), dtype=int)  # TODO make dynamic adjustments instead of hardcoded borders
+        self.cavern = np.chararray((1, 700), unicode=True)  # TODO make dynamic adjustments instead of hardcoded borders
+        self.cavern[:] = ' '
         self.start = 500
         self.counter = 0
 
@@ -34,17 +36,17 @@ class Cave:
 
                 if delta_x > 0:
                     for _x in range(next_x, x + 1):
-                        self.cavern[y, _x] = 1
+                        self.cavern[y, _x] = '█'
                 if delta_x < 0:
                     for _x in range(x, next_x + 1):
-                        self.cavern[y, _x] = 1
+                        self.cavern[y, _x] = '█'
 
                 if y - next_y > 0:
                     for _y in range(next_y, y + 1):
-                        self.cavern[_y, x] = 1
+                        self.cavern[_y, x] = '█'
                 elif y - next_y < 0:
                     for _y in range(y, next_y + 1):
-                        self.cavern[_y, x] = 1
+                        self.cavern[_y, x] = '█'
 
         if part == 2:
             self.increase_depth(1, 'zeros')
@@ -52,25 +54,28 @@ class Cave:
 
     def increase_depth(self, lines, char):
         if char == 'zeros':
-            newline = np.zeros((lines, 700), dtype=int)
+            newline = np.chararray((lines, 700), unicode=True)
+            newline[:] = ' '
         else:
-            newline = np.ones((lines, 700), dtype=int)
+            newline = np.chararray((lines, 700), unicode=True)
+            newline[:] = '█'
         self.cavern = np.append(self.cavern, newline, axis=0)
 
     def fall(self, row: int, column: int):
-        if self.cavern[row][column] not in [1, 8]:
+        if self.cavern[0][column] == 'S':
+            raise IndexError('reached the top')
+        if self.cavern[row][column] not in ['█', 'S']:
             return self.fall(row + 1, column)
         else:
-            if self.cavern[row][column - 1] not in [1, 8]:
+            if self.cavern[row][column - 1] not in ['█', 'S']:
                 return self.fall(row, column - 1)
             else:
-                if self.cavern[row][column + 1] not in [1, 8]:
+                if self.cavern[row][column + 1] not in ['█', 'S']:
                     return self.fall(row, column + 1)
                 else:
-                    if self.cavern[1][column] == 8:
-                        raise IndexError('reached the top')
-                    else:
-                        self.cavern[row - 1][column] = 8
+                    self.cavern[row - 1][column] = 'S'
+                    self.left = column if column < self.left else self.left
+                    self.right = column if column > self.right else self.right
 
     def go(self):
         while True:
@@ -85,12 +90,12 @@ class Cave:
 c = Cave(part=1)
 c.go()
 cropped = c.cavern[:, c.left - 1:c.right + 1]
-print(cropped)
+print(tabulate(cropped))
 print(c.counter)  # 774
 
 # part 2
 c2 = Cave(part=2)
 c2.go()
 cropped2 = c2.cavern[:, c2.left - 1:c2.right + 1]
-print(cropped2)
-print(c2.counter + 1)  # 22499
+print(tabulate(cropped2))
+print(c2.counter)  # 22499
