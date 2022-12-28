@@ -1,46 +1,74 @@
 from tools import parsers
-
-# data = parsers.lines('input15.txt')
-data = parsers.lines('test15.txt')
-
-sensors = set()
-beacons = set()
+from dataclasses import dataclass
 
 
-def is_in_range(row: int, col: int) -> bool:
-    for sensor in sensors:
-        dis = abs(row - sensor[0]) + abs(col - sensor[1])
-        print(sensor, dis)
-        if dis <= sensor[2]:
-            print(True)
+@dataclass
+class Node:
+    row: int
+    col: int
+
+
+class Sensor:
+    def __init__(self, node: Node):
+        self.node = node
+        self.beacon = self
+
+    def calc_distance(self, other: Node):
+        return abs(self.node.row - other.row) + abs(self.node.col - other.col)
+
+    @property
+    def distance(self):
+        return self.calc_distance(self.beacon.node)
+
+    def __repr__(self):
+        return f'(({self.node.row}, {self.node.col}), {self.distance})'
+
+    def is_in_range(self, other) -> bool:
+        dist = self.calc_distance(other)
+        if dist <= self.distance:
             return True
-    # print(False)
-    return False
+        else:
+            return False
 
 
+def main(data):
+    sensors = []
+    beacons = []
+    in_range = 0
 
-for line in data:
-    newstr = ''.join((ch if ch in '0123456789-' else ' ') for ch in line)
-    coord = [int(i) for i in newstr.split()]
-    s_row, s_col = coord[0], coord[1]
-    b_row, b_col = coord[2], coord[3]
-    distance = abs(s_row - b_row) + abs(s_col - b_col)
-    sensors.add((s_row, s_col, distance))
-    beacons.add((b_row, b_col))
+    for line in data:
+        newstr = ''.join((ch if ch in '0123456789-' else ' ') for ch in line)
+        coord = [int(i) for i in newstr.split()]
+        sensor = Sensor(Node(coord[0], coord[1]))
+        beacon = Sensor(Node(coord[2], coord[3]))
+        sensor.beacon = beacon
+        sensors.append(sensor)
+        beacons.append(beacon.node)
+
+    min_x = min(sensor.node.row - sensor.distance for sensor in sensors)
+    max_x = max(sensor.node.row + sensor.distance for sensor in sensors)
+
+    for sensor in sensors:
+        dist = abs(sensor.node.col - y)
+        if dist > sensor.distance:
+            sensors.remove(sensor)
+
+    for x in range(min_x, max_x):
+        check = Node(x, y)
+        # print('*' * 20, x)
+        for sensor in sensors:
+            if sensor.is_in_range(check) and check not in beacons:
+                in_range += 1
+                break
+    return in_range
 
 
-min_x = min(sublist[0] for sublist in sensors | beacons)
-max_x = max(sublist[0] for sublist in sensors | beacons)
-
-print(sensors)
-print(beacons)
+# test
+y = 10
+test_result = main(parsers.lines('test15.txt'))
+assert test_result == 26
 
 # part 1
-y = 10
-in_range = 0
-
-for x in range(min_x, max_x):
-    if is_in_range(x, y):
-        in_range += 1
-print(in_range)  # fails
-
+y = 2000000
+result = main(parsers.lines('input15.txt'))
+print(result)  # 5108096

@@ -54,3 +54,5 @@ https://adventofcode.com/2022
 
 ### Day 15: Beacon Exclusion Zone
 * Attempt #1: Apparently, brute force is not much of an option.
+* Well, with this many cells, iterating through even a single row in kinda brutforcey.
+* It's slow.
