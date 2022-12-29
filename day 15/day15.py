@@ -1,5 +1,7 @@
 from tools import parsers
 from dataclasses import dataclass
+from shapely import union_all, clip_by_rect
+from shapely.geometry import mapping, Polygon, LineString
 
 
 @dataclass
@@ -7,68 +9,69 @@ class Node:
     row: int
     col: int
 
+    def __hash__(self):
+        return hash(str(self))
 
+
+@dataclass
 class Sensor:
-    def __init__(self, node: Node):
-        self.node = node
-        self.beacon = self
-
-    def calc_distance(self, other: Node):
-        return abs(self.node.row - other.row) + abs(self.node.col - other.col)
-
-    @property
-    def distance(self):
-        return self.calc_distance(self.beacon.node)
-
-    def __repr__(self):
-        return f'(({self.node.row}, {self.node.col}), {self.distance})'
-
-    def is_in_range(self, other) -> bool:
-        dist = self.calc_distance(other)
-        if dist <= self.distance:
-            return True
-        else:
-            return False
+    node: Node
+    distance: int
 
 
-def main(data):
-    sensors = []
-    beacons = []
-    in_range = 0
+class Main:
+    def __init__(self, data):
+        self.sensors = []
+        self.area = []
+        self.in_range = 0
+        self.min_x = 0
+        self.max_x = 0
 
-    for line in data:
-        newstr = ''.join((ch if ch in '0123456789-' else ' ') for ch in line)
-        coord = [int(i) for i in newstr.split()]
-        sensor = Sensor(Node(coord[0], coord[1]))
-        beacon = Sensor(Node(coord[2], coord[3]))
-        sensor.beacon = beacon
-        sensors.append(sensor)
-        beacons.append(beacon.node)
+        for line in data:
+            newstr = ''.join((ch if ch in '0123456789-' else ' ') for ch in line)
+            coord = [int(i) for i in newstr.split()]
+            sensor = Node(coord[0], coord[1])
+            beacon = Node(coord[2], coord[3])
+            distance = abs(sensor.row - beacon.row) + abs(sensor.col - beacon.col)  # Manhattan distance
+            sensor = Sensor(sensor, distance)
+            self.sensors.append(sensor)
+            self.area.append(Polygon([(sensor.node.row - sensor.distance, sensor.node.col),
+                                      (sensor.node.row, sensor.node.col - sensor.distance),
+                                      (sensor.node.row + sensor.distance, sensor.node.col),
+                                      (sensor.node.row, sensor.node.col + sensor.distance)]))
 
-    min_x = min(sensor.node.row - sensor.distance for sensor in sensors)
-    max_x = max(sensor.node.row + sensor.distance for sensor in sensors)
+        self.min_x = min(sensor.node.row - sensor.distance for sensor in self.sensors)
+        self.max_x = max(sensor.node.row + sensor.distance for sensor in self.sensors)
 
-    for sensor in sensors:
-        dist = abs(sensor.node.col - y)
-        if dist > sensor.distance:
-            sensors.remove(sensor)
+    def part_1(self, y: int) -> int:
+        row_string = LineString([(self.min_x, y), (self.max_x, y)])
+        projection = row_string.intersection(union_all(self.area))
+        return int(projection.length)
 
-    for x in range(min_x, max_x):
-        check = Node(x, y)
-        # print('*' * 20, x)
-        for sensor in sensors:
-            if sensor.is_in_range(check) and check not in beacons:
-                in_range += 1
-                break
-    return in_range
+    def part_2(self, lim: int) -> int:
+        merge = union_all(self.area)
+        clip = clip_by_rect(merge, 0, 0, lim, lim).interiors[0]
+        point = mapping(clip.centroid)
+        x, y = point.get('coordinates')
+        return int(x) * 4000000 + int(y)
 
 
-# test
-y = 10
-test_result = main(parsers.lines('test15.txt'))
-assert test_result == 26
+def part_1(data, y):
+    """Calculate coverage areas usig Manhattan distance,
+    convert them to shapely polygons,
+    find intersections with row Y.
+    >>> part_1(parsers.lines('test15.txt'), 10)
+    26"""
+    return Main(data).part_1(y)
 
-# part 1
-y = 2000000
-result = main(parsers.lines('input15.txt'))
-print(result)  # 5108096
+
+def part_2(data, y):
+    """Merge all radii, clip them with a bounding box,
+    get center point coordinates
+    >>> part_2(parsers.lines('test15.txt'), 20)
+    56000011"""
+    return Main(data).part_2(y)
+
+
+print(part_1(parsers.lines('input15.txt'), 2000000))  # 5108096
+print(part_2(parsers.lines('input15.txt'), 4000000))  # 10553942650264

@@ -56,3 +56,5 @@ https://adventofcode.com/2022
 * Attempt #1: Apparently, brute force is not much of an option.
 * Well, with this many cells, iterating through even a single row in kinda brutforcey.
 * It's slow.
+* Attempt #2: Welp, it ain't working. Original plan was to look for intersections of coverage areas and check along the borders, but I couldn't make a sensible implementation. 
+* Attempt #3: Starting from scratch. Cheating with shapely.
