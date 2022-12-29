@@ -2,22 +2,22 @@ from tools import parsers
 import string
 import networkx as nx
 
-letters = list(string.ascii_lowercase)
-numbers = list(range(26))
-weights = dict(zip(letters, numbers))
-weights['S'] = 0
-weights['E'] = 25
+
 test = """Sabqponm
 abcryxxl
 accszExk
 acctuvwj
 abdefghi
 """
-# data = parsers.inline_test(test)
-data = parsers.lines('input12.txt')
 
 
 class Graph:
+    letters = list(string.ascii_lowercase)
+    numbers = list(range(26))
+    weights = dict(zip(letters, numbers))
+    weights['S'] = 0
+    weights['E'] = 25
+
     def __init__(self, array: list, start: str):
         self.grid = []
         self.start_coord = []
@@ -60,11 +60,19 @@ class Graph:
 
     def add_edges(self, char, row, pos, v):
         letter = self.grid[row][pos]
-        weight = weights[letter]
-        if weights[char] <= weight + 1:
+        weight = self.weights[letter]
+        if self.weights[char] <= weight + 1:
             self.digraph.add_edge((row, pos), v)
 
     def solve(self):
+        """test part1:
+        >>> Graph(parsers.inline_test(test), 'S').solve()
+        31
+
+        test part 2:
+        >>> Graph(parsers.inline_test(test), 'a').solve()
+        29
+        """
         distance = float('inf')
         for point in self.start_coord:
             try:
@@ -77,10 +85,6 @@ class Graph:
 
 
 # part 1
-g = Graph(data, 'S')
-print(g.solve())  # 449
-
+print(Graph(parsers.lines('input12.txt'), 'S').solve())  # 449
 # part 2
-g = Graph(data, 'a')
-print(g.solve())  # 443
-
+print(Graph(parsers.lines('input12.txt'), 'a').solve())  # 443

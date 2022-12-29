@@ -44,11 +44,20 @@ class Main:
         self.max_x = max(sensor.node.row + sensor.distance for sensor in self.sensors)
 
     def part_1(self, y: int) -> int:
+        """Calculate coverage areas usig Manhattan distance,
+        convert them to shapely polygons,
+        find intersections with row Y.
+        >>> Main(parsers.lines('test15.txt')).part_1(10)
+        26"""
         row_string = LineString([(self.min_x, y), (self.max_x, y)])
         projection = row_string.intersection(union_all(self.area))
         return int(projection.length)
 
     def part_2(self, lim: int) -> int:
+        """Merge all radii, clip them with a bounding box,
+        get center point coordinates
+        >>> Main(parsers.lines('test15.txt')).part_2(20)
+        56000011"""
         merge = union_all(self.area)
         clip = clip_by_rect(merge, 0, 0, lim, lim).interiors[0]
         point = mapping(clip.centroid)
@@ -56,22 +65,5 @@ class Main:
         return int(x) * 4000000 + int(y)
 
 
-def part_1(data, y):
-    """Calculate coverage areas usig Manhattan distance,
-    convert them to shapely polygons,
-    find intersections with row Y.
-    >>> part_1(parsers.lines('test15.txt'), 10)
-    26"""
-    return Main(data).part_1(y)
-
-
-def part_2(data, y):
-    """Merge all radii, clip them with a bounding box,
-    get center point coordinates
-    >>> part_2(parsers.lines('test15.txt'), 20)
-    56000011"""
-    return Main(data).part_2(y)
-
-
-print(part_1(parsers.lines('input15.txt'), 2000000))  # 5108096
-print(part_2(parsers.lines('input15.txt'), 4000000))  # 10553942650264
+print(Main(parsers.lines('input15.txt')).part_1(2000000))  # 5108096
+print(Main(parsers.lines('input15.txt')).part_2(4000000))  # 10553942650264

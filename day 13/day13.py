@@ -32,20 +32,29 @@ def flatten(list_of_lists: list) -> list:
     return list_of_lists[:1] + flatten(list_of_lists[1:])
 
 
-# part 1
-data = parsers.blocks('input13.txt')
-result = {True: [], False: []}
-for index in range(1, len(data) + 1):
-    c_left, c_right = data[index - 1]
-    c_left, c_right = eval(c_left), eval(c_right)
-    res = compare(c_left, c_right)
-    result[res].append(index)
-print(sum(result[True]))  # 5252
+def part_1(data):
+    """test part 1:
+    >>> part_1(parsers.blocks('test13.txt'))
+    13"""
+    result = {True: [], False: []}
+    for index in range(1, len(data) + 1):
+        c_left, c_right = data[index - 1]
+        c_left, c_right = eval(c_left), eval(c_right)
+        res = compare(c_left, c_right)
+        result[res].append(index)
+    return sum(result[True])
 
-# part 2
-data = parsers.lines('input13.txt')
-data.append('[[2]]')
-data.append('[[6]]')
-sort = [flatten(eval(line)) for line in data if line != '']
-sort.sort()
-print((sort.index([2]) + 1) * (sort.index([6]) + 1))  # 20592
+
+def part_2(data):
+    """test part 2:
+    >>> part_2(parsers.lines('test13.txt'))
+    140"""
+    data.append('[[2]]')
+    data.append('[[6]]')
+    sort = [flatten(eval(line)) for line in data if line != '']
+    sort.sort()
+    return (sort.index([2]) + 1) * (sort.index([6]) + 1)
+
+
+print(part_1(parsers.blocks('input13.txt')))  # 5252
+print(part_2(parsers.lines('input13.txt')))  # 20592
