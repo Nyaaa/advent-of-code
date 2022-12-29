@@ -58,3 +58,5 @@ https://adventofcode.com/2022
 * It's slow.
 * Attempt #2: Welp, it ain't working. Original plan was to look for intersections of coverage areas and check along the borders, but I couldn't make a sensible implementation. 
 * Attempt #3: Starting from scratch. Cheating with shapely.
+
+### Day 16: Proboscidea Volcanium
