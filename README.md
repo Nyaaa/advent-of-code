@@ -60,3 +60,6 @@ https://adventofcode.com/2022
 * Attempt #3: Starting from scratch. Cheating with shapely.
 
 ### Day 16: Proboscidea Volcanium
+* So hard T_T
+* Attempt #1: My first idea was to assign a value to every node at every step, based on the distance, flow rate and time left. This obviously didn't work because it doesn't account for other nodes.
+* Attempt #2: Added recursion, switched from running Dijkstra at every step to running Floyd-Warshall once at init.
