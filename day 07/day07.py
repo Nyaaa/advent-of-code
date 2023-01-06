@@ -11,20 +11,19 @@ class FileSystem:
             line = line.split()
             name = f'{path}/{line[1]}'
 
-            match line[0]:
-                case '$':
-                    if line[1] == 'cd':
-                        if line[2] == '..':
-                            path = path.rsplit('/', 1)[0]
-                            continue
-                        else:
-                            path += f'/{line[2]}'
-                        self.files[path] = []
-                        self.folders[path] = 0
-                case 'dir':
-                    self.files[path].append({line[0]: [name, 0]})
+            match line:
+                case ['$', 'ls']:
+                    continue
+                case ['$', 'cd', '..']:
+                    path = path.rsplit('/', 1)[0]
+                case ['$', 'cd', folder]:
+                    path += f'/{folder}'
+                    self.files[path] = []
+                    self.folders[path] = 0
+                case ['dir', _]:
+                    self.files[path].append({'dir': [name, 0]})
                 case _:
-                    self.files[path].append({line[0]: [name, int(line[0])]})
+                    self.files[path].append({'file': [name, int(line[0])]})
 
         while True:
             for folder in self.folders:
