@@ -11,7 +11,7 @@ def blocks(file: str) -> List[List[str]]:
     with open(file) as f:
         result = []
         for line in f.read().split('\n\n'):
-            result.append(line.split())
+            result.append([i for i in line.split('\n') if i != ''])
         return result
 
 
