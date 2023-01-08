@@ -3,8 +3,8 @@ from tools import parsers
 
 class FileSystem:
     def __init__(self, data):
-        self.files: dict[str:[list[str, int]]] = {}  # { folder/file: [ path, size ] }
-        self.folders: dict[str, int] = {}  # { folder : size }
+        self.files: dict[str:[list[dict]]] = {}  # { path : [{ path : size }] }
+        self.folders: dict[str, int] = {}  # { path : size }
 
         path = ''
         for line in data:
@@ -21,9 +21,9 @@ class FileSystem:
                     self.files[path] = []
                     self.folders[path] = 0
                 case ['dir', _]:
-                    self.files[path].append({'dir': [name, 0]})
+                    self.files[path].append({name: 0})
                 case _:
-                    self.files[path].append({'file': [name, int(line[0])]})
+                    self.files[path].append({name: int(line[0])})
 
         while True:
             for folder in self.folders:
@@ -32,11 +32,10 @@ class FileSystem:
             if self.folders['//'] != 0:
                 break
 
-    def get_size(self, folder) -> int:
+    def get_size(self, folder: str) -> int:
         size = 0
         for i in self.files[folder]:
-            name = list(i.values())[0][0]
-            file_size = int(list(i.values())[0][1])
+            name, file_size = list(i.items())[0]
             if file_size != 0:
                 size += file_size
             else:
