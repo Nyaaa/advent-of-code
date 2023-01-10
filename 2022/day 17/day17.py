@@ -1,6 +1,7 @@
 from itertools import cycle
 from tools import parsers
 import numpy as np
+np.set_printoptions(threshold=np.inf, linewidth=100)
 
 test = '>>><<><>><<<>><>>><<<>>><<<><<<>><>><<>>'
 
@@ -20,18 +21,22 @@ class Cave:
         self.stones = cycle(STONES)
         self.jets = cycle(jets)
 
-    def launch(self, stone):  # too high?
-        for i in range(0, 4):
-            place = self.can_fall(stone, i)
+    def launch(self, stone, level=0):
+        place = self.can_fall(stone, level)
+        if level < 4:
             if not place:
                 newline = np.chararray((1, RIGHT), unicode=True)
                 newline[:] = '_'
                 self.cavern = np.insert(self.cavern, 0, newline, axis=0)
-                print(self.cavern)
-                self.launch(stone)
+        elif level >= 4 and place:
+            self.cavern = np.delete(self.cavern, 0, 0)
+            self.launch(stone, level)
+        else:
+            return
+        self.launch(stone, level + 1)
 
     def move(self, stone, direction):
-        print('falling', direction)
+        # print('falling', direction, stone)
         _stone = []
         for unit in stone:
             if direction == 'down':
@@ -56,11 +61,11 @@ class Cave:
         return _stone
 
     def fall(self, stone):
-        print(stone)
         jet = next(self.jets)
         stone = self.move(stone, jet)
-        print(stone)
+        # print(stone)
         new_stone = self.move(stone, 'down')
+        # print(new_stone)
         if stone != new_stone:
             return self.fall(new_stone)
         else:
@@ -69,24 +74,34 @@ class Cave:
                 self.cavern[row][column] = '█'
 
     def can_fall(self, stone, rows: int = 1) -> bool:
-        result = True
         for i in range(0, rows+1):
             for unit in stone:
                 row, col = unit
-                if '█' in self.cavern[row + i]:
-                    result = False
-                    break
-        return result
+                try:
+                    if '█' in self.cavern[row + i]:
+                        return False
+                except IndexError:
+                    return False
+        return True
 
     def part_1(self):
-        rocks = 5
+        rocks = 2022
 
         while rocks > 0:
             stone = next(self.stones)
             self.launch(stone)
             self.fall(stone)
-            print(self.cavern)
+            # print(self.cavern)
             rocks -= 1
 
+        while True:
+            if '█' not in self.cavern[0]:
+                self.cavern = np.delete(self.cavern, 0, 0)
+            else:
+                break
+        print(self.cavern)
+        return len(self.cavern)-1
 
-print(Cave(test).part_1())  # fails
+
+# print(Cave(test).part_1())  # 3068
+print(Cave(*parsers.lines('input.txt')).part_1())  # 3059
