@@ -5,21 +5,19 @@ from tabulate import tabulate
 test = """498,4 -> 498,6 -> 496,6
 503,4 -> 502,4 -> 502,9 -> 494,9
 """
-# data = parsers.inline_test(test)
-data = parsers.lines('input14.txt')
-data_clean = [[[int(i) for i in coord.split(',')] for coord in line.split(' -> ')] for line in data]
 np.set_printoptions(threshold=np.inf, linewidth=200)
 
 
 class Cave:
-    def __init__(self, part: int):
-        self.left, self.right = 500, 501
-        self.cavern = np.chararray((1, 700), unicode=True)  # TODO make dynamic adjustments instead of hardcoded borders
+    def __init__(self, data, part: int):
+        """Right border is hardcoded as an arbitrarily large value,
+        since adding dynamic stretching adds extra complexity to the code. May need to increase it if code fails."""
+        self.left, self.right = 500, 700
+        self.cavern = np.chararray((1, self.right), unicode=True)
         self.cavern[:] = ' '
-        self.start = 500
-        self.counter = 0
+        _data_clean = [[[int(i) for i in coord.split(',')] for coord in line.split(' -> ')] for line in data]
 
-        for line in data_clean:
+        for line in _data_clean:
             for i in range(len(line)):
                 x, y = line[i][0], line[i][1]
                 try:
@@ -29,15 +27,14 @@ class Cave:
                 max_x, min_x, max_y = max(x, next_x), min(x, next_x), max(y, next_y)
                 self.left = min_x if min_x < self.left else self.left
                 self.right = max_x if max_x > self.right else self.right
-                delta_x = x - next_x
                 if max_y > len(self.cavern):
                     add = max_y + 1 - len(self.cavern)
                     self.increase_depth(add, 'zeros')
 
-                if delta_x > 0:
+                if x - next_x > 0:
                     for _x in range(next_x, x + 1):
                         self.cavern[y, _x] = '█'
-                if delta_x < 0:
+                if x - next_x < 0:
                     for _x in range(x, next_x + 1):
                         self.cavern[y, _x] = '█'
 
@@ -53,11 +50,10 @@ class Cave:
             self.increase_depth(1, 'ones')
 
     def increase_depth(self, lines, char):
+        newline = np.chararray((lines, self.right), unicode=True)
         if char == 'zeros':
-            newline = np.chararray((lines, 700), unicode=True)
             newline[:] = ' '
         else:
-            newline = np.chararray((lines, 700), unicode=True)
             newline[:] = '█'
         self.cavern = np.append(self.cavern, newline, axis=0)
 
@@ -77,25 +73,29 @@ class Cave:
                     self.left = column if column < self.left else self.left
                     self.right = column if column > self.right else self.right
 
-    def go(self):
+    def go(self, vis=False):
+        """test part 1:
+        >>> print(Cave(parsers.inline_test(test), part=1).go())
+        24
+
+        test part 2:
+        >>> print(Cave(parsers.inline_test(test), part=2).go())
+        93"""
+        counter = 0
         while True:
             try:
-                self.fall(0, self.start)
-                self.counter += 1
+                self.fall(0, 500)
+                counter += 1
             except IndexError:
                 break
+        if vis:
+            cropped = self.cavern[:, self.left - 1:self.right + 1]
+            print(tabulate(cropped))
+        return counter
 
 
 # part 1
-c = Cave(part=1)
-c.go()
-cropped = c.cavern[:, c.left - 1:c.right + 1]
-print(tabulate(cropped))
-print(c.counter)  # 774
+print(Cave(parsers.lines('input14.txt'), part=1).go())  # 774
 
 # part 2
-c2 = Cave(part=2)
-c2.go()
-cropped2 = c2.cavern[:, c2.left - 1:c2.right + 1]
-print(tabulate(cropped2))
-print(c2.counter)  # 22499
+print(Cave(parsers.lines('input14.txt'), part=2).go())  # 22499
