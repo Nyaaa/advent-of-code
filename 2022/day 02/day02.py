@@ -18,35 +18,25 @@ def check_win(i: int, j: int):
 
 # part 1
 
-score = 0
-
+part1 = 0
 for round in data:
     i = moves[round[0]]
     j = moves[round[2]]
     outcome, result = check_win(i, j)
-    score += result
+    part1 += result
     # print(i, j, result, outcome)
 
-print(score)  # 11603
+print(part1)  # 11603
 
 # part 2
 
-score = 0
-
-
-def choose_move(opponent: int, outcome: str):
-    needed_res = res[outcome]
-    for i in (1, 2, 3):
-        test = check_win(opponent, i)[0]
-        if test == needed_res:
-            return i
-
-
+part2 = 0
 for round in data:
     i = moves[round[0]]
     outcome = round[2]
-    play = choose_move(i, outcome)
-    score += check_win(i, play)[1]
+    for n in 1, 2, 3:
+        if check_win(i, n)[0] == res[outcome]:
+            part2 += check_win(i, n)[1]
     # print(i, outcome, play)
 
-print(score)  # 12725
+print(part2)  # 12725

@@ -1,18 +1,7 @@
 with open('input01.txt') as f:
-    data = f.read().splitlines()
+    data = f.read()
 
-inv = [[]]
-for i in data:
-    if i == '':
-        inv.append([])
-    else:
-        i = int(i)
-        inv[-1].append(i)
-
-sums = []
-for i in inv:
-    total = sum(i)
-    sums.append(total)
+sums = [sum(int(i) for i in line.split('\n') if i != '') for line in data.split('\n\n')]
 
 print(max(sums))  # 69883
 

@@ -2,16 +2,11 @@ with open('input06.txt') as f:
     data = f.read().strip()
 
 
-def get_chunk(i: int, length: int):
-    chunk = []
+def get_chunk(_i: int, length: int):
     try:
-        for n in range(length):
-            j = i + n
-            chunk.append(data[j])
+        return [data[_i + n] for n in range(length)]
     except IndexError:
         pass
-    else:
-        return chunk
 
 # part 1
 

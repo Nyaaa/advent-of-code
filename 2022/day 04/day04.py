@@ -3,32 +3,25 @@ with open('input04.txt') as f:
 
 
 def get_task(_range):
-    start, stop = _range.split('-')
-    start, stop = int(start), int(stop)
-    length = stop - start
-    sequence = []
-    for i in range(0, length + 1):
-        sequence.append(start + i)
-    return sequence
+    start, stop = map(int, _range.split('-'))
+    return list(range(start, stop + 1))
 
 
-counter1 = 0
-counter2 = 0
+part1 = 0
+part2 = 0
 for pair in data:
     team = pair.split(',')
-    pair = []
-    for elf in team:
-        pair.append(get_task(elf))
+    pair = [get_task(elf) for elf in team]
 
     # part 1
     # one list contains another
     if set(pair[0]).issubset(pair[1]) or set(pair[1]).issubset(pair[0]):
-        counter1 += 1
+        part1 += 1
 
     # part 2
     # partial overlap
     if list(set(pair[0]).intersection(pair[1])):
-        counter2 += 1
+        part2 += 1
 
-print(counter1)  # 456
-print(counter2)  # 808
+print(part1)  # 456
+print(part2)  # 808

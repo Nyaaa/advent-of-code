@@ -6,11 +6,7 @@ test = ['30373', '25512', '65332', '33549', '35390']
 with open('input08.txt') as f:
     data = f.read().splitlines()
 
-grid = []
-for row in data:
-    row = [int(i) for i in row]
-    grid.append(row)
-
+grid = [[int(i) for i in row] for row in data]
 x = len(grid[0])
 y = len(grid)
 
