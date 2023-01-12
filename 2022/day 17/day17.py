@@ -20,7 +20,6 @@ class Cave:
         self.cavern[:] = '█'
         self.stones = cycle(STONES)
         self.jets = cycle(jets)
-        self.slice = []
 
     def launch(self, stone, level=0):
         place = self.can_fall(stone, level)
@@ -45,15 +44,11 @@ class Cave:
                     return stone
             if direction == '>':
                 _stone.append((unit[0], unit[1] + 1))
-                if unit[1] + 1 >= RIGHT:
-                    return stone
-                if self.cavern[unit[0]][unit[1] + 1] == '█':
+                if unit[1] + 1 >= RIGHT or self.cavern[unit[0]][unit[1] + 1] == '█':
                     return stone
             elif direction == '<':
                 _stone.append((unit[0], unit[1] - 1))
-                if unit[1] - 1 < LEFT:
-                    return stone
-                if self.cavern[unit[0]][unit[1] - 1] == '█':
+                if unit[1] - 1 < LEFT or self.cavern[unit[0]][unit[1] - 1] == '█':
                     return stone
         return _stone
 
@@ -87,6 +82,9 @@ class Cave:
                 break
 
     def part_1(self):
+        """test part 1:
+        >>> print(Cave(test).part_1())
+        3068"""
         rocks = 2022
 
         while rocks > 0:
@@ -95,82 +93,62 @@ class Cave:
             self.fall(stone)
             rocks -= 1
         self.trim()
-        return len(self.cavern)-1
+        # print(self.cavern)
+        return len(self.cavern) - 1
 
-    def part_2(self):
-        rocks = 1000000000000
-        # rocks = 2022
+    def part_2(self, rocks):
+        """test part 1:
+        >>> print(Cave(test).part_2(2022))
+        3068
+
+        test part 2:
+        >>> print(Cave(test).part_2(1000000000000))
+        1514285714288"""
         matches = {}
         counter = 0
-        heights = {}
         seq_length = None
         seq_stones = None
         skipped_height = None
 
         while rocks > counter:
             if seq_length and not skipped_height:
-                _counter = counter - 1
-                remains = rocks - _counter
+                remains = rocks - counter - 1
                 seqs = remains // seq_stones
                 skipped_stones = seqs * seq_stones
                 skipped_height = seqs * seq_length
                 counter += skipped_stones
-                print(seq_stones, seq_length)
-                print(f'Skipped {skipped_stones} stones, {skipped_height} height')
+                # print(f'Sequence start: {seq_stones}, length: {seq_length} rows')
+                # print(f'Skipped {skipped_stones} stones, {skipped_height} height')
 
             counter += 1
-            # print(counter)
             stone = next(self.stones)
             self.launch(stone)
             self.fall(stone)
 
-            window = 30
-            top = self.cavern[10:40]
-            old = 40
+            # increase the window size if fails
+            window = 40
+            top = self.cavern[5:45]
+            old = 45
 
-            # rolling window, 2D array
+            # rolling window, 2D array - redo with numpy?
             if len(matches) < 2 and not seq_length:
                 for i in range(0, self.cavern.shape[0] - window + 1):
-                    _window = self.cavern[i:i + window, :]
-                    result = np.array_equal(top, _window)
                     bottom = i + window
+                    _window = self.cavern[i:bottom, :]
+                    result = np.array_equal(top, _window)
 
                     if result and old != bottom:
-                        # print(old, bottom, counter)
                         if not matches.get(old):
                             matches[old] = counter
-                        if not heights.get(old):
-                            self.trim()
-                            heights[old] = len(self.cavern) - 1
                         old = bottom
-
-            else:
+            else:  # sequence found
                 seq_length = int(np.diff(list(matches.keys())))
                 seq_stones = int(np.diff(list(matches.values())))
 
-
-        print(matches)
-        print(heights)
-
+        # print(matches)
         self.trim()
         return len(self.cavern) - 1 + skipped_height
 
 
-def rolling_window(a, shape):
-    s = (a.shape[0] - shape[0] + 1,) + (a.shape[1] - shape[1] + 1,) + shape
-    strides = a.strides + a.strides
-    return np.lib.stride_tricks.as_strided(a, shape=s, strides=strides)
-
-
-# print(Cave(test).part_1())  # 3068
-# print(Cave(*parsers.lines('input.txt')).part_1())  # 3059
-# print(Cave(test).part_2())  # 1514285714288
-print(Cave(*parsers.lines('input.txt')).part_2())  # 1514450867056 too high
-
-"""DEBUG:
-1730 2620
-Skipped 999999994670 stones, 1514450858980 height
-{40: 2022, 2660: 3752}
-{40: 3059, 2660: 5679}
-1514450867056
-"""
+print(Cave(*parsers.lines('input.txt')).part_1())  # 3059
+print(Cave(*parsers.lines('input.txt')).part_2(1000000000000))  # 1500874635587
