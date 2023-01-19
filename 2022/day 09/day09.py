@@ -1,17 +1,17 @@
+from tools import parsers, loader
+
 test = ['R 4', 'U 4', 'L 3', 'D 1', 'R 4', 'D 1', 'L 5', 'R 2']
 test1 = ['R 5', 'U 8', 'L 8', 'D 3', 'R 17', 'D 10', 'L 25', 'U 20']
-
-with open('input09.txt') as f:
-    data = f.read().splitlines()
+d = parsers.lines(loader.get())
 
 
 class Rope:
     def __init__(self, length: int):
+        """
+        :param length: amount of rope segments
+        """
         self.length = length
-        self.segments = []
-        for i in range(self.length):
-            i = [(0, 0)]  # x, y
-            self.segments.append(i)
+        self.segments = [[(0, 0)] for _ in range(self.length)]  # x, y
 
     def move_head(self, side):
         current_pos = self.segments[0][-1]
@@ -20,8 +20,7 @@ class Rope:
         elif side == 'L': x -= 1
         elif side == 'U': y += 1
         elif side == 'D': y -= 1
-        new_pos = (x, y)
-        self.segments[0].append(new_pos)
+        self.segments[0].append((x, y))
 
         for index in range(1, self.length):
             self.move_tail(index)
@@ -48,20 +47,27 @@ class Rope:
         new_pos = (tx, ty)
         self.segments[index].append(new_pos)
 
+    def start(self, data) -> int:
+        """test part 1:
+        >>> print(Rope(2).start(test))
+        13
 
-def start(length: int) -> int:
-    """length: amount of rope segments"""
-    r = Rope(length)
-    for row in data:
-        side, steps = row.split()
-        steps = int(steps)
-        for _ in range(steps):
-            r.move_head(side)
-    return len(set(r.segments[-1]))
+        test part 2:
+        >>> print(Rope(10).start(test))
+        1
+        >>> print(Rope(10).start(test1))
+        36
+        """
+        for row in data:
+            side, steps = row.split()
+            steps = int(steps)
+            for _ in range(steps):
+                self.move_head(side)
+        return len(set(self.segments[-1]))
 
 
 # part 1
-print(start(2))  # 6209
+print(Rope(2).start(d))  # 6209
 
 # part 2
-print(start(10))  # 2460
+print(Rope(10).start(d))  # 2460
