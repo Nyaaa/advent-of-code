@@ -38,8 +38,7 @@ def part_1(data):
     13"""
     result = {True: [], False: []}
     for index in range(1, len(data) + 1):
-        c_left, c_right = data[index - 1]
-        c_left, c_right = eval(c_left), eval(c_right)
+        c_left, c_right = map(eval, data[index - 1])
         res = compare(c_left, c_right)
         result[res].append(index)
     return sum(result[True])

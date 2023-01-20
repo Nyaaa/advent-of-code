@@ -1,4 +1,4 @@
-from tools import parsers
+from tools import parsers, loader
 
 
 class FileSystem:
@@ -50,12 +50,7 @@ class FileSystem:
         >>> print(FileSystem(parsers.lines('test07.txt')).part_1())
         95437"""
 
-        total = 0
-        for folder in self.folders:
-            if self.folders[folder] <= 100000:
-                total += self.folders[folder]
-
-        return total
+        return sum([self.folders[folder] for folder in self.folders if self.folders[folder] <= 100000])
 
     def part_2(self):
         """test part 2:
@@ -67,13 +62,8 @@ class FileSystem:
         free = total - self.folders['//']
         target = needed - free
 
-        candidates = []
-        for folder in self.folders:
-            if self.folders[folder] >= target:
-                candidates.append(self.folders[folder])
-
-        return min(candidates)
+        return min([self.folders[folder] for folder in self.folders if self.folders[folder] >= target])
 
 
-print(FileSystem(parsers.lines('input07.txt')).part_1())  # 1490523
-print(FileSystem(parsers.lines('input07.txt')).part_2())  # 12390492
+print(FileSystem(parsers.lines(loader.get())).part_1())  # 1490523
+print(FileSystem(parsers.lines(loader.get())).part_2())  # 12390492

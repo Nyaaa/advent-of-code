@@ -22,13 +22,7 @@ def part_1(data):
     """test part 1:
     >>> print(part_1(test))
     15"""
-    part1 = 0
-    for round in data:
-        i = moves[round[0]]
-        j = moves[round[2]]
-        outcome, result = check_win(i, j)
-        part1 += result
-    return part1
+    return sum(check_win(moves[round[0]], moves[round[2]])[1] for round in data)
 
 
 def part_2(data):
@@ -38,9 +32,8 @@ def part_2(data):
     part2 = 0
     for round in data:
         i = moves[round[0]]
-        outcome = round[2]
         for n in 1, 2, 3:
-            if check_win(i, n)[0] == res[outcome]:
+            if check_win(i, n)[0] == res[round[2]]:
                 part2 += check_win(i, n)[1]
     return part2
 

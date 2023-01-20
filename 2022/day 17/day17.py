@@ -59,14 +59,12 @@ class Cave:
         if stone != new_stone:
             return self.fall(new_stone)
         else:
-            for unit in stone:
-                row, column = unit
+            for row, column in stone:
                 self.cavern[row][column] = '█'
 
     def can_fall(self, stone, rows: int = 1) -> bool:
         for i in range(0, rows+1):
-            for unit in stone:
-                row, col = unit
+            for row, col in stone:
                 try:
                     if '█' in self.cavern[row + i]:
                         return False
