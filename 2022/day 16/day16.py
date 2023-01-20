@@ -1,4 +1,4 @@
-from tools import parsers
+from tools import parsers, loader
 import networkx as nx
 import re
 
@@ -71,5 +71,5 @@ class Cave:
         return pressure
 
 
-print(Cave(parsers.lines('input.txt')).part_1())  # 1474
-print(Cave(parsers.lines('input.txt')).part_2())  # 2100
+print(Cave(parsers.lines(loader.get())).part_1())  # 1474
+print(Cave(parsers.lines(loader.get())).part_2())  # 2100

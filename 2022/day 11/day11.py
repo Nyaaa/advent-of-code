@@ -1,5 +1,8 @@
-from tools import parsers
-data = parsers.lines('input11.txt')
+from tools import parsers, loader
+import re
+
+d = parsers.blocks(loader.get())
+t = parsers.blocks('test11.txt')
 
 
 class Monke:
@@ -13,7 +16,7 @@ class Monke:
         self.op_val: str = ''
         self.inspected: int = 0
 
-    def action(self, relief: bool):
+    def action(self, relief: bool, monkeys: list, modulo: int):
         for i in range(len(self.inventory)):
             item = self.inventory[i]
             self.inspected += 1
@@ -31,72 +34,57 @@ class Monke:
             if relief:
                 item //= 3
             else:
-                item %= m.modulo
+                item %= modulo
 
             self.inventory[i] = item
 
         for item in self.inventory:
             if item % self.test == 0:
-                m.monkeys[self.target_true].inventory.append(item)
+                monkeys[self.target_true].inventory.append(item)
             else:
-                m.monkeys[self.target_false].inventory.append(item)
+                monkeys[self.target_false].inventory.append(item)
         self.inventory.clear()
 
 
 class Main:
-    def __init__(self):
+    def __init__(self, data):
         self.monkeys = []
         self.modulo = 1
 
-        index = 0
+        for monke in data:
+            index = int(re.search(r'\d+', monke[0]).group())
+            self.monkeys.append(Monke(index))
+            self.monkeys[index].inventory = [int(i) for i in re.findall(r'\d+', monke[1])]
+            self.monkeys[index].op, self.monkeys[index].op_val = \
+                re.search(r'([+*]) ([A-Za-z0-9]+)', monke[2]).group().split()
+            self.monkeys[index].test = int(re.search(r'\d+', monke[3]).group())
+            self.monkeys[index].target_true = int(re.search(r'\d+', monke[4]).group())
+            self.monkeys[index].target_false = int(re.search(r'\d+', monke[5]).group())
 
-        for line in data:
-            line = line.replace(',', ' ').replace(':', ' ').split()
-            if not line:
-                continue
-
-            match line[0]:
-                case 'Monkey':
-                    index = int(line[1])
-                    self.monkeys.append(Monke(index))
-                case 'Starting':
-                    for i in line:
-                        try:
-                            self.monkeys[index].inventory.append(int(i))
-                        except ValueError:
-                            continue
-                case 'Test':
-                    self.monkeys[index].test = int(line[-1])
-                case 'If' if line[1] == 'true':
-                    self.monkeys[index].target_true = int(line[-1])
-                case 'If' if line[1] == 'false':
-                    self.monkeys[index].target_false = int(line[-1])
-                case 'Operation':
-                    self.monkeys[index].op = line[-2]
-                    self.monkeys[index].op_val = line[-1]
-
-        # Ugh, math
         for monkey in self.monkeys:
             self.modulo *= monkey.test
 
     def start(self, rounds: int, relief: bool):
+        """test part 1:
+        >>> print(Main(t).start(20, True))
+        10605
+
+        test part 2:
+        >>> print(Main(t).start(10000, False))
+        2713310158"""
         _round = 0
         while _round < rounds:
             _round += 1
             for monkey in self.monkeys:
-                monkey.action(relief)
+                monkey.action(relief, self.monkeys, self.modulo)
 
-        activity = []
-        for monkey in self.monkeys:
-            activity.append(monkey.inspected)
+        activity = [monkey.inspected for monkey in self.monkeys]
         activity.sort()
         return activity[-1] * activity[-2]
 
 
 # part 1
-m = Main()
-print(m.start(20, True))  # 78678
+print(Main(d).start(20, True))  # 78678
 
 # part 2
-m = Main()
-print(m.start(10000, False))  # 15333249714
+print(Main(d).start(10000, False))  # 15333249714

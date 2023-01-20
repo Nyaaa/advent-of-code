@@ -1,5 +1,5 @@
 from itertools import zip_longest
-from tools import parsers
+from tools import parsers, loader
 
 
 def compare(left, right) -> bool:
@@ -56,5 +56,5 @@ def part_2(data):
     return (sort.index([2]) + 1) * (sort.index([6]) + 1)
 
 
-print(part_1(parsers.blocks('input13.txt')))  # 5252
-print(part_2(parsers.lines('input13.txt')))  # 20592
+print(part_1(parsers.blocks(loader.get())))  # 5252
+print(part_2(parsers.lines(loader.get())))  # 20592

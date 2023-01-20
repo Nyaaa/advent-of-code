@@ -1,5 +1,5 @@
 from itertools import cycle
-from tools import parsers
+from tools import parsers, loader
 import numpy as np
 np.set_printoptions(threshold=np.inf, linewidth=100)
 
@@ -150,5 +150,5 @@ class Cave:
         return len(self.cavern) - 1 + skipped_height
 
 
-print(Cave(*parsers.lines('input.txt')).part_1())  # 3059
-print(Cave(*parsers.lines('input.txt')).part_2(1000000000000))  # 1500874635587
+print(Cave(*parsers.lines(loader.get())).part_1())  # 3059
+print(Cave(*parsers.lines(loader.get())).part_2(1000000000000))  # 1500874635587

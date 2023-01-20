@@ -1,4 +1,4 @@
-from tools import parsers
+from tools import parsers, loader
 import string
 import networkx as nx
 
@@ -85,6 +85,6 @@ class Graph:
 
 
 # part 1
-print(Graph(parsers.lines('input12.txt'), 'S').solve())  # 449
+print(Graph(parsers.lines(loader.get()), 'S').solve())  # 449
 # part 2
-print(Graph(parsers.lines('input12.txt'), 'a').solve())  # 443
+print(Graph(parsers.lines(loader.get()), 'a').solve())  # 443

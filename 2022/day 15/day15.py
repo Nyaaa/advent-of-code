@@ -1,4 +1,4 @@
-from tools import parsers
+from tools import parsers, loader
 from dataclasses import dataclass
 from shapely import union_all, clip_by_rect
 from shapely.geometry import mapping, Polygon, LineString
@@ -65,5 +65,5 @@ class Main:
         return int(x) * 4000000 + int(y)
 
 
-print(Main(parsers.lines('input15.txt')).part_1(2000000))  # 5108096
-print(Main(parsers.lines('input15.txt')).part_2(4000000))  # 10553942650264
+print(Main(parsers.lines(loader.get())).part_1(2000000))  # 5108096
+print(Main(parsers.lines(loader.get())).part_2(4000000))  # 10553942650264

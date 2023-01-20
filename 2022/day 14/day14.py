@@ -1,4 +1,4 @@
-from tools import parsers
+from tools import parsers, loader
 import numpy as np
 from tabulate import tabulate
 
@@ -34,7 +34,7 @@ class Cave:
                 if x - next_x > 0:
                     for _x in range(next_x, x + 1):
                         self.cavern[y, _x] = '█'
-                if x - next_x < 0:
+                elif x - next_x < 0:
                     for _x in range(x, next_x + 1):
                         self.cavern[y, _x] = '█'
 
@@ -95,7 +95,7 @@ class Cave:
 
 
 # part 1
-print(Cave(parsers.lines('input14.txt'), part=1).go())  # 774
+print(Cave(parsers.lines(loader.get()), part=1).go())  # 774
 
 # part 2
-print(Cave(parsers.lines('input14.txt'), part=2).go())  # 22499
+print(Cave(parsers.lines(loader.get()), part=2).go())  # 22499
