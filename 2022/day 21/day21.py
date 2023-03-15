@@ -1,5 +1,6 @@
 from tools import parsers, loader
 import sys
+import operator
 
 
 class Monkey:
@@ -14,6 +15,21 @@ class Monkey:
             else:
                 self.unknown[line[0]] = [*line[1:]]
 
+    @staticmethod
+    def operation(a, op, b):
+        match op:
+            case '+':
+                result = operator.add(a, b)
+            case '-':
+                result = operator.sub(a, b)
+            case '*':
+                result = operator.mul(a, b)
+            case '/':
+                result = operator.truediv(a, b)
+            case _:
+                raise KeyError
+        return result
+
     def part_1(self):
         """test part 1:
         >>> print(Monkey(parsers.lines('test.txt')).part_1())
@@ -24,7 +40,7 @@ class Monkey:
             for i in tuple(iterate.keys()):
                 m1, op, m2 = iterate[i]
                 try:
-                    known[i] = eval(f'{known[m1]} {op} {known[m2]}')
+                    known[i] = self.operation(known[m1], op, known[m2])
                     del iterate[i]
                 except KeyError:
                     pass
