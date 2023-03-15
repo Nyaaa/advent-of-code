@@ -1,64 +1,98 @@
 from tools import parsers, loader
 import re
 from collections import namedtuple
+import numpy as np
+
+np.set_printoptions(threshold=np.inf, linewidth=np.inf)
 
 
 class Cube:
-    DIRECTIONS = {'up': ('left', 'right'),
-                  'right': ('up', 'down'),
-                  'down': ('right', 'left'),
-                  'left': ('down', 'up')}
+    DIRECTIONS = {'up': ('left', 'right', 3),
+                  'right': ('up', 'down', 0),
+                  'down': ('right', 'left', 1),
+                  'left': ('down', 'up', 2)}
 
     def __init__(self, data):
-        self.map = [list(i) for i in data[0]]
+        _map = [list(i) for i in data[0]]
         path = re.split(r"(\d+)([A-Z])", *data[1])
         self.path = parsers.generator(list(filter(None, path)))
         self.point = namedtuple('Location', 'Column, Row')
-        self.location = self.point(self.map[0].index('.'), 0)  # column, row
         self.direction = 'right'
+        max_len = np.max([len(a) for a in _map])
+        self.map = np.asarray([np.pad(a, (0, max_len - len(a)), 'constant', constant_values=' ') for a in _map])
+        self.location = self.point(np.nonzero(self.map[0] == '.')[0][0], 0)
 
-    def move(self, distance: int, turn: str):
-        if turn == 'R':
-            turn = 1
-        else:
-            turn = 0
+    def warp(self, row: int, col: int):
+        match self.direction:
+            case 'right':
+                left = np.nonzero(self.map[row])[0][0]
+                return self.point(left, row)
+            case 'left':
+                right = np.nonzero(self.map[row])[0][-1]
+                return self.point(right, row)
+            case 'up':
+                down = np.nonzero(self.map[:, col])[0][-1]
+                return self.point(col, down)
+            case 'down':
+                up = np.nonzero(self.map[:, col])[0][0]
+                return self.point(col, up)
+
+    def move(self, distance: int):
+        print(distance, self.direction)
 
         for _ in range(distance):
-            row = self.location[1]
-            col = self.location[0]
+            col, row = self.location
             current = self.point(col, row)
 
             match self.direction:
                 case 'right':
-                    next = self.point(col + 1, row)
+                    _next = self.point(col + 1, row)
                 case 'left':
-                    next = self.point(col - 1, row)
+                    _next = self.point(col - 1, row)
                 case 'up':
-                    next = self.point(col, row - 1)
+                    _next = self.point(col, row - 1)
                 case 'down':
-                    next = self.point(col, row + 1)
+                    _next = self.point(col, row + 1)
 
-            cell = self.map[next[1]][next[0]]
+            try:
+                cell = self.map[_next[1]][_next[0]]
+            except IndexError:
+                cell = ' '
 
-            match cell:
-                case '.':
-                    self.location = next
-                case '#':
-                    self.location = current
-                case ' ':
-                    raise NotImplementedError
+            if cell == ' ':
+                _next = self.warp(row, col)
+                cell = self.map[_next[1]][_next[0]]
 
-        self.direction = self.DIRECTIONS[self.direction][turn]
-        print(self.location)
+            if cell == '.':
+                self.location = _next
+            elif cell == '#':
+                self.location = current
+
+            self.map[row][col] = 'X'
+
+        print(self.location, self.direction)
 
     def part_1(self):
         while True:
-            move = int(next(self.path))
-            turn = next(self.path)
-            print(move, turn)
-            self.move(move, turn)
+            try:
+                move = int(next(self.path))
+                self.move(move)
+                turn = next(self.path)
+                turn = 1 if turn == 'R' else 0
+                self.direction = self.DIRECTIONS[self.direction][turn]
+            except StopIteration:
+                for i in range(len(self.map)):
+                    print(self.map[i])
+                col = self.location[0] + 1
+                row = self.location[1] + 1
+                direction = self.DIRECTIONS[self.direction][2]
+                print(self.location)
+                print(row, col, direction)
+                return (1000 * row) + (4 * col) + direction
 
 
 print(Cube(parsers.blocks('test.txt')).part_1())
-# print(Cube(parsers.blocks(loader.get())))
+print(Cube(parsers.blocks(loader.get())).part_1())
 
+# 111144 too high
+# Location(Column=35, Row=110)
