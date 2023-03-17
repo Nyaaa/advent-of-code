@@ -1,93 +1,99 @@
-from typing import Optional
 from tools import parsers, loader
 import numpy as np
-from dataclasses import dataclass
 from itertools import cycle
-from collections import Counter
-
-
-@dataclass
-class Loc:
-    row: int
-    col: int
-
-    def __hash__(self):
-        return hash((self.row, self.col))
+from collections import Counter, namedtuple
 
 
 class Elf:
     def __init__(self, location):
-        self._options = cycle(('n', 's', 'w', 'e'))
         self.location = location
-        self.intention: Optional[Loc] = None
-        self.prev_choice: Optional[str] = None
-
-    def choice(self):
-        new_choice = next(self._options)
-        self.prev_choice = new_choice
-        return new_choice
+        self.intention = None
 
 
 class Grove:
     def __init__(self, data):
+        self.loc = namedtuple('Loc', 'row, col')
+        self._options = cycle(('n', 's', 'w', 'e'))
         self.map = np.array([list(0 if i == '.' else 1 for i in row) for row in data])
+        self.map = np.pad(self.map, pad_width=100, mode='constant', constant_values=0)
         positions = np.where(self.map == 1)
-        locations = [Loc(i, j) for i, j in zip(*positions)]
+        locations = [self.loc(i, j) for i, j in zip(*positions)]
         self.elves = [Elf(loc) for loc in locations]
 
     def plan(self, elf: Elf, direction: str):
-        print('*' * 20)
         row = elf.location.row
         col = elf.location.col
-        print('location', elf.location)
-        north = self.map[row - (row != 0):row, col - (col != 0):col + 2].flatten()
-        south = self.map[row + 1:row + 2, col - (col != 0):col + 2].flatten()
-        west = self.map[row - (row != 0):row + 2, col - (col != 0):col].flatten()
-        east = self.map[row - (row != 0):row + 2, col + 1:col + 2].flatten()
-
-        go_north = Loc(row=(row - 1), col=col)
-        go_south = Loc(row=(row + 1), col=col)
-        go_west = Loc(row=row, col=(col - 1))
-        go_east = Loc(row=row, col=(col + 1))
+        north = np.any(self.map[row - (row != 0):row, col - (col != 0):col + 2])
+        south = np.any(self.map[row + 1:row + 2, col - (col != 0):col + 2])
+        west = np.any(self.map[row - (row != 0):row + 2, col - (col != 0):col])
+        east = np.any(self.map[row - (row != 0):row + 2, col + 1:col + 2])
+        sides = (north, south, west, east)
+        if all(sides) or not any(sides):
+            return None
 
         if direction == 'n':
-            elf.intention = go_north if 1 not in north else self.plan(elf, 's')
+            elf.intention = self.loc(row=(row - 1), col=col) if not north else self.plan(elf, 's')
         elif direction == 's':
-            elf.intention = go_south if 1 not in south else self.plan(elf, 'w')
+            elf.intention = self.loc(row=(row + 1), col=col) if not south else self.plan(elf, 'w')
         elif direction == 'w':
-            elf.intention = go_west if 1 not in west else self.plan(elf, 'e')
+            elf.intention = self.loc(row=row, col=(col - 1)) if not west else self.plan(elf, 'e')
         elif direction == 'e':
-            elf.intention = go_east if 1 not in east else self.plan(elf, 'n')
+            elf.intention = self.loc(row=row, col=(col + 1)) if not east else self.plan(elf, 'n')
 
-        if 1 not in (*north, *south, *west, *east):
-            elf.intention = None
-
-        print('intent', elf.intention)
         return elf.intention
 
     def move(self, elf: Elf):
-        if elf.intention:
-            self.map[elf.location.row][elf.location.col] = 0
-            self.map[elf.intention.row][elf.intention.col] = 1
-            elf.location = elf.intention
+        self.map[elf.location.row][elf.location.col] = 0
+        self.map[elf.intention.row][elf.intention.col] = 1
+        elf.location = elf.intention
+
+    def trim(self):
+        ones = np.where(self.map == 1)
+        trimmed = self.map[min(ones[0]): max(ones[0]) + 1, min(ones[1]): max(ones[1]) + 1]
+        return trimmed
 
     def part_1(self):
-        elf_count = len(self.elves)
-        while True:
-            # self.map = np.pad(self.map, pad_width=1, mode='constant', constant_values=0)
+        """test part 1:
+        >>> print(Grove(parsers.lines('test1.txt')).part_1())
+        110
+        >>> print(Grove(parsers.lines('test2.txt')).part_1())
+        812"""
+        counter = 1
+        while counter <= 10:
+            new_choice = next(self._options)
+            counter += 1
             moving = {}
-            print('=' * 20)
             for elf in self.elves:
-                direction = elf.choice()
-                intention = self.plan(elf, direction)
-                moving[elf] = intention
-            if Counter(moving.values())[None] == elf_count:
-                break
-            print(Counter(moving.values()))
+                intention = self.plan(elf, new_choice)
+                if intention:
+                    moving[elf] = intention
             for elf in moving:
                 if Counter(moving.values())[elf.intention] == 1:
                     self.move(elf)
-            print(self.map)
+        trimmed = self.trim()
+        return np.count_nonzero(trimmed == 0)  # count zeros
+
+    def part_2(self):
+        """test part 2:
+        >>> print(Grove(parsers.lines('test1.txt')).part_2())
+        20
+        >>> print(Grove(parsers.lines('test2.txt')).part_2())
+        183"""
+        counter = 0
+        while True:
+            new_choice = next(self._options)
+            counter += 1
+            moving = {}
+            for elf in self.elves:
+                intention = self.plan(elf, new_choice)
+                if intention:
+                    moving[elf] = intention
+            if not moving:
+                return counter
+            for elf in moving:
+                if Counter(moving.values())[elf.intention] == 1:
+                    self.move(elf)
 
 
-print(Grove(parsers.lines('test.txt')).part_1())
+print(Grove(parsers.lines(loader.get())).part_1())  # 3757
+print(Grove(parsers.lines(loader.get())).part_2())  # 918
