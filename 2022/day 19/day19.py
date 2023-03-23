@@ -2,6 +2,7 @@ from tools import parsers, loader
 import re
 from typing import NamedTuple
 from collections import deque
+from math import prod
 
 
 class Blueprint(NamedTuple):
@@ -53,15 +54,31 @@ class Factory:
             state = queue.popleft()
             value = max(value, state.value())
             state = self.prune(state, max_ore, max_clay, max_obsidian)
-
             if state in done or state.time == 0:
+                continue
+            optimistic_max = state.time + state.value()
+            if value >= optimistic_max:
                 continue
             done.add(state)
             time = state.time - 1
             production = tuple(map(sum, zip(state.resources, state.robots)))
 
+            # geode robot
+            if state.resources[0] >= bp.geode[0] and state.resources[2] >= bp.geode[1]:
+                res = (production[0] - bp.geode[0], production[1], production[2] - bp.geode[1], production[3])
+                rob = (state.robots[0], state.robots[1], state.robots[2], state.robots[3] + 1)
+                queue.append(State(time, res, rob))
+
+            # obsidian robot
+            elif state.resources[0] >= bp.obsidian[0] and state.resources[1] >= bp.obsidian[1] \
+                    and state.robots[2] <= max_obsidian:
+                res = (production[0] - bp.obsidian[0], production[1] - bp.obsidian[1], production[2], production[3])
+                rob = (state.robots[0], state.robots[1], state.robots[2] + 1, state.robots[3])
+                queue.append(State(time, res, rob))
+
             # pass a turn
-            queue.append(State(time, production, state.robots))
+            else:
+                queue.append(State(time, production, state.robots))
 
             # ore robot
             if state.resources[0] >= bp.ore and state.robots[0] <= max_ore:
@@ -75,24 +92,20 @@ class Factory:
                 rob = (state.robots[0], state.robots[1] + 1, state.robots[2], state.robots[3])
                 queue.append(State(time, res, rob))
 
-            # obsidian robot
-            if state.resources[0] >= bp.obsidian[0] and state.resources[1] >= bp.obsidian[1]\
-                    and state.robots[2] <= max_obsidian:
-                res = (production[0] - bp.obsidian[0], production[1] - bp.obsidian[1], production[2], production[3])
-                rob = (state.robots[0], state.robots[1], state.robots[2] + 1, state.robots[3])
-                queue.append(State(time, res, rob))
-
-            # geode robot
-            if state.resources[0] >= bp.geode[0] and state.resources[2] >= bp.geode[1]:
-                res = (production[0] - bp.geode[0], production[1], production[2] - bp.geode[1], production[3])
-                rob = (state.robots[0], state.robots[1], state.robots[2], state.robots[3] + 1)
-                queue.append(State(time, res, rob))
-
         return value
 
     def part_1(self):
+        """
+        >>> print(Factory(parsers.lines('test.txt')).part_1())
+        33"""
         return sum([bp.id * self.evaluate(bp, State(24)) for bp in self.blueprints])
 
+    def part_2(self):
+        """
+        >>> print(Factory(parsers.lines('test.txt')).part_2())
+        3472"""
+        return prod([self.evaluate(bp, State(32)) for bp in self.blueprints if bp.id <= 3])
 
-print(Factory(parsers.lines('test.txt')).part_1())
-# print(Factory(parsers.lines(loader.get())).part_1())  # 1262
+
+print(Factory(parsers.lines(loader.get())).part_1())  # 1262
+print(Factory(parsers.lines(loader.get())).part_2())  # 37191
