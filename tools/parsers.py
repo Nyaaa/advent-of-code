@@ -1,5 +1,5 @@
 """A collection of parsers for processing input files"""
-from typing import Iterator, List
+from typing import Iterator, List, Any
 
 
 def lines(file: str) -> List[str]:
@@ -37,7 +37,7 @@ def inline_test(string: str) -> List[str]:
     return [line.strip() for line in string.splitlines()]
 
 
-def generator(data: List[str]) -> Iterator[str]:
+def generator(data: List[Any]) -> Iterator[str]:
     """Returns a parsed input line by line when called
 
     :param data: (in)Line parser output
