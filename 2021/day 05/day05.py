@@ -4,8 +4,6 @@ import re
 from operator import itemgetter
 from itertools import zip_longest
 
-np.set_printoptions(threshold=np.inf, linewidth=np.inf)
-
 
 class Vents:
     def __init__(self, data):
@@ -25,24 +23,28 @@ class Vents:
                 col = range(min(start[1], end[1]), max(start[1], end[1]) + 1)
                 points += list(zip_longest([start[0]], col, fillvalue=start[0]))
             elif part2 and start[1] != end[1] and start[0] != end[0]:
-                print(start, end)
-
+                row_step = 1 if start[0] < end[0] else -1
+                col_step = 1 if start[1] < end[1] else -1
+                diagonal = [start]
+                while start != end:
+                    start = (start[0] + row_step, start[1] + col_step)
+                    diagonal.append(start)
+                points += diagonal
             else:
                 continue
         return points
 
-    def part_1(self):
+    def start(self, part2: bool):
         """ (x, y) = col, row
-        >>> print(Vents(parsers.lines('test.txt')).part_1())
-        5"""
-        for point in self.get_points(part2=False):
+        >>> print(Vents(parsers.lines('test.txt')).start(part2=False))
+        5
+
+        >>> print(Vents(parsers.lines('test.txt')).start(part2=True))
+        12"""
+        for point in self.get_points(part2=part2):
             self.map[point[1]][point[0]] += 1
         return np.count_nonzero(self.map[self.map > 1])
 
-    def part_2(self):
-        points = self.get_points(part2=True)
-        return
 
-
-print(Vents(parsers.lines(loader.get())).part_1())  # 5632
-print(Vents(parsers.lines('test.txt')).part_2())
+print(Vents(parsers.lines(loader.get())).start(part2=False))  # 5632
+print(Vents(parsers.lines(loader.get())).start(part2=True))  # 22213
