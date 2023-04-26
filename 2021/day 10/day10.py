@@ -7,6 +7,12 @@ SCORE = {
     '}': 1197,
     '>': 25137
 }
+CLOSE = {
+    '(': 1,
+    '[': 2,
+    '{': 3,
+    '<': 4
+}
 
 
 class Brackets:
@@ -31,5 +37,23 @@ class Brackets:
                     break
         return result
 
+    def part_2(self, data):
+        """
+        >>> print(Brackets().part_2(parsers.lines('test.txt')))
+        288957"""
+        scores = []
+        for line in data:
+            compressed = self.remove_closed(line)
+            if all(i not in SCORE.keys() for i in compressed):
+                line_score = 0
+                for i in compressed[::-1]:
+                    line_score = line_score * 5 + CLOSE[i]
+                scores.append(line_score)
+
+        scores.sort()
+        mid = len(scores) // 2
+        return scores[mid]
+
 
 print(Brackets().part_1(parsers.lines(loader.get())))  # 367227
+print(Brackets().part_2(parsers.lines(loader.get())))  # 3583341858
