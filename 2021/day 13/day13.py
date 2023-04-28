@@ -3,6 +3,8 @@ from tools import parsers, loader
 import numpy as np
 from operator import itemgetter
 
+np.set_printoptions(linewidth=np.inf)
+
 
 class Paper:
     def __init__(self, data):
@@ -10,6 +12,8 @@ class Paper:
         points = [(int(col), int(row)) for row, col in (i.split(',') for i in data[0])]
         max_rows = max(points, key=itemgetter(0))[0] + 1
         max_cols = max(points, key=itemgetter(1))[1] + 1
+        if max_rows % 2 == 0:
+            max_rows += 1  # this shouldn't work, but it works
         self.sheet = np.zeros(dtype=int, shape=(max_rows, max_cols))
         for point in points:
             self.sheet[point] = 1
@@ -25,8 +29,7 @@ class Paper:
 
         split = np.array_split(self.sheet, [index, index + 1], axis=axis)
         side_b = np.flip(split[2], axis=axis)
-        split[0] += side_b
-        self.sheet = split[0]
+        self.sheet = split[0] | side_b
 
     def part_1(self):
         """
@@ -35,5 +38,15 @@ class Paper:
         self.fold(self.instructions[0])
         return np.count_nonzero(self.sheet)
 
+    def part_2(self):
+        for i in self.instructions:
+            self.fold(i)
+
+        chars = self.sheet.astype(str)
+        chars[chars == '0'] = ' '
+        chars[chars != ' '] = '█'
+        return chars
+
 
 print(Paper(parsers.blocks(loader.get())).part_1())  # 775
+print(Paper(parsers.blocks(loader.get())).part_2())  # REUPUPKR
