@@ -14,13 +14,26 @@ class Paper:
         for point in points:
             self.sheet[point] = 1
 
-        pattern = re.compile(r'(\w)=(\d)')
+        pattern = re.compile(r'(\w)=(\d+)')
         for i in data[1]:
             p = pattern.search(i)
             self.instructions.append((p.group(1), int(p.group(2))))
 
+    def fold(self, instruction: tuple[str, int]):
+        axis = 1 if instruction[0] == 'x' else 0
+        index = instruction[1]
+
+        split = np.array_split(self.sheet, [index, index + 1], axis=axis)
+        side_b = np.flip(split[2], axis=axis)
+        split[0] += side_b
+        self.sheet = split[0]
+
     def part_1(self):
-        return self.instructions
+        """
+        >>> print(Paper(parsers.blocks('test.txt')).part_1())
+        17"""
+        self.fold(self.instructions[0])
+        return np.count_nonzero(self.sheet)
 
 
-print(Paper(parsers.blocks('test.txt')).part_1())
+print(Paper(parsers.blocks(loader.get())).part_1())  # 775
