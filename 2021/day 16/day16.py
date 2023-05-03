@@ -1,7 +1,4 @@
 import math
-from collections import deque
-from dataclasses import dataclass
-from typing import Optional
 from tools import parsers, loader
 
 HEX_TO_BIN = {
@@ -24,55 +21,25 @@ HEX_TO_BIN = {
 }
 
 
-@dataclass
-class Packet:
-    version: int
-    type: int
-    value: Optional[int] = None
-    children: Optional[list] = None
-
-
 class Decoder:
     def __init__(self, data):
-        self.encoded = ''.join(HEX_TO_BIN[i] for i in data[0])
-        self.packets = []
-        self.root: Optional[Packet]
-        self.parent = deque([])
-        self.part2: bool = False
+        self.encoded: str = ''.join(HEX_TO_BIN[i] for i in data[0])
+        self.packets: list[int] = []
 
-    def get_type(self, packet: str) -> int:
-        return int(packet[3:6], 2)
-
-    def decode_packet(self, packet: str):
-        pak_version = int(packet[:3], 2)
-        pak_type = int(packet[3:6], 2)
-        pk = Packet(version=pak_version, type=pak_type, children=[])
-        if not self.packets:
-            self.root = pk
-        self.packets.append(pk)
+    def decode_packet(self, cur: int = 0) -> tuple[int, int]:
+        pak_version = int(self.encoded[cur:cur + 3], 2)
+        pak_type = int(self.encoded[cur + 3:cur + 6], 2)
+        cur += 6  # version + type
         if pak_type == 4:
-            decoded, remainder = self.decode_literal(packet[6:])
-            pk.value = decoded
-            self.parent[-1].children.append(decoded)
-            if remainder:
-                following = self.get_type(remainder)
-                if following != 4:
-                    self.parent.pop()
-                self.decode_packet(remainder)
+            cur, value = self.decode_literal(cur)
         else:
-            if self.parent:
-                self.parent[-1].children.append(pk)
-            self.parent.append(pk)
-            self.decode_operator(packet)
-            child = pk.children
-            if child and self.part2:
-                pk.value = self.operations(pak_type, *child)
+            cur, values = self.decode_operator(cur)
+            value = self.operations(pak_type, *values)
+        self.packets.append(pak_version)
+        return cur, value
 
     @staticmethod
-    def operations(pak_type: int, *args):
-        if isinstance(args[0], Packet):
-            args = [i.value for i in args]
-
+    def operations(pak_type: int, *args) -> int | None:
         match pak_type:
             case 0: result = sum(args)
             case 1: result = math.prod(args)
@@ -81,9 +48,10 @@ class Decoder:
             case 5: result = 1 if args[0] > args[1] else 0
             case 6: result = 1 if args[0] < args[1] else 0
             case 7: result = 1 if args[0] == args[1] else 0
+            case _: result = None  # should never be the case
         return result
 
-    def decode_operator(self, packet: str):
+    def decode_operator(self, cur: int) -> tuple[int, list[int]]:
         """ type 0:
         >>> print(Decoder(parsers.inline_test('38006F45291200')).part_1())
         9
@@ -91,28 +59,29 @@ class Decoder:
         type 1:
         >>> print(Decoder(parsers.inline_test('EE00D40C823060')).part_1())
         14"""
-        length_type = packet[6]
-        if length_type == '0':
-            self.decode_packet(packet[7 + 15:])
+        values: list[int] = []
+        if self.encoded[cur] == '0':
+            cur += 16  # prefix + 15
+            chunk_end = cur + int(self.encoded[cur - 15:cur], 2)
+            while cur < chunk_end:
+                cur, value = self.decode_packet(cur)
+                values.append(value)
         else:
-            self.decode_packet(packet[7 + 11:])
+            cur += 12  # prefix + 11
+            packet_amount = int(self.encoded[cur - 11:cur], 2)
+            for _ in range(packet_amount):
+                cur, value = self.decode_packet(cur)
+                values.append(value)
+        return cur, values
 
-    @staticmethod
-    def decode_literal(encoded: str) -> tuple[int, str | None]:
-        chunks = deque([encoded[i:i + 5] for i in range(0, len(encoded), 5)])
+    def decode_literal(self, cur: int) -> tuple[int, int]:
         binary = ''
         while True:
-            ch = chunks.popleft()
-            match ch[0], ch[1:]:
-                case '1', num if len(num) == 4:
-                    binary += num
-                case '0', num if len(num) == 4:
-                    binary += num
-                    remainder = ''.join(chunks)
-                    remainder_nonzero = remainder.replace('0', '')
-                    return int(binary, 2), remainder if remainder_nonzero else None
-                case _:
-                    return int(binary, 2), None
+            prefix = self.encoded[cur]
+            cur += 5  # prefix + 4
+            binary += self.encoded[cur - 4:cur]
+            if prefix == '0':
+                return cur, int(binary, 2)
 
     def part_1(self):
         """test part 1:
@@ -128,8 +97,8 @@ class Decoder:
         >>> print(Decoder(parsers.inline_test('A0016C880162017C3686B18A3D4780')).part_1())
         31
         """
-        self.decode_packet(self.encoded)
-        return sum([i.version for i in self.packets])
+        self.decode_packet()
+        return sum(self.packets)
 
     def part_2(self):
         """test part 2:
@@ -157,12 +126,8 @@ class Decoder:
         >>> print(Decoder(parsers.inline_test('9C0141080250320F1802104A08')).part_2())
         1
         """
-        self.part2 = True
-        self.decode_packet(self.encoded)
-        return self.root.value
+        return self.decode_packet()[1]
 
 
-# print(Decoder(parsers.lines(loader.get())).part_1())  # 1002
-print(Decoder(parsers.lines(loader.get())).part_2())  #
-# print(Decoder(parsers.inline_test('D2318C6318C621')).part_1())
-
+print(Decoder(parsers.lines(loader.get())).part_1())  # 1002
+print(Decoder(parsers.lines(loader.get())).part_2())  # 1673210814091
