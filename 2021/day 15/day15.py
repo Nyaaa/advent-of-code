@@ -24,21 +24,20 @@ class Cave:
             self.grid = np.append(self.grid, grid, axis=axis)
 
     def build_graph(self):
-        for row in range(len(self.grid)):
-            for col in range(len(self.grid[row])):
-                current = (row, col)
-                if row > 0:
-                    up = (row - 1, col)
-                    self.graph.add_edge(current, up, weight=self.grid[up])
-                if row < (len(self.grid) - 1):
-                    down = (row + 1, col)
-                    self.graph.add_edge(current, down, weight=self.grid[down])
-                if col > 0:
-                    left = (row, col - 1)
-                    self.graph.add_edge(current, left, weight=self.grid[left])
-                if col < (len(self.grid[row]) - 1):
-                    right = (row, col + 1)
-                    self.graph.add_edge(current, right, weight=self.grid[right])
+        for index, item in np.ndenumerate(self.grid):
+            row, col = index
+            if row > 0:
+                up = (row - 1, col)
+                self.graph.add_edge(index, up, weight=self.grid[up])
+            if row < (len(self.grid) - 1):
+                down = (row + 1, col)
+                self.graph.add_edge(index, down, weight=self.grid[down])
+            if col > 0:
+                left = (row, col - 1)
+                self.graph.add_edge(index, left, weight=self.grid[left])
+            if col < (len(self.grid[row]) - 1):
+                right = (row, col + 1)
+                self.graph.add_edge(index, right, weight=self.grid[right])
 
     def start(self):
         """test part 1:

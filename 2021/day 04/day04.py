@@ -15,10 +15,9 @@ class Bingo:
         wins = []
         won = []
         for num in self.numbers:
-            for i in range(len(self.grids)):
+            for i, grid in enumerate(self.grids):
                 if i in won:
                     continue
-                grid = self.grids[i]
                 grid[grid == num] = num + '*'  # find & mark the drawn number in array
                 marks = np.char.find(grid, '*')  # -1 if unmarked
                 if np.any(np.all(marks >= 0, axis=1)) or np.any(np.all(marks >= 0, axis=0)):  # any full row/col marked

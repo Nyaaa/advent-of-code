@@ -3,7 +3,9 @@ d = parsers.lines(loader.get())[0]
 
 
 def puzzle(data: str, length: int):
-    """test part 1:
+    """ Rolling window, 1D array
+
+    test part 1:
     >>> print(puzzle('zcfzfwzzqfrljwzlrfnpqdbhtmscgvjw', 4))
     11
 
@@ -11,11 +13,8 @@ def puzzle(data: str, length: int):
     >>> print(puzzle('zcfzfwzzqfrljwzlrfnpqdbhtmscgvjw', 14))
     26
     """
-    for i in range(len(data)):
-        try:
-            chunk = [data[i + n] for n in range(length)]
-        except IndexError:
-            continue
+    for i in range(len(data) - length):
+        chunk = data[i: i + length]
         if len(set(chunk)) == len(chunk):
             return i + length
 

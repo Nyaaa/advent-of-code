@@ -18,8 +18,7 @@ class Cave:
         _data_clean = [[[int(i) for i in coord.split(',')] for coord in line.split(' -> ')] for line in data]
 
         for line in _data_clean:
-            for i in range(len(line)):
-                x, y = line[i][0], line[i][1]
+            for i, (x, y) in enumerate(line):
                 try:
                     next_x, next_y = line[i + 1][0], line[i + 1][1]
                 except IndexError:

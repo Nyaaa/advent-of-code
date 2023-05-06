@@ -34,10 +34,6 @@ class Cube:
             case 'down': row = np.nonzero(self.map[:, col])[0][0]
         return Point(col, row)
 
-    def draw(self):
-        for i in range(len(self.map)):
-            print(self.map[i])
-
     def shift(self, row: int, col: int) -> tuple[Point, str]:
         """Hardcoded rotations because screw this puzzle.
 
@@ -135,7 +131,7 @@ class Cube:
                 col = self.location.col + 1
                 row = self.location.row + 1
                 direction = DIRECTIONS[self.direction][2]
-                # self.draw()
+                # print(self.map)
                 return (1000 * row) + (4 * col) + direction
 
 

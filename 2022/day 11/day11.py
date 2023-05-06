@@ -17,8 +17,7 @@ class Monke:
         self.inspected: int = 0
 
     def action(self, relief: bool, monkeys: list, modulo: int):
-        for i in range(len(self.inventory)):
-            item = self.inventory[i]
+        for i, item in enumerate(self.inventory):
             self.inspected += 1
 
             try:
