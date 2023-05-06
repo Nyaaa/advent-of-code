@@ -14,7 +14,7 @@ def get_halves(num: str, delimiter: re.Match) -> tuple[str, str]:
     return num[:index_left], num[index_right:]
 
 
-def explode(num: str) -> str | None:
+def explode(num: str) -> str:
     """
     >>> print(explode('[[[[[9,8],1],2],3],4]'))
     [[[[0,9],2],3],4]
@@ -41,6 +41,7 @@ def explode(num: str) -> str | None:
         else:
             return side_string
 
+    result = ''
     for match in PAIRS.finditer(num):
         start_pos = match.start()
         depth = num.count('[', 0, start_pos) - num.count(']', 0, start_pos)
@@ -50,11 +51,13 @@ def explode(num: str) -> str | None:
             left = add_numbers(digit_left, left, -1)
             right = add_numbers(digit_right, right, 0)
             result = f'{left}0{right}'
-            return result
-    return None
+            break
+    if not result:
+        raise StopIteration
+    return result
 
 
-def split(num: str) -> str | None:
+def split(num: str) -> str:
     """
     >>> print(split('10'))
     [5,5]
@@ -64,6 +67,7 @@ def split(num: str) -> str | None:
 
     >>> print(split('[11,1]'))
     [[5,6],1]"""
+    result = ''
     for match in re.finditer(r'\d\d+', num):  # >= 10
         value = match.group()
         left, right = get_halves(num, match)
@@ -71,8 +75,10 @@ def split(num: str) -> str | None:
         num_a = math.floor(num_int)
         num_b = math.ceil(num_int)
         result = f'{left}[{num_a},{num_b}]{right}'
-        return result
-    return None
+        break
+    if not result:
+        raise StopIteration
+    return result
 
 
 def reduce(num: str) -> str:
@@ -80,15 +86,13 @@ def reduce(num: str) -> str:
     >>> print(reduce('[[[[[4,3],4],4],[7,[[8,4],9]]],[1,1]]'))
     [[[[0,7],4],[[7,8],[6,0]]],[8,1]]"""
     while True:
-        exploded = explode(num)
-        if exploded:
-            num = exploded
-            continue
-        splt = split(num)
-        if splt:
-            num = splt
-        else:
-            return num
+        try:
+            num = explode(num)
+        except StopIteration:
+            try:
+                num = split(num)
+            except StopIteration:
+                return num
 
 
 def snailfish_sum(data: Sequence[str]) -> str:
