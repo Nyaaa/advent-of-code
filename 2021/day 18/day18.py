@@ -1,4 +1,7 @@
 import math
+from itertools import permutations
+from typing import Sequence
+
 from tools import parsers, loader
 import re
 
@@ -72,7 +75,7 @@ def split(num: str) -> str | None:
     return None
 
 
-def reduce(num: str):
+def reduce(num: str) -> str:
     """
     >>> print(reduce('[[[[[4,3],4],4],[7,[[8,4],9]]],[1,1]]'))
     [[[[0,7],4],[[7,8],[6,0]]],[8,1]]"""
@@ -88,13 +91,13 @@ def reduce(num: str):
             return num
 
 
-def snailfish_sum(data: list) -> str:
+def snailfish_sum(data: Sequence[str]) -> str:
     """
     >>> print(snailfish_sum(['[1,2]','[[3,4],5]']))
     [[1,2],[[3,4],5]]
 
     >>> print(snailfish_sum(parsers.lines('test.txt')))
-    [[[[8,7],[7,7]],[[8,6],[7,7]]],[[[0,7],[6,6]],[8,7]]]"""
+    [[[[6,6],[7,6]],[[7,7],[7,0]]],[[[7,7],[7,7]],[[7,8],[9,9]]]]"""
     result = data[0]
     for i in data[1:]:
         result = f'[{result},{i}]'
@@ -102,4 +105,41 @@ def snailfish_sum(data: list) -> str:
     return result
 
 
+def magnitude(num: str) -> int:
+    """
+    >>> print(magnitude('[[[[8,7],[7,7]],[[8,6],[7,7]]],[[[0,7],[6,6]],[8,7]]]'))
+    3488"""
+    for match in PAIRS.finditer(num):
+        left, right = get_halves(num, match)
+        digit_left, digit_right = SINGLES.finditer(match.group())
+        magn = int(digit_left.group()) * 3 + int(digit_right.group()) * 2
+        num = f'{left}{magn}{right}'
+        try:
+            return int(num)
+        except ValueError:
+            return magnitude(num)
 
+
+def part_1(data: Sequence[str]) -> int:
+    """
+    >>> print(part_1(parsers.lines('test.txt')))
+    4140"""
+    _sum = snailfish_sum(data)
+    return magnitude(_sum)
+
+
+def part_2(data: Sequence[str]) -> int:
+    """
+    >>> print(part_2(parsers.lines('test.txt')))
+    3993"""
+    max_num = 0
+    for nums in permutations(data, 2):
+        _sum = snailfish_sum(nums)
+        result = magnitude(_sum)
+        if result > max_num:
+            max_num = result
+    return max_num
+
+
+print(part_1(parsers.lines(loader.get())))  # 3869
+print(part_2(parsers.lines(loader.get())))  # 4671
