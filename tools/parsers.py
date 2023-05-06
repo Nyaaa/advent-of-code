@@ -1,8 +1,8 @@
 """A collection of parsers for processing input files"""
-from typing import Iterator, List, Any
+from typing import Iterator, Any, Sequence
 
 
-def lines(file: str) -> List[str]:
+def lines(file: str) -> list[str]:
     """Parses input file line by line
 
     :param file: Text input
@@ -13,7 +13,7 @@ def lines(file: str) -> List[str]:
         return [line.strip() for line in f.readlines()]
 
 
-def blocks(file: str) -> List[List[str]]:
+def blocks(file: str) -> list[list[str]]:
     """Parses input file in blocks, separated by empty line
 
     :param file: Text input
@@ -27,7 +27,7 @@ def blocks(file: str) -> List[List[str]]:
         return result
 
 
-def inline_test(string: str) -> List[str]:
+def inline_test(string: str) -> list[str]:
     """Parses input string to match the expected output of line parser
 
     :param string: String
@@ -37,7 +37,7 @@ def inline_test(string: str) -> List[str]:
     return [line.strip() for line in string.splitlines()]
 
 
-def generator(data: List[Any]) -> Iterator[str]:
+def generator(data: Sequence[Any]) -> Iterator[str]:
     """Returns a parsed input line by line when called
 
     :param data: (in)Line parser output
