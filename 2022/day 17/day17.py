@@ -1,5 +1,5 @@
 from itertools import cycle
-from tools import parsers, loader
+from tools import parsers, loader, timer
 import numpy as np
 np.set_printoptions(threshold=np.inf, linewidth=100)
 
@@ -102,47 +102,45 @@ class Cave:
         1514285714288"""
         matches = {}
         counter = 0
-        seq_length = None
-        seq_stones = None
+        seq_length = None  # test: 53, input: 2574
+        seq_stones = None  # test: 35, input: 1715
         skipped_height = None
 
         while rocks > counter:
-            if seq_length and not skipped_height:
-                remains = rocks - counter - 1
-                seqs = remains // seq_stones
-                skipped_stones = seqs * seq_stones
-                skipped_height = seqs * seq_length
-                counter += skipped_stones
-
             counter += 1
             stone = next(self.stones)
             self.launch(stone)
             self.fall(stone)
 
             # increase the window size if fails
-            window = 40
-            top = self.cavern[5:45]
-            old = 45
+            top = self.cavern[5:25]
 
-            # rolling window, 2D array - redo with numpy?
-            if len(matches) < 2 and not seq_length:
-                for i in range(0, self.cavern.shape[0] - window + 1):
-                    bottom = i + window
-                    _window = self.cavern[i:bottom, :]
-                    result = np.array_equal(top, _window)
+            if not seq_length:
+                found = np.all(np.all(rolling_window(self.cavern, top.shape) == top, axis=2), axis=2).nonzero()
+                rez = found[0]
+                if 3 >= len(rez) > 1 and rez[-1] not in matches:
+                    matches[rez[-1]] = counter
+                if len(matches) == 2:
+                    seq_length = int(np.diff(list(matches.keys())))
+                    seq_stones = int(np.diff(list(matches.values())))
+                    remains = rocks - counter - 1
+                    seqs = remains // seq_stones
+                    skipped_stones = seqs * seq_stones
+                    skipped_height = seqs * seq_length
+                    counter += skipped_stones
 
-                    if result and old != bottom:
-                        if not matches.get(old):
-                            matches[old] = counter
-                        old = bottom
-            else:  # sequence found
-                seq_length = int(np.diff(list(matches.keys())))
-                seq_stones = int(np.diff(list(matches.values())))
-
-        # print(matches)
         self.trim()
         return len(self.cavern) - 1 + skipped_height
 
 
-print(Cave(*parsers.lines(loader.get())).part_1())  # 3059
-print(Cave(*parsers.lines(loader.get())).part_2(1000000000000))  # 1500874635587
+def rolling_window(a, shape):
+    """Rolling window for 2D numpy array"""
+    s = (a.shape[0] - shape[0] + 1,) + (a.shape[1] - shape[1] + 1,) + shape
+    strides = a.strides + a.strides
+    return np.lib.stride_tricks.as_strided(a, shape=s, strides=strides)
+
+
+with timer.context():
+    print(Cave(*parsers.lines(loader.get())).part_1())  # 3059
+with timer.context():
+    print(Cave(*parsers.lines(loader.get())).part_2(1000000000000))  # 1500874635587
