@@ -1,4 +1,4 @@
-from tools import parsers, loader
+from tools import parsers, loader, common
 import networkx as nx
 import numpy as np
 
@@ -24,20 +24,9 @@ class Cave:
             self.grid = np.append(self.grid, grid, axis=axis)
 
     def build_graph(self):
-        for index, item in np.ndenumerate(self.grid):
-            row, col = index
-            if row > 0:
-                up = (row - 1, col)
-                self.graph.add_edge(index, up, weight=self.grid[up])
-            if row < (len(self.grid) - 1):
-                down = (row + 1, col)
-                self.graph.add_edge(index, down, weight=self.grid[down])
-            if col > 0:
-                left = (row, col - 1)
-                self.graph.add_edge(index, left, weight=self.grid[left])
-            if col < (len(self.grid[row]) - 1):
-                right = (row, col + 1)
-                self.graph.add_edge(index, right, weight=self.grid[right])
+        for index in np.ndindex(self.grid.shape):
+            for ajd_index, value in common.get_adjacent(self.grid, index):
+                self.graph.add_edge(index, ajd_index, weight=value)
 
     def start(self):
         """test part 1:

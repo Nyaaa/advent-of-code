@@ -1,3 +1,4 @@
+from collections import deque
 from tools import parsers, loader
 import sys
 import operator
@@ -34,16 +35,15 @@ class Monkey:
         """test part 1:
         >>> print(Monkey(parsers.lines('test.txt')).part_1())
         152"""
-        iterate = self.unknown.copy()
+        iterate = deque(self.unknown)
         known = self.known.copy()
         while iterate:
-            for i in tuple(iterate.keys()):
-                m1, op, m2 = iterate[i]
-                try:
-                    known[i] = self.operation(known[m1], op, known[m2])
-                    del iterate[i]
-                except KeyError:
-                    pass
+            i = iterate.popleft()
+            m1, op, m2 = self.unknown[i]
+            try:
+                known[i] = self.operation(known[m1], op, known[m2])
+            except KeyError:
+                iterate.append(i)
         return int(known['root'])
 
     def part_2(self):

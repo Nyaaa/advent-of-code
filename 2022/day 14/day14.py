@@ -28,7 +28,7 @@ class Cave:
                 self.right = max_x if max_x > self.right else self.right
                 if max_y > len(self.cavern):
                     add = max_y + 1 - len(self.cavern)
-                    self.increase_depth(add, 'zeros')
+                    self.increase_depth(add, ' ')
 
                 if x - next_x > 0:
                     for _x in range(next_x, x + 1):
@@ -45,16 +45,11 @@ class Cave:
                         self.cavern[_y, x] = '█'
 
         if part == 2:
-            self.increase_depth(1, 'zeros')
-            self.increase_depth(1, 'ones')
+            self.increase_depth(1, ' ')
+            self.increase_depth(1, '█')
 
     def increase_depth(self, lines, char):
-        newline = np.chararray((lines, self.right), unicode=True)
-        if char == 'zeros':
-            newline[:] = ' '
-        else:
-            newline[:] = '█'
-        self.cavern = np.append(self.cavern, newline, axis=0)
+        self.cavern = np.pad(self.cavern, [(0, lines), (0, 0)], mode='constant', constant_values=char)
 
     def fall(self, row: int, column: int):
         if self.cavern[0][column] == 'S':

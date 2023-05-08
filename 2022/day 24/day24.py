@@ -20,8 +20,7 @@ ADJACENT = (Point(0, 1), Point(0, -1), Point(-1, 0), Point(1, 0), Point(0, 0))
 class Blizzard:
     def __init__(self, data):
         self.data = np.asarray([list(line) for line in data])
-        self.max_rows = len(self.data)
-        self.max_cols = len(self.data[0])
+        self.max_rows, self.max_cols = self.data.shape
         self.start = Point(row=0, col=1)
         self.end = Point(row=self.max_rows - 1, col=self.max_cols - 2)
         self.map_num = lcm(self.max_rows - 2, self.max_cols - 2)

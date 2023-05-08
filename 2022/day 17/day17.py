@@ -25,9 +25,8 @@ class Cave:
         place = self.can_fall(stone, level)
         if level < 4:
             if not place:
-                newline = np.chararray((1, RIGHT), unicode=True)
-                newline[:] = '_'
-                self.cavern = np.insert(self.cavern, 0, newline, axis=0)
+                # numpy padding: [(top, bottom), (left, right)] value is thickness
+                self.cavern = np.pad(self.cavern, [(1, 0), (0, 0)], mode='constant', constant_values='_')
         elif level >= 4 and place:
             self.cavern = np.delete(self.cavern, 0, 0)
             self.launch(stone, level)
@@ -91,7 +90,6 @@ class Cave:
             self.fall(stone)
             rocks -= 1
         self.trim()
-        # print(self.cavern)
         return len(self.cavern) - 1
 
     def part_2(self, rocks):
@@ -115,8 +113,6 @@ class Cave:
                 skipped_stones = seqs * seq_stones
                 skipped_height = seqs * seq_length
                 counter += skipped_stones
-                # print(f'Sequence start: {seq_stones}, length: {seq_length} rows')
-                # print(f'Skipped {skipped_stones} stones, {skipped_height} height')
 
             counter += 1
             stone = next(self.stones)

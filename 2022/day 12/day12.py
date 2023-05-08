@@ -1,4 +1,4 @@
-from tools import parsers, loader
+from tools import parsers, loader, common
 import string
 import networkx as nx
 import numpy as np
@@ -41,28 +41,11 @@ class Graph:
         self.build_graph()
 
     def build_graph(self):
-        for index, item in np.ndenumerate(self.grid):
-            row, col = index
-            if row > 0:
-                up = self.grid[row - 1][col]
-                self.add_edges(up, index, item, (row - 1, col))
-
-            if row < (len(self.grid) - 1):
-                down = self.grid[row + 1][col]
-                self.add_edges(down, index, item, (row + 1, col))
-
-            if col > 0:
-                left = self.grid[row][col - 1]
-                self.add_edges(left, index, item, (row, col - 1))
-
-            if col < (len(self.grid[row]) - 1):
-                right = self.grid[row][col + 1]
-                self.add_edges(right, index, item, (row, col + 1))
-
-    def add_edges(self, char: str, index: tuple[int, int], letter: str, v: tuple[int, int]):
-        weight = self.weights[letter]
-        if self.weights[char] <= weight + 1:
-            self.digraph.add_edge(index, v)
+        for index, letter in np.ndenumerate(self.grid):
+            for ajd_index, adj_value in common.get_adjacent(self.grid, index):
+                weight = self.weights[letter]
+                if self.weights[adj_value] <= weight + 1:
+                    self.digraph.add_edge(index, ajd_index)
 
     def solve(self):
         """test part1:

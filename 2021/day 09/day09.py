@@ -1,6 +1,8 @@
-from tools import parsers, loader
-from typing import NamedTuple
+from typing import Iterator
+
+from tools import parsers, loader, common
 from math import prod
+import numpy as np
 
 TEST = """2199943210
 3987894921
@@ -10,37 +12,19 @@ TEST = """2199943210
 """
 
 
-class Point(NamedTuple):
-    row: int
-    col: int
-    height: int
-
-
 class Floor:
     def __init__(self, data):
-        self.grid = [[int(i) for i in row] for row in data]
-        self.cols = len(self.grid[0])
-        self.rows = len(self.grid)
+        self.grid = np.asarray([[int(i) for i in row] for row in data])
+        self.rows, self.cols = self.grid.shape
 
-    def neighbours(self, row: int, col: int):
-        for i, j in (-1, 0), (1, 0), (0, -1), (0, 1):
-            r, c = row + i, col + j
-            if r >= 0 and c >= 0:
-                try:
-                    yield Point(r, c, self.grid[r][c])
-                except IndexError:
-                    continue
+    def get_lowest(self) -> Iterator[tuple[tuple[int, int], int]]:
+        for index, point in np.ndenumerate(self.grid):
+            if all([point < val for i, val in common.get_adjacent(self.grid, index)]):
+                yield index, point
 
-    def get_lowest(self):
-        for row in range(self.rows):
-            for col in range(self.cols):
-                point = self.grid[row][col]
-                if all([point < i.height for i in list(self.neighbours(row, col))]):
-                    yield Point(row, col, point)
-
-    def get_pool(self, points: set) -> set[Point]:
+    def get_pool(self, points: set) -> set[tuple]:
         for point in set(points):
-            nb = set([i for i in self.neighbours(point.row, point.col) if i.height < 9 and i not in points])
+            nb = set([i for i in common.get_adjacent(self.grid, point[0]) if i[1] < 9 and i not in points])
             if nb:
                 points.update(nb)
                 points.update(self.get_pool(points))
@@ -50,7 +34,7 @@ class Floor:
         """
         >>> print(Floor(parsers.inline_test(TEST)).part_1())
         15"""
-        return sum([i.height + 1 for i in self.get_lowest()])
+        return sum([i[1] + 1 for i in self.get_lowest()])
 
     def part_2(self):
         """
