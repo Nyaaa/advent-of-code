@@ -1,4 +1,4 @@
-from itertools import cycle
+from itertools import cycle, chain, repeat
 from numpy.typing import NDArray
 from tools import parsers, loader, timer
 import numpy as np
@@ -12,49 +12,42 @@ STONES = [
     [(0, 2), (1, 2), (2, 2), (3, 2)],
     [(0, 2), (0, 3), (1, 2), (1, 3)]]
 DIRS = {
-    'down': (1, 0),
+    'd': (1, 0),
     '>': (0, 1),
     '<': (0, -1)}
 
 
 class Cave:
     def __init__(self, jets):
-        self.cavern = np.chararray((1, 7), unicode=True)
-        self.cavern[:] = '█'
+        self.cavern = np.ones((1, 7), dtype=bool)
         self.stones = cycle(STONES)
-        self.jets = cycle(jets)
+        self.jets = roundrobin(jets)
 
     def spawn_stone(self, stone: list[tuple]):
         stone_height = len(set(row for row, _ in stone))
         # only checking top 10 rows
-        empty_rows = np.count_nonzero(np.all(self.cavern[:10] == ' ', axis=1))
+        empty_rows = np.count_nonzero(np.all(~self.cavern[:10], axis=1))
         to_add = stone_height + 3 - empty_rows
         if to_add > 0:
             # numpy padding: [(top, bottom), (left, right)] value is thickness
-            self.cavern = np.pad(self.cavern, [(to_add, 0), (0, 0)], mode='constant', constant_values=' ')
+            self.cavern = np.pad(self.cavern, [(to_add, 0), (0, 0)], mode='constant', constant_values=0)
         elif to_add < 0:
             self.cavern = np.delete(self.cavern, np.s_[0:abs(to_add)], 0)
 
-    def move(self, stone: list[tuple], direction: str = None):
+    def move(self, stone: list[tuple]):
         while True:
-            direction = next(self.jets) if direction != 'down' else direction
+            direction = next(self.jets)
             _stone = [(unit[0] + DIRS[direction][0], unit[1] + DIRS[direction][1]) for unit in stone]
 
-            if direction == 'down':
-                try:
-                    collision_down = any(self.cavern[unit] == '█' for unit in _stone)
-                except IndexError:
-                    collision_down = any(self.cavern[unit] == '█' for unit in stone)
-                if collision_down:
-                    for i in stone:
-                        self.cavern[i] = '█'
-                    break
-            else:
-                if any(unit[1] < 0 or unit[1] >= 7 or self.cavern[unit] == '█' for unit in _stone):
+            if direction != 'd':
+                if any(unit[1] < 0 or unit[1] >= 7 or self.cavern[unit] for unit in _stone):
                     _stone = stone
-
+            else:
+                if any(self.cavern[unit] for unit in _stone):
+                    for i in stone:
+                        self.cavern[i] = 1
+                    break
             stone = _stone
-            direction = 'down' if direction != 'down' else None
 
     def start(self, rocks: int) -> int:
         """test part 1:
@@ -90,16 +83,22 @@ class Cave:
             counter += 1
 
         # Trim empty rows at the top
-        empty_rows = np.count_nonzero(np.all(self.cavern[:20] == ' ', axis=1))
+        empty_rows = np.count_nonzero(np.all(~self.cavern[:20], axis=1))
         self.cavern = np.delete(self.cavern, np.s_[0:empty_rows], 0)
         return len(self.cavern) - 1 + skipped_height
 
 
-def rolling_window(a: NDArray, shape: tuple) -> NDArray:
+def rolling_window(arr: NDArray, shape: tuple) -> NDArray:
     """Rolling window for 2D numpy array"""
-    s = (a.shape[0] - shape[0] + 1,) + (a.shape[1] - shape[1] + 1,) + shape
-    strides = a.strides + a.strides
-    return np.lib.stride_tricks.as_strided(a, shape=s, strides=strides)
+    s = (arr.shape[0] - shape[0] + 1,) + (arr.shape[1] - shape[1] + 1,) + shape
+    strides = arr.strides + arr.strides
+    return np.lib.stride_tricks.as_strided(arr, shape=s, strides=strides)
+
+
+def roundrobin(jets):
+    """Alternate between two iterators"""
+    nexts = cycle(iter(it).__next__ for it in (cycle(jets), repeat('d')))
+    yield from chain.from_iterable(inext() for inext in nexts)
 
 
 with timer.context():
