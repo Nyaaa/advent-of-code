@@ -1,7 +1,7 @@
-import re
-from dataclasses import dataclass
+from functools import cache
+from typing import Iterator
 from tools import parsers, loader
-from itertools import cycle, islice
+from itertools import cycle, islice, product
 
 
 TEST = """Player 1 starting position: 4
@@ -9,48 +9,66 @@ Player 2 starting position: 8
 """
 
 
-@dataclass
-class Player:
-    id: int
-    place: int
-    score: int = 0
-
-
-def deterministic_dice():
+def deterministic_dice() -> Iterator[int]:
     die = cycle(range(1, 101))
-    yield from iter(lambda: list(islice(die, 3)), [])
+    yield from iter(lambda: sum(islice(die, 3)), [])
 
 
-class Board:
-    def __init__(self, data):
-        self.players_list = []
-        for line in data:
-            pl = re.findall(r'\d+', line)
-            self.players_list.append(Player(id=int(pl[0]), place=int(pl[1])))
-        self.players = cycle(self.players_list)
-
-    def part_1(self):
-        """
-        >>> print(Board(parsers.inline_test(TEST)).part_1())
-        739785"""
-        counter = 0
-        die = deterministic_dice()
-
-        while True:
-            counter += 3
-            player = next(self.players)
-            roll = sum(next(die))
-            place = (roll + player.place) % 10
-            if place == 0:
-                place = 10
-            player.place = place
-            player.score += place
-
-            if player.score >= 1000:
-                break
-
-        return min([p.score for p in self.players_list]) * counter
+@cache
+def dirac_dice() -> list[int]:
+    rolls = product((1, 2, 3), repeat=3)
+    return [sum(roll) for roll in rolls]
 
 
-print(Board(parsers.inline_test(TEST)).part_1())
-print(Board(parsers.lines(loader.get())).part_1())  # 920079
+def get_players(data: list[str]) -> list[tuple[int, int]]:
+    return [(int(line.split(' ')[-1]), 0) for line in data]
+
+
+def update_player(player: tuple[int, int], roll: int) -> tuple[int, int]:
+    position = (player[0] + roll - 1) % 10 + 1
+    score = player[1] + position
+    return position, score
+
+
+def part_1(data: list[str]) -> int:
+    """
+    >>> print(part_1(parsers.inline_test(TEST)))
+    739785"""
+    counter = 0
+    die = deterministic_dice()
+    player1, player2 = get_players(data)
+
+    while True:
+        if player1[1] >= 1000 or player2[1] >= 1000:
+            break
+        counter += 3
+        player1, player2 = player2, update_player(player1, next(die))
+
+    return min(player1[1], player2[1]) * counter
+
+
+@cache
+def dirac(player1: tuple[int, int], player2: tuple[int, int]) -> tuple[int, int]:
+    if player1[1] >= 21:
+        return 1, 0
+    elif player2[1] >= 21:
+        return 0, 1
+    player1_wins = 0
+    player2_wins = 0
+    for roll in dirac_dice():
+        wins_2, wins_1 = dirac(player2, update_player(player1, roll))
+        player1_wins += wins_1
+        player2_wins += wins_2
+    return player1_wins, player2_wins
+
+
+def part_2(data: list[str]) -> int:
+    """
+    >>> print(part_2(parsers.inline_test(TEST)))
+    444356092776315"""
+    players = get_players(data)
+    return max(dirac(*players))
+
+
+print(part_1(parsers.lines(loader.get())))  # 920079
+print(part_2(parsers.lines(loader.get())))  # 56852759190649
