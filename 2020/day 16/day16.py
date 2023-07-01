@@ -1,4 +1,6 @@
 import re
+from collections import defaultdict
+from math import prod
 from typing import NamedTuple
 
 from tools import parsers, loader
@@ -41,8 +43,38 @@ class Ticket:
 
     def part_2(self):
         self.part_1()
-        return self.tickets
+        tickets = self.tickets + [self.own_ticket]
+        fields = defaultdict(list)
+        for i in range(len(tickets[0])):
+            for ticket in tickets:
+                fields[i].append(ticket[i])
+
+        candidates = defaultdict(list)
+        for rule in self.rules:
+            for key, val in fields.items():
+                if all([rule.value_is_valid(j) for j in val]):
+                    candidates[rule.name].append(key)
+
+        found = []
+        out = dict()
+        while candidates:
+            for key, val in candidates.copy().items():
+                if len(val) == 1:
+                    out[key] = val[0]
+                    found.append(val[0])
+                    del candidates[key]
+                else:
+                    for i, v in enumerate(val):
+                        if v in found:
+                            del val[i]
+
+        result = []
+        for key, val in out.items():
+            if 'departure' in key:
+                result.append(self.own_ticket[val])
+
+        return prod(result)
 
 
-# print(Ticket(parsers.blocks(loader.get())).part_1())  # 20231
-print(Ticket(parsers.blocks('test.txt')).part_2())
+print(Ticket(parsers.blocks(loader.get())).part_1())  # 20231
+print(Ticket(parsers.blocks(loader.get())).part_2())  # 1940065747861
