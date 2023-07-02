@@ -8,19 +8,14 @@ def do_the_math(expr: str) -> int:
     """No precedence, evaluate left to right.
     >>> print(do_the_math('1 + 2 * 3 + 4 * 5 + 6'))
     71"""
-    numbers = re.findall(r'\d+', expr)
-    result = 0
-    step = 0
-    for i in re.findall(r' (\D) ', expr):
-        a = int(numbers[step]) if step == 0 else result
-        b = int(numbers[step + 1])
-        match i:
-            case '+':
-                result = (a + b)
-            case '*':
-                result = (a * b)
-        step += 1
-    return result
+    expr = expr.replace(' ', '')
+    while _sum := re.search(r'(\d+)([+*])(\d+)', expr):
+        a = int(_sum.group(1))
+        b = int(_sum.group(3))
+        op = _sum.group(2)
+        result = a + b if op == '+' else a * b
+        expr = f'{expr[:_sum.start()]}{result}{expr[_sum.end():]}'
+    return int(expr)
 
 
 def do_advanced_math(expr: str) -> int:
@@ -28,12 +23,10 @@ def do_advanced_math(expr: str) -> int:
     >>> print(do_advanced_math('1 + 2 * 3 + 4 * 5 + 6'))
     231"""
     expr = expr.replace(' ', '')
-    while True:
-        if _sum := re.search(r'(\d+)\+(\d+)', expr):
-            res = int(_sum.group(1)) + int(_sum.group(2))
-            expr = f'{expr[:_sum.start()]}{res}{expr[_sum.end():]}'
-        else:
-            return prod([int(i) for i in re.findall(r'\d+', expr)])
+    while _sum := re.search(r'(\d+)\+(\d+)', expr):
+        result = int(_sum.group(1)) + int(_sum.group(2))
+        expr = f'{expr[:_sum.start()]}{result}{expr[_sum.end():]}'
+    return prod([int(i) for i in re.findall(r'\d+', expr)])
 
 
 def do_brackets(expr: str, advanced: bool = False) -> int:
@@ -66,7 +59,7 @@ def do_brackets(expr: str, advanced: bool = False) -> int:
         if i := re.search(r'\([^()]+\)', expr):  # [^()]+ matches all chars except ( and )
             inner = re.sub(r'[()]', '', i[0])
             intermediate = do_the_math(inner) if not advanced else do_advanced_math(inner)
-            expr = f'{expr[:i.start()]} {intermediate} {expr[i.end():]}'
+            expr = f'{expr[:i.start()]}{intermediate}{expr[i.end():]}'
         else:
             return do_the_math(expr) if not advanced else do_advanced_math(expr)
 
