@@ -1,4 +1,4 @@
-import re
+import regex as re
 
 from tools import parsers, loader
 
@@ -28,5 +28,15 @@ class Message:
         3"""
         return sum((1 for message in self.messages if self.pattern.match(message)))
 
+    def part_2(self):
+        """
+        >>> print(Message(parsers.blocks('test.txt')).part_2())
+        12"""
+        self.rules['8'] = '(?: 42 )+'
+        self.rules['11'] = '(?P <R> 42 (?&R)? 31 )'  # recursive regexp
+        self.pattern = self.compose_pattern()
+        return sum((1 for message in self.messages if self.pattern.match(message)))
+
 
 print(Message(parsers.blocks(loader.get())).part_1())  # 230
+print(Message(parsers.blocks(loader.get())).part_2())  # 341
