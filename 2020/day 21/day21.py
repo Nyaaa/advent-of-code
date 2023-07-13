@@ -1,37 +1,53 @@
-from collections import defaultdict
-
-from tools import parsers, loader
+from collections import defaultdict, Counter
 import re
 import itertools
 
+from tools import parsers, loader
+
 
 class Allergens:
-    def __init__(self, data):
-        self.allergens = set()
-        self.ingredients = list()
-        self.probable_allergens = defaultdict(list)
-        for x in data:
-            a = re.findall(r'\w+', x)
+    def __init__(self, data: list):
+        self.all_ingredients = []
+        self.probable_allergens: defaultdict[str, list | set] = defaultdict(list)
+        self.identified_allergens = dict()
+        for line in data:
+            items = re.findall(r'\w+', line)
             ingredients, allergens = [list(value) for key, value in
-                                      itertools.groupby(a, lambda e: e == 'contains')
+                                      itertools.groupby(items, lambda e: e == 'contains')
                                       if not key]
             for i in allergens:
                 self.probable_allergens[i].append(ingredients)
-            self.ingredients.extend(ingredients)
+            self.all_ingredients.extend(ingredients)
+        self.identify_allergens()
+
+    def identify_allergens(self):
+        for allergen, potentials in self.probable_allergens.items():
+            self.probable_allergens[allergen] = set.intersection(*[set(i) for i in potentials])
+
+        while self.probable_allergens.keys() != self.identified_allergens.keys():
+            for allergen, potentials in self.probable_allergens.items():
+                potentials = {i for i in potentials if i not in self.identified_allergens.values()}
+                if len(potentials) == 1:
+                    self.identified_allergens[allergen] = potentials.pop()
 
     def part_1(self):
-        """"
+        """
         >>> print(Allergens(parsers.lines('test.txt')).part_1())
         5"""
-        for allergen, potentials in self.probable_allergens.items():
-            pot = [set(i) for i in potentials]
-            for i in potentials[1:]:
-                common = pot[0].intersection(i)
-                self.allergens.update(common)
-            if len(pot) == 1:
-                self.allergens.update(pot[0])
-        return len([i for i in self.ingredients if i not in self.allergens])
+        safe = set(self.all_ingredients) - set(self.identified_allergens.values())
+        counts = Counter(self.all_ingredients)
+        result = 0
+        for i in safe:
+            result += counts[i]
+        return result
+
+    def part_2(self):
+        """
+        >>> print(Allergens(parsers.lines('test.txt')).part_2())
+        mxmxvkd,sqjhc,fvjkl"""
+        sorted_dict = dict(sorted(self.identified_allergens.items()))
+        return ','.join(sorted_dict.values())
 
 
-print(Allergens(parsers.lines(loader.get())).part_1())  # 268 too low
-
+print(Allergens(parsers.lines(loader.get())).part_1())  # 2176
+print(Allergens(parsers.lines(loader.get())).part_2())  # lvv,xblchx,tr,gzvsg,jlsqx,fnntr,pmz,csqc
