@@ -8,22 +8,29 @@ def cycle(arr: NDArray) -> NDArray:
     for _ in range(6):
         arr = np.pad(arr, pad_width=1, mode='constant', constant_values=0)
         result = arr.copy()
-        for (x, y, z), value in np.ndenumerate(arr):
-            neighbours = arr[max(0, x - 1):x + 2, max(0, y - 1):y + 2, max(0, z - 1):z + 2]
+        for index, value in np.ndenumerate(arr):
+            neighbours = arr[*((slice(max(0, i - 1), i + 2)) for i in index)]
             active = np.count_nonzero(neighbours) - value
-            result[x, y, z] = 1 if active == 3 or (active == 2 and value == 1) else 0
+            result[index] = 1 if active == 3 or (active == 2 and value == 1) else 0
         arr = result
     return result
 
 
-def activate(data: list) -> int:
+def activate(data: list, part2: bool = False) -> int:
     """
     >>> print(activate(parsers.lines('test.txt')))
     112
+
+    >>> print(activate(parsers.lines('test.txt'), part2=True))
+    848
     """
     arr = np.array([list(1 if i == '#' else 0 for i in row) for row in data])
-    arr.shape = (1, arr.shape[0], arr.shape[1])
+    if not part2:
+        arr.shape += (1, )
+    else:
+        arr.shape += (1, 1)
     return np.count_nonzero(cycle(arr))
 
 
 print(activate(parsers.lines(loader.get())))  # 315
+print(activate(parsers.lines(loader.get()), part2=True))  # 1520
