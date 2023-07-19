@@ -7,7 +7,7 @@ TEST = """939
 
 class Timetable:
     def __init__(self, data: list):
-        self.data = [int(i) for i in data[1].split(',') if i != 'x']
+        self.data = {int(bus): i for i, bus in enumerate(data[1].split(',')) if bus != 'x'}
         self.timestamp = int(data[0])
 
     def get_next_departure(self, bus: int) -> int:
@@ -27,7 +27,7 @@ class Timetable:
         """
         shortest_wait = float('inf')
         best_bus = 0
-        for bus in self.data:
+        for bus in self.data.keys():
             departure = self.get_next_departure(bus)
             wait = departure - self.timestamp
             if wait <= shortest_wait:
@@ -35,6 +35,18 @@ class Timetable:
                 best_bus = bus
         return shortest_wait * best_bus
 
+    def part_2(self):
+        """
+        >>> print(Timetable(parsers.inline_test(TEST)).part_2())
+        1068781
+        """
+        time, step = 0, 1
+        for bus, index in self.data.items():
+            while (time + index) % bus != 0:
+                time += step
+            step *= bus
+        return time
+
 
 print(Timetable(parsers.lines(loader.get())).part_1())  # 104
-
+print(Timetable(parsers.lines(loader.get())).part_2())  # 842186186521918
