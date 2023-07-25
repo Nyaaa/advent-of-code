@@ -292,5 +292,5 @@ widechars = ["wcwidth"]
 
 [metadata]
 lock-version = "2.0"
-python-versions = ">=3.11,<3.13"
-content-hash = "5f92cf2c6b067ce18458827503c67c05f57ec65984230de1bd0d86b3d24c7b70"
+python-versions = "^3.11"
+content-hash = "4cb84a4d50f341b106f84249f63d64e55d31b7df9a2aa365d0bd253dc71e7004"
