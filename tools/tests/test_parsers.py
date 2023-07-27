@@ -1,7 +1,8 @@
 from unittest import TestCase
 from tools import parsers
+from pathlib import Path
 
-test_input = 'testcase1.txt'
+test_input = Path(__file__).resolve().parent.joinpath('testcase1.txt')
 inline = """move 1 from 2 to 1
 move 3 from 1 to 3
 move 2 from 2 to 1

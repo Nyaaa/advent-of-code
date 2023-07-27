@@ -1,3 +1,6 @@
+import logging
+
+
 class Intcode:
     def __init__(self, data: list):
         self.data = [int(i) for i in data[0].split(',')]
@@ -14,19 +17,14 @@ class Intcode:
         except IndexError:
             pass
 
-    def run(self) -> list[int]:
-        """
-        >>> print(Intcode(['1,1,1,4,99,5,6,0,99']).run())
-        [30, 1, 1, 4, 2, 5, 6, 0, 99]
-
-        >>> print(Intcode(['1002,4,3,4,33']).run())
-        [1002, 4, 3, 4, 99]
-
-        >>> print(Intcode(['1101,100,-1,4,0']).run())
-        [1101, 100, -1, 4, 99]
-        """
+    def run(self, input_value: list[int, ...] = None) -> int | list:
         i = 0
         self.copy = self.data.copy()
+        if input_value is None:
+            input_value = []
+        inp = iter(input_value)
+        output = 0
+        return_output = False
         while i <= len(self.copy):
             opcode, modes = self.parse_opcode(self.copy[i])
             param1 = self.get_value(i + 1, modes[0])
@@ -39,10 +37,19 @@ class Intcode:
                     self.copy[self.copy[i + 3]] = param1 * param2
                     i += 4
                 case 3:  # user input
-                    self.copy[self.copy[i + 1]] = int(input('Enter a value: '))
-                    i += 2
+                    try:
+                        val = next(inp)
+                    except StopIteration:
+                        raise ValueError('Not enough inputs.')
+                    if not isinstance(val, int):
+                        raise ValueError('Provide an integer input value.')
+                    else:
+                        self.copy[self.copy[i + 1]] = val
+                        i += 2
                 case 4:  # print to screen
-                    print(param1)
+                    output = param1
+                    logging.debug(output)
+                    return_output = True
                     i += 2
                 case 5 if param1 != 0:  # jump if true
                     i = param2
@@ -57,7 +64,7 @@ class Intcode:
                     self.copy[self.copy[i + 3]] = 1 if param1 == param2 else 0
                     i += 4
                 case 99:  # end of program
-                    return self.copy
+                    return output if return_output else self.copy
                 case _:
                     raise NotImplementedError(f'Unknown opcode: {opcode}')
         raise IndexError('Pointer value is too high')
