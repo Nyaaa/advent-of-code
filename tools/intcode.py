@@ -46,6 +46,7 @@ class Intcode:
             input_value = []
         inp = iter(input_value)
         output = 0
+        full_output = []
         return_output = False
         while self.step <= len(self.data):
             opcode, modes = self.parse_opcode(self.data[self.step])
@@ -61,11 +62,11 @@ class Intcode:
                     self.step += 4
                 case 3:  # user input
                     try:
-                        val = next(inp)
+                        val = int(next(inp))
                     except StopIteration:
                         # halt at current machine state
                         # run again with new inputs to continue
-                        return output, False
+                        return full_output, False
                     if not isinstance(val, int):
                         raise ValueError('Provide an integer input value.')
                     else:
@@ -74,6 +75,7 @@ class Intcode:
                         self.step += 2
                 case 4:  # print to screen
                     output = param1
+                    full_output.append(output)
                     logging.debug(output)
                     return_output = True
                     self.step += 2

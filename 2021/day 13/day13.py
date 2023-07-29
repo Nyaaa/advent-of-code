@@ -1,5 +1,5 @@
 import re
-from tools import parsers, loader
+from tools import parsers, loader, common
 import numpy as np
 from operator import itemgetter
 
@@ -41,11 +41,7 @@ class Paper:
     def part_2(self):
         for i in self.instructions:
             self.fold(i)
-
-        chars = self.sheet.astype(str)
-        chars[chars == '0'] = ' '
-        chars[chars != ' '] = '█'
-        return chars
+        return common.convert_to_image(self.sheet)
 
 
 print(Paper(parsers.blocks(loader.get())).part_1())  # 775

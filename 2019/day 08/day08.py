@@ -1,4 +1,4 @@
-from tools import parsers, loader
+from tools import parsers, loader, common
 import textwrap
 import numpy as np
 from numpy.typing import NDArray
@@ -32,10 +32,7 @@ class SIF:
             for i, val in np.ndenumerate(image):
                 if val == 2:
                     image[i] = self.get_non_transparent(i)
-        image = image.astype(str)
-        image[image == '1'] = '█'
-        image[image == '0'] = ' '
-        return image
+        return common.convert_to_image(image)
 
 
 print(SIF(parsers.lines(loader.get()), 25, 6).part_1())  # 2032

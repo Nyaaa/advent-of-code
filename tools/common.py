@@ -2,6 +2,7 @@
 from typing import Iterator, Any
 from numpy.typing import NDArray
 from numba import njit
+import numpy as np
 
 
 @njit()
@@ -36,3 +37,34 @@ def get_adjacent(
 
         if (0 <= adj_row < max_rows) and (0 <= adj_col < max_cols):
             yield (adj_row, adj_col), array[adj_row, adj_col]
+
+
+def trim_array(array: NDArray) -> NDArray:
+    """
+    Remove empty borders (all zero) from an oversized Numpy array.
+
+    Args:
+        array: Numpy array, dtype=int
+
+    Returns:
+        Numpy array of the minimal size that fits non-zero areas.
+    """
+    ones = np.where(array == 1)
+    trimmed = array[min(ones[0]): max(ones[0]) + 1, min(ones[1]): max(ones[1]) + 1]
+    return trimmed
+
+
+def convert_to_image(array: NDArray) -> NDArray:
+    """
+    Convert ones and zeroes to a more readable form.
+
+    Args:
+        array: Numpy array, dtype=int
+
+    Returns:
+        Numpy array, dtype=str
+    """
+    image = array.astype(str)
+    image[image == '1'] = '█'
+    image[image == '0'] = ' '
+    return image

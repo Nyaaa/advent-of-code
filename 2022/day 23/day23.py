@@ -1,4 +1,4 @@
-from tools import parsers, loader, timer
+from tools import parsers, loader, timer, common
 import numpy as np
 from itertools import cycle
 from collections import Counter
@@ -49,11 +49,6 @@ class Grove:
         self.map[elf.row][elf.col] = 0
         self.map[intention.row][intention.col] = 1
 
-    def trim(self):
-        ones = np.where(self.map == 1)
-        trimmed = self.map[min(ones[0]): max(ones[0]) + 1, min(ones[1]): max(ones[1]) + 1]
-        return trimmed
-
     def get_elves(self):
         self.map = np.pad(self.map, pad_width=1, mode='constant', constant_values=0)
         positions = np.where(self.map == 1)
@@ -77,7 +72,7 @@ class Grove:
             for elf in moving:
                 if Counter(moving.values())[moving[elf]] == 1:
                     self.move(elf, moving[elf])
-        trimmed = self.trim()
+        trimmed = common.trim_array(self.map)
         return np.count_nonzero(trimmed == 0)  # count zeros
 
     def part_2(self):
