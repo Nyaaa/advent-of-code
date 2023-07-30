@@ -24,8 +24,8 @@ class Robot:
     def paint(self):
         while True:
             self.path.append(self.current_loc)
-            move, done = self.pc.run([self.grid[self.current_loc]])
-            if done:
+            move = self.pc.run([self.grid[self.current_loc]])
+            if self.pc.done:
                 break
             colour, turn = move
             if self.grid[self.current_loc] != colour:

@@ -9,6 +9,8 @@ class Intcode:
         self.data.update({k: v for k, v in enumerate(data)})
         self.step = 0
         self.relative_base = 0
+        self.logged_output = []
+        self.done = False
 
     @staticmethod
     def parse_opcode(opcode: int) -> tuple[int, list[int]]:
@@ -34,7 +36,7 @@ class Intcode:
             case _:
                 return self.data[index]
 
-    def run(self, input_value: list[int, ...] = None) -> tuple[int | list, bool]:
+    def run(self, input_value: list[int, ...] = None) -> int | list:
         """
         Args:
             input_value: A list of program input values.
@@ -46,8 +48,8 @@ class Intcode:
             input_value = []
         inp = iter(input_value)
         output = 0
-        full_output = []
         return_output = False
+        self.logged_output = []
         while self.step <= len(self.data):
             opcode, modes = self.parse_opcode(self.data[self.step])
             param1 = self.get_value(self.step + 1, modes[0])
@@ -66,7 +68,7 @@ class Intcode:
                     except StopIteration:
                         # halt at current machine state
                         # run again with new inputs to continue
-                        return full_output, False
+                        return self.logged_output
                     if not isinstance(val, int):
                         raise ValueError('Provide an integer input value.')
                     else:
@@ -75,7 +77,7 @@ class Intcode:
                         self.step += 2
                 case 4:  # print to screen
                     output = param1
-                    full_output.append(output)
+                    self.logged_output.append(output)
                     logging.debug(output)
                     return_output = True
                     self.step += 2
@@ -95,7 +97,8 @@ class Intcode:
                     self.relative_base += param1
                     self.step += 2
                 case 99:  # end of program
-                    return output if return_output else self.data, True
+                    self.done = True
+                    return output if return_output else self.data
                 case _:
                     raise NotImplementedError(f'Unknown opcode: {opcode}')
         raise IndexError('Pointer value is too high')

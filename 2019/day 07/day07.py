@@ -16,7 +16,7 @@ def part_1():
             pc = deepcopy(init_pc)
             output = result[-1]
             sett = setting[i]
-            res, _ = pc.run([sett, output])
+            res = pc.run([sett, output])
             result.append(res)
         if result[-1] > best_result:
             best_result = result[-1]
@@ -39,10 +39,12 @@ def part_2():
                     params = [sett, output]
                 except StopIteration:
                     params = [output]
-                res, done = pc.run(params)
-                result.append(res)
-                if done:
-                    pcs_done.append(done)
+                res = pc.run(params)
+                if pc.done:
+                    result.append(res)
+                    pcs_done.append(True)
+                else:
+                    result.extend(res)
             if len(pcs_done) == 5:
                 break
         if result[-1] > best_result:

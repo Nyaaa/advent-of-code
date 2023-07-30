@@ -6,7 +6,7 @@ def part_1():
     pc = deepcopy(init_pc)
     pc.data[1] = 12
     pc.data[2] = 2
-    return pc.run()[0][0]
+    return pc.run()[0]
 
 
 def part_2():
@@ -15,7 +15,7 @@ def part_2():
             pc = deepcopy(init_pc)
             pc.data[1] = i
             pc.data[2] = j
-            if pc.run()[0][0] == 19690720:
+            if pc.run()[0] == 19690720:
                 return 100 * i + j
     raise ValueError
 
