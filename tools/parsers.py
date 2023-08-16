@@ -2,15 +2,16 @@
 from typing import Iterator, Any, Sequence
 
 
-def lines(file: str) -> list[str]:
+def lines(file: str, strip: bool = True) -> list[str]:
     """Parses input file line by line
 
     :param file: Text input
+    :param strip: Remove leading/trailing whitespace
     :return: List of lines in strings
     """
 
     with open(file) as f:
-        return [line.strip() for line in f.readlines()]
+        return [line.strip() if strip else line for line in f.readlines()]
 
 
 def blocks(file: str) -> list[list[str]]:
