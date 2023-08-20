@@ -20,7 +20,7 @@ class Cube:
         self.part2 = part2
         _map = [list(i) for i in data[0]]
         path = re.split(r"(\d+)([A-Z])", *data[1])
-        self.path = parsers.generator(list(filter(None, path)))
+        self.path = iter(list(filter(None, path)))
         self.direction = 'right'
         max_len = np.max([len(a) for a in _map])
         self.map = np.asarray([np.pad(a, (0, max_len - len(a)), 'constant', constant_values=' ') for a in _map])
@@ -116,7 +116,7 @@ class Cube:
         >>> print(c.start())
         6032
         >>> c = Cube(parsers.blocks('test.txt'))
-        >>> c.path = parsers.generator([1, 'L', 1, 'L', 1, 'L', 1, 'L'])
+        >>> c.path = iter([1, 'L', 1, 'L', 1, 'L', 1, 'L'])
         >>> print(c.start())
         1036
         """

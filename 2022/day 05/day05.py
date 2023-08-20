@@ -13,7 +13,6 @@ from tools import parsers, loader
 init_load = ['DHNQTWVB', 'DWB', 'TSQWJC', 'FJRNZTP', 'GPVJMST', 'BWFTN', 'BLDQFHVN', 'HPFR', 'ZSMBLNPH']
 test_load = ['ZN', 'MCD', 'P']
 test = ['move 1 from 2 to 1', 'move 3 from 1 to 3', 'move 2 from 2 to 1', 'move 1 from 1 to 2']
-d = parsers.lines(loader.get())
 
 
 class Crane:
@@ -60,5 +59,5 @@ class Crane:
         return message
 
 
-print(Crane(d, init_load).part_1())  # PSNRGBTFT
-print(Crane(d, init_load).part_2())  # BNTZFPMMW
+print(Crane(parsers.lines(loader.get()), init_load).part_1())  # PSNRGBTFT
+print(Crane(parsers.lines(loader.get()), init_load).part_2())  # BNTZFPMMW

@@ -12,13 +12,13 @@ def rolling_window(array: NDArray, window_shape: tuple):
 
 
 class Fuel:
-    def __init__(self, data: list):
-        self.serial = int(data[0])
+    def __init__(self, data: str):
+        self.serial = int(data)
         self.grid = np.fromfunction(self.get_power_level, (300, 300), dtype=int)
 
     def get_power_level(self, x, y):
         """
-        >>> print(Fuel(['57']).get_power_level(122, 79))
+        >>> print(Fuel('57').get_power_level(122, 79))
         -5"""
         cell_id = x + 10
         power = (cell_id * y + self.serial) * cell_id
@@ -26,14 +26,14 @@ class Fuel:
 
     def part_1(self):
         """
-        >>> print(Fuel(['18']).part_1())
+        >>> print(Fuel('18').part_1())
         (33, 45)"""
         sums = rolling_window(self.grid, (3, 3))
         return np.unravel_index(sums.argmax(), sums.shape)
 
     def part_2(self):
         """
-        >>> print(Fuel(['18']).part_2())
+        >>> print(Fuel('18').part_2())
         (90, 269, 16)"""
         best = 0
         result = tuple()
@@ -52,5 +52,5 @@ class Fuel:
         return result
 
 
-print(Fuel(parsers.lines(loader.get())).part_1())  # 243, 27
-print(Fuel(parsers.lines(loader.get())).part_2())  # 284, 172, 12
+print(Fuel(parsers.string(loader.get())).part_1())  # 243, 27
+print(Fuel(parsers.string(loader.get())).part_2())  # 284, 172, 12

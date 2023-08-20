@@ -2,8 +2,8 @@ from tools import parsers, loader
 
 
 class Recipe:
-    def __init__(self, target: list[str]):
-        self.target = target[0]
+    def __init__(self, target: str):
+        self.target = target
         self.board = [3, 7]
         self.elves = [0, 1]  # board index
 
@@ -16,7 +16,7 @@ class Recipe:
 
     def part_1(self):
         """
-        >>> print(Recipe(['2018']).part_1())
+        >>> print(Recipe('2018').part_1())
         5941429882"""
         target = int(self.target)
         while len(self.board) <= target + 10:
@@ -25,7 +25,7 @@ class Recipe:
 
     def part_2(self):
         """
-        >>> print(Recipe(['59414']).part_2())
+        >>> print(Recipe('59414').part_2())
         2018"""
         target = [int(i) for i in self.target]
         while True:
@@ -35,5 +35,5 @@ class Recipe:
         return ''.join(str(i) for i in self.board).index(self.target)
 
 
-print(Recipe(parsers.lines(loader.get())).part_1())  # 3610281143
-print(Recipe(parsers.lines(loader.get())).part_2())  # 20211326
+print(Recipe(parsers.string(loader.get())).part_1())  # 3610281143
+print(Recipe(parsers.string(loader.get())).part_2())  # 20211326

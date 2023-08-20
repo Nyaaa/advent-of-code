@@ -1,11 +1,9 @@
 from tools import parsers, loader
 
-TEST = '389125467'
-
 
 class Cups:
-    def __init__(self, data: list[str], part2: bool = False):
-        data = [int(i) for i in data[0]]
+    def __init__(self, data: str, part2: bool = False):
+        data = [int(i) for i in data]
         if part2:
             data.extend(list(range(10, 1_000_001)))
         self.circle = {number: data[(i + 1) % len(data)] for i, number in enumerate(data)}
@@ -36,7 +34,7 @@ class Cups:
 
     def part_1(self):
         """"
-        >>> print(Cups(parsers.inline_test(TEST)).part_1())
+        >>> print(Cups('389125467').part_1())
         67384529"""
         self.play(100)
         result = []
@@ -48,12 +46,12 @@ class Cups:
 
     def part_2(self):
         """"
-        >>> print(Cups(parsers.inline_test(TEST), True).part_2())
+        >>> print(Cups('389125467', True).part_2())
         149245887792"""
         self.play(10_000_000)
         cup1 = self.circle[1]
         return cup1 * self.circle[cup1]
 
 
-print(Cups(parsers.lines(loader.get())).part_1())  # 97342568
-print(Cups(parsers.lines(loader.get()), True).part_2())  # 902208073192
+print(Cups(parsers.string(loader.get())).part_1())  # 97342568
+print(Cups(parsers.string(loader.get()), True).part_2())  # 902208073192

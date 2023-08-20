@@ -1,20 +1,18 @@
 from tools import parsers, loader
 
-TEST = '3,4,3,1,2'
-
 
 class Fish:
-    def __init__(self, data):
+    def __init__(self, data: str):
         self.school = {n: 0 for n in reversed(range(9))}
-        for i in data[0].split(','):
+        for i in data.split(','):
             self.school[int(i)] += 1
 
     def start(self, timer: int):
         """
-        >>> print(Fish(parsers.inline_test(TEST)).start(80))
+        >>> print(Fish('3,4,3,1,2').start(80))
         5934
 
-        >>> print(Fish(parsers.inline_test(TEST)).start(256))
+        >>> print(Fish('3,4,3,1,2').start(256))
         26984457539"""
         time = 0
         while time != timer:
@@ -30,5 +28,5 @@ class Fish:
         return sum(self.school.values())
 
 
-print(Fish(parsers.lines(loader.get())).start(80))  # 391671
-print(Fish(parsers.lines(loader.get())).start(256))  # 1754000560399
+print(Fish(parsers.string(loader.get())).start(80))  # 391671
+print(Fish(parsers.string(loader.get())).start(256))  # 1754000560399

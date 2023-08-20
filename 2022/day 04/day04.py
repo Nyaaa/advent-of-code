@@ -1,5 +1,5 @@
 from tools import parsers, loader
-d = parsers.lines(loader.get())
+
 test = ['2-4,6-8', '2-3,4-5', '5-7,7-9', '2-8,3-7', '6-6,4-6', '2-6,4-8']
 
 
@@ -32,5 +32,5 @@ def puzzle(data, part: int):
     return result
 
 
-print(puzzle(d, 1))  # 456
-print(puzzle(d, 2))  # 808
+print(puzzle(parsers.lines(loader.get()), 1))  # 456
+print(puzzle(parsers.lines(loader.get()), 2))  # 808

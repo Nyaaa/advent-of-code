@@ -1,12 +1,10 @@
 from tools import parsers, loader
 import re
 
-TEST = 'target area: x=20..30, y=-10..-5'
-
 
 class Probe:
-    def __init__(self, data):
-        target_area = re.findall(r'\d+|-\d+', data[0])
+    def __init__(self, data: str):
+        target_area = re.findall(r'\d+|-\d+', data)
         # x -> cols, y -> rows
         self.col_min, self.col_max, self.row_min, self.row_max = (int(i) for i in target_area)
 
@@ -31,7 +29,7 @@ class Probe:
 
     def start(self):
         """
-        >>> print(Probe(parsers.inline_test(TEST)).start())
+        >>> print(Probe('target area: x=20..30, y=-10..-5').start())
         (45, 112)"""
         heights = []
         options = 0
@@ -45,4 +43,4 @@ class Probe:
         return max(heights), options
 
 
-print(Probe(parsers.lines(loader.get())).start())  # part 1: 9870, part 2: 5523
+print(Probe(parsers.string(loader.get())).start())  # part 1: 9870, part 2: 5523

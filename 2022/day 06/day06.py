@@ -1,5 +1,4 @@
 from tools import parsers, loader
-d = parsers.lines(loader.get())[0]
 
 
 def puzzle(data: str, length: int):
@@ -19,5 +18,5 @@ def puzzle(data: str, length: int):
             return i + length
 
 
-print(puzzle(d, 4))  # 1779
-print(puzzle(d, 14))  # 2635
+print(puzzle(parsers.string(loader.get()), 4))  # 1779
+print(puzzle(parsers.string(loader.get()), 14))  # 2635

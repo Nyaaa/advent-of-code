@@ -6,7 +6,7 @@ t = parsers.lines('test10.txt')
 
 class CRT:
     def __init__(self, data):
-        self.next_line = parsers.generator(data)
+        self.next_line = iter(data)
         self.image = ['', '', '', '', '', '']
         self.out = {}
         self.run()

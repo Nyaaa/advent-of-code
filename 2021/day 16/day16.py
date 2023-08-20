@@ -22,8 +22,8 @@ HEX_TO_BIN = {
 
 
 class Decoder:
-    def __init__(self, data):
-        self.encoded: str = ''.join(HEX_TO_BIN[i] for i in data[0])
+    def __init__(self, data: str):
+        self.encoded: str = ''.join(HEX_TO_BIN[i] for i in data)
         self.packets: list[int] = []
 
     def decode_packet(self, cur: int = 0) -> tuple[int, int]:
@@ -53,11 +53,11 @@ class Decoder:
 
     def decode_operator(self, cur: int) -> tuple[int, list[int]]:
         """ type 0:
-        >>> print(Decoder(parsers.inline_test('38006F45291200')).part_1())
+        >>> print(Decoder('38006F45291200').part_1())
         9
 
         type 1:
-        >>> print(Decoder(parsers.inline_test('EE00D40C823060')).part_1())
+        >>> print(Decoder('EE00D40C823060').part_1())
         14"""
         values: list[int] = []
         if self.encoded[cur] == '0':
@@ -85,16 +85,16 @@ class Decoder:
 
     def part_1(self):
         """test part 1:
-        >>> print(Decoder(parsers.inline_test('8A004A801A8002F478')).part_1())
+        >>> print(Decoder('8A004A801A8002F478').part_1())
         16
 
-        >>> print(Decoder(parsers.inline_test('620080001611562C8802118E34')).part_1())
+        >>> print(Decoder('620080001611562C8802118E34').part_1())
         12
 
-        >>> print(Decoder(parsers.inline_test('C0015000016115A2E0802F182340')).part_1())
+        >>> print(Decoder('C0015000016115A2E0802F182340').part_1())
         23
 
-        >>> print(Decoder(parsers.inline_test('A0016C880162017C3686B18A3D4780')).part_1())
+        >>> print(Decoder('A0016C880162017C3686B18A3D4780').part_1())
         31
         """
         self.decode_packet()
@@ -102,32 +102,32 @@ class Decoder:
 
     def part_2(self):
         """test part 2:
-        >>> print(Decoder(parsers.inline_test('C200B40A82')).part_2())
+        >>> print(Decoder('C200B40A82').part_2())
         3
 
-        >>> print(Decoder(parsers.inline_test('04005AC33890')).part_2())
+        >>> print(Decoder('04005AC33890').part_2())
         54
 
-        >>> print(Decoder(parsers.inline_test('880086C3E88112')).part_2())
+        >>> print(Decoder('880086C3E88112').part_2())
         7
 
-        >>> print(Decoder(parsers.inline_test('CE00C43D881120')).part_2())
+        >>> print(Decoder('CE00C43D881120').part_2())
         9
 
-        >>> print(Decoder(parsers.inline_test('D8005AC2A8F0')).part_2())
+        >>> print(Decoder('D8005AC2A8F0').part_2())
         1
 
-        >>> print(Decoder(parsers.inline_test('F600BC2D8F')).part_2())
+        >>> print(Decoder('F600BC2D8F').part_2())
         0
 
-        >>> print(Decoder(parsers.inline_test('9C005AC2F8F0')).part_2())
+        >>> print(Decoder('9C005AC2F8F0').part_2())
         0
 
-        >>> print(Decoder(parsers.inline_test('9C0141080250320F1802104A08')).part_2())
+        >>> print(Decoder('9C0141080250320F1802104A08').part_2())
         1
         """
         return self.decode_packet()[1]
 
 
-print(Decoder(parsers.lines(loader.get())).part_1())  # 1002
-print(Decoder(parsers.lines(loader.get())).part_2())  # 1673210814091
+print(Decoder(parsers.string(loader.get())).part_1())  # 1002
+print(Decoder(parsers.string(loader.get())).part_2())  # 1673210814091

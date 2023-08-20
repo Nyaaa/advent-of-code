@@ -6,7 +6,6 @@ moves = {'A': 1, 'X': 1,  # rock
 wins = [(3, 1), (1, 2), (2, 3)]
 res = {'X': 'loss', 'Y': 'draw', 'Z': 'win'}
 test = ['A Y', 'B X', 'C Z']
-data = parsers.lines(loader.get())
 
 
 def check_win(i: int, j: int):
@@ -38,5 +37,5 @@ def part_2(data):
     return part2
 
 
-print(part_1(data))  # 11603
-print(part_2(data))  # 12725
+print(part_1(parsers.lines(loader.get())))  # 11603
+print(part_2(parsers.lines(loader.get())))  # 12725

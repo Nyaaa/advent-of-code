@@ -2,17 +2,14 @@ from tools import parsers, loader
 from collections import deque
 
 
-TEST = "0,3,6"
-
-
-def recite(numbers: list, steps: int):
+def recite(numbers: str, steps: int):
     """
-    >>> print(recite(parsers.inline_test(TEST), 2020))
+    >>> print(recite("0,3,6", 2020))
     436
 
-    >>> print(recite(parsers.inline_test(TEST), 30000000))
+    >>> print(recite("0,3,6", 30000000))
     175594"""
-    numbers = [int(i) for i in numbers[0].split(',')]
+    numbers = [int(i) for i in numbers.split(',')]
     called_numbers = {val: deque([i + 1], maxlen=2) for i, val in enumerate(numbers)}
 
     previous_number = called_numbers[numbers[-1]]
@@ -33,5 +30,5 @@ def recite(numbers: list, steps: int):
     return new_value
 
 
-print(recite(parsers.lines(loader.get()), 2020))  # 763
-print(recite(parsers.lines(loader.get()), 30000000))  # 1876406
+print(recite(parsers.string(loader.get()), 2020))  # 763
+print(recite(parsers.string(loader.get()), 30000000))  # 1876406

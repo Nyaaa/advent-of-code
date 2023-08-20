@@ -17,6 +17,6 @@ def validate(password: int, part2: bool) -> bool:
     return True if double else False
 
 
-START, STOP = [int(i) for i in parsers.lines(loader.get())[0].split('-')]
+START, STOP = [int(i) for i in parsers.string(loader.get()).split('-')]
 print(sum(validate(i, False) for i in range(START, STOP)))  # 1919
 print(sum(validate(i, True) for i in range(START, STOP)))  # 1291

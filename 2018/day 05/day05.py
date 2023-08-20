@@ -2,12 +2,12 @@ from tools import parsers, loader
 from string import ascii_lowercase
 
 
-def part_1(data: list[str]):
+def part_1(data: str):
     """
-    >>> print(part_1(['dabAcCaCBAcCcaDA']))
+    >>> print(part_1('dabAcCaCBAcCcaDA'))
     10"""
     out = []
-    for letter in data[0]:
+    for letter in data:
         try:
             previous = out[-1]
         except IndexError:
@@ -20,18 +20,18 @@ def part_1(data: list[str]):
     return len(out)
 
 
-def part_2(data: list[str]):
+def part_2(data: str):
     """
-    >>> print(part_2(['dabAcCaCBAcCcaDA']))
+    >>> print(part_2('dabAcCaCBAcCcaDA'))
     4"""
     shortest = float('inf')
     for i in ascii_lowercase:
-        new = data[0].replace(i, '').replace(i.upper(), '')
-        result = part_1([new])
+        new = data.replace(i, '').replace(i.upper(), '')
+        result = part_1(new)
         if result < shortest:
             shortest = result
     return shortest
 
 
-print(part_1(parsers.lines(loader.get())))  # 10584
-print(part_2(parsers.lines(loader.get())))  # 6968
+print(part_1(parsers.string(loader.get())))  # 10584
+print(part_2(parsers.string(loader.get())))  # 6968

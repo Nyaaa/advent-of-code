@@ -4,13 +4,12 @@ from tools import parsers, loader
 letters = list(string.ascii_letters)
 numbers = list(range(1, 53))
 priority = dict(zip(letters, numbers))
-data = parsers.lines(loader.get())
 test = ['vJrwpWtwJgWrhcsFMMfFFhFp',
-'jqHRNqRjqzjGDLGLrsFMfFZSrLrFZsSL',
-'PmmdzqPrVvPwwTWBwg',
-'wMqvLMZHhHMvwLHjbvcjnnSBnvTQFn',
-'ttgJtRGJQctTZtZT',
-'CrZsJsPPZsGzwwsLwLmpwMDw']
+        'jqHRNqRjqzjGDLGLrsFMfFZSrLrFZsSL',
+        'PmmdzqPrVvPwwTWBwg',
+        'wMqvLMZHhHMvwLHjbvcjnnSBnvTQFn',
+        'ttgJtRGJQctTZtZT',
+        'CrZsJsPPZsGzwwsLwLmpwMDw']
 
 
 def common(one, *rest):
@@ -43,5 +42,5 @@ def part_2(data):
     return value
 
 
-print(part_1(data))  # 7674
-print(part_2(data))  # 2805
+print(part_1(parsers.lines(loader.get())))  # 7674
+print(part_2(parsers.lines(loader.get())))  # 2805

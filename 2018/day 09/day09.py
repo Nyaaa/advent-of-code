@@ -5,12 +5,12 @@ from itertools import cycle
 from tools import parsers, loader
 
 
-def marbles(data: list, part2: bool):
+def marbles(data: str, part2: bool):
     """
-    >>> print(marbles(['10 players; last marble is worth 1618 points'],False))
+    >>> print(marbles('10 players; last marble is worth 1618 points', False))
     8317"""
 
-    players, last_marble = (int(i) for i in re.findall(r'\d+', data[0]))
+    players, last_marble = (int(i) for i in re.findall(r'\d+', data))
     circle = deque([0])
     scores = defaultdict(int)
     players = cycle(range(players))
@@ -29,5 +29,5 @@ def marbles(data: list, part2: bool):
     return max(scores.values())
 
 
-print(marbles(parsers.lines(loader.get()), False))  # 367634
-print(marbles(parsers.lines(loader.get()), True))  # 3020072891
+print(marbles(parsers.string(loader.get()), False))  # 367634
+print(marbles(parsers.string(loader.get()), True))  # 3020072891
