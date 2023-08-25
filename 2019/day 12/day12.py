@@ -1,8 +1,8 @@
 from __future__ import annotations
+from math import gcd
 import re
 from dataclasses import dataclass
 from itertools import combinations
-
 from tools import parsers, loader
 
 
@@ -74,6 +74,37 @@ class Trajectory:
                 moon.apply_velocity()
         return sum(i.calculate_energy() for i in self.moons)
 
+    def part_2(self):
+        """
+        >>> print(Trajectory(parsers.lines('test.txt')).part_2())
+        2772
+
+        >>> print(Trajectory(parsers.lines('test2.txt')).part_2())
+        4686774924"""
+
+        def lcm(a: int, b: int) -> int:
+            return a * b // gcd(a, b)
+
+        time = 0
+        init_pos = [[x.location.x for x in self.moons],
+                    [y.location.y for y in self.moons],
+                    [z.location.z for z in self.moons]]
+        steps = [0, 0, 0]
+        while not all(steps):
+            time += 1
+            for moon1, moon2 in combinations(self.moons, 2):
+                moon1.apply_gravity(moon2)
+            for moon in self.moons:
+                moon.apply_velocity()
+            locs = [[j for j in i.location] for i in self.moons]
+            vels = [[j for j in i.velocity] for i in self.moons]
+            for i in range(3):
+                if ([j[i] for j in locs] == init_pos[i]
+                        and [j[i] for j in vels] == [0, 0, 0, 0]
+                        and steps[i] == 0):
+                    steps[i] = time
+        return lcm(lcm(steps[0], steps[1]), steps[2])
+
 
 print(Trajectory(parsers.lines(loader.get())).part_1(1000))  # 7928
-
+print(Trajectory(parsers.lines(loader.get())).part_2())  # 518311327635164
