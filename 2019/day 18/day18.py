@@ -1,62 +1,36 @@
-from collections import deque
+import heapq
+from functools import cached_property
 from tools import parsers, loader, common
 import numpy as np
-import networkx as nx
-from string import ascii_uppercase, ascii_lowercase
-from typing import NamedTuple
-
-
-class State(NamedTuple):
-    location: tuple
-    keys: dict
-    steps: int
-    graph: nx.Graph
-    path: str
 
 
 class Maze:
     def __init__(self, data: list[str]):
-        mp = np.asarray([list(i) for i in data])
-        self.G = nx.Graph()
-        self.G.add_nodes_from([(loc, {'label': val}) for loc, val in np.ndenumerate(mp) if val != '#'])
-        for loc, attr in self.G.nodes(data=True):
-            for i, val in common.get_adjacent(mp, loc):
-                if val == '#':
-                    continue
-                elif val in ascii_uppercase or attr['label'] in ascii_uppercase:
-                    w = float('inf')
-                else:
-                    w = 1
-                self.G.add_edge(loc, i, weight=w)
-        self.start = next(i for i, node in self.G.nodes(data=True) if node['label'] == '@')
-        self.keys = [(i, l['label']) for i, l in self.G.nodes(data=True) if l['label'] in ascii_lowercase]
+        self.grid = np.asarray([list(i) for i in data], dtype=str)
+        self.keys = {i: val for i, val in np.ndenumerate(self.grid) if val.islower()}
+        self.locations = self.keys.copy()
 
-    def find_path(self):
-        init_keys = {k: v for k, v in self.keys}
-        paths = deque([State(self.start, init_keys, 0, self.G, '')])
-        solution = float('inf')
-        while paths:
-            loc, keys, distance, G, path = paths.popleft()
-            # print(path)
-            if len(path) == len(self.keys):
-                if distance < solution:
-                    solution = distance
-                continue
-            if distance > solution:
-                continue
-            for key, letter in keys.items():
-                _distance = nx.dijkstra_path_length(G, loc, key)
-                if _distance != float('inf'):
-                    _G = G.copy()
-                    try:
-                        door = next(i for i, node in _G.nodes(data=True) if node['label'] == letter.upper())
-                        _G.add_edges_from(_G.edges(door), weight=1)
-                    except StopIteration:
-                        pass
-                    _keys = keys.copy()
-                    del _keys[key]
-                    paths.appendleft(State(key, _keys, distance + _distance, _G, path + letter))
-        return solution
+    @cached_property
+    def all_paths(self):
+        paths = {}
+        for pos, item in self.locations.items():
+            queue = [(0, pos, frozenset())]
+            seen = {pos}
+            _paths = {}
+            while queue:
+                steps, pos, doors = heapq.heappop(queue)
+                letter = self.grid[pos]
+                if letter != item and letter.islower():
+                    _paths[letter] = (steps, doors)
+                    continue
+                elif letter.isupper():
+                    doors = doors.union(letter.lower())
+                for next_pos, val in common.get_adjacent(self.grid, pos):
+                    if next_pos not in seen and val != '#':
+                        heapq.heappush(queue, (steps + 1, next_pos, doors))
+                        seen.add(next_pos)
+            paths[item] = _paths
+        return paths
 
     def part_1(self):
         """
@@ -66,10 +40,40 @@ class Maze:
         >>> print(Maze(parsers.lines('test2.txt')).part_1())
         132
 
+        >>> print(Maze(parsers.lines('test3.txt')).part_1())
+        136
+
         >>> print(Maze(parsers.lines('test4.txt')).part_1())
         81"""
-        return self.find_path()
+        robots = {tuple(j): str(i) for i, j in enumerate(np.argwhere(self.grid == '@'))}
+        self.locations.update(robots)
+        queue = [(0, ''.join(robots.values()), frozenset())]
+        seen = set()
+        while queue:
+            steps, current, keys = heapq.heappop(queue)
+            if (current, keys) in seen:
+                continue
+            seen.add((current, keys))
+            if len(keys) == len(self.keys):
+                return steps
+            for i, pos in enumerate(current):
+                for next_pos, (_steps, doors) in self.all_paths[pos].items():
+                    if doors - keys:
+                        continue
+                    _current = f'{current[:i]}{next_pos}{current[i + 1:]}'
+                    heapq.heappush(queue, (steps + _steps, _current, keys | {next_pos}))
+
+    def part_2(self):
+        """
+        >>> print(Maze(parsers.lines('test5.txt')).part_2())
+        32"""
+        row, col = np.argwhere(self.grid == '@')[0]
+        more_bots = np.array([['@', '#', '@'],
+                              ['#', '#', '#'],
+                              ['@', '#', '@']], dtype=str)
+        self.grid[row - 1:row + 2, col - 1:col + 2] = more_bots
+        return self.part_1()
 
 
-print(Maze(parsers.lines('test3.txt')).part_1())
-# print(Maze(parsers.lines(loader.get())).part_1())
+print(Maze(parsers.lines(loader.get())).part_1())  # 3764
+print(Maze(parsers.lines(loader.get())).part_2())  # 1738
