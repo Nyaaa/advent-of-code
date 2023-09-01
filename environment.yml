@@ -1,0 +1,11 @@
+name: advent-of-code
+channels:
+  - defaults
+dependencies:
+  - python=3.11
+  - networkx
+  - shapely
+  - more-itertools
+  - regex
+  - numpy
+  - numba
