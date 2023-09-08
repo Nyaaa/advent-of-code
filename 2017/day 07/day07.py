@@ -8,12 +8,10 @@ class Tower:
     def __init__(self, data: list[str]):
         self.G = nx.DiGraph()
         for line in data:
-            weight = int(re.findall(r'\d+', line)[0])
-            names = re.findall(r'\b[^\d\W]+\b', line)
-            self.G.add_node(names[0], weight=weight, self_weight=weight)
-            if len(names) > 1:
-                for i in names[1:]:
-                    self.G.add_edge(names[0], i)
+            name, weight, *names = re.findall(r'\w+', line)
+            self.G.add_node(name, weight=int(weight), self_weight=int(weight))
+            for i in names:
+                self.G.add_edge(name, i)
 
     def part_1(self):
         """
