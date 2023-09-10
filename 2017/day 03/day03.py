@@ -1,7 +1,7 @@
 from tools import parsers, loader
 
 
-def part_1(target):
+def part_1(target: str) -> int:
     target = int(target)
     direction = 1j
     location = 0j
@@ -16,7 +16,7 @@ def part_1(target):
     return int(abs(location.real) + abs(location.imag)) - 1
 
 
-def part_2(target):
+def part_2(target: str) -> int:
     target = int(target)
     direction = 1j
     location = 0j

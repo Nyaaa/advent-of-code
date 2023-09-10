@@ -4,7 +4,7 @@ from tools import parsers, loader
 
 
 class Plants:
-    def __init__(self, data: list):
+    def __init__(self, data: list[str]) -> None:
         data = [i.replace('#', '1').replace('.', '0') for i in data]
         self.current_state = np.array([int(i) for i in data[0].split(': ')[1]], dtype=int)
         self.zero = 0
@@ -14,7 +14,7 @@ class Plants:
             arr = np.array([int(i) for i in condition], dtype=int)
             self.rules[arr.tobytes()] = int(result)
 
-    def grow(self):
+    def grow(self) -> None:
         if np.sum(self.current_state[-5:]) > 0:
             self.current_state = np.pad(self.current_state, 5)
             self.zero += 5
@@ -23,7 +23,7 @@ class Plants:
             new_state[i + 2] = self.rules.get(window.tobytes(), 0)
         self.current_state = new_state
 
-    def part_1(self):
+    def part_1(self) -> int:
         """
         >>> print(Plants(parsers.lines('test.txt')).part_1())
         325"""
@@ -31,7 +31,7 @@ class Plants:
             self.grow()
         return sum(i - self.zero for i in np.where(self.current_state == 1)[0])
 
-    def part_2(self):
+    def part_2(self) -> int:
         """
         >>> print(Plants(parsers.lines('test.txt')).part_2())
         999999999374"""

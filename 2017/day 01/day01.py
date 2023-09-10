@@ -1,14 +1,14 @@
 from tools import parsers, loader
 
 
-def part_1(data: str):
+def part_1(data: str) -> int:
     """
     >>> print(part_1('1122'))
     3"""
     return sum(int(val) for i, val in enumerate(data) if val == data[(i + 1) % len(data)])
 
 
-def part_2(data: str):
+def part_2(data: str) -> int:
     """
     >>> print(part_2('123425'))
     4"""

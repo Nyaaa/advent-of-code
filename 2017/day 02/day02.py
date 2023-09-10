@@ -9,14 +9,14 @@ TEST2 = """5 9 2 8
 3 8 6 5"""
 
 
-def part_1(data: list[str]):
+def part_1(data: list[str]) -> int:
     """
     >>> print(part_1(parsers.inline_test(TEST)))
     18"""
     return sum(max(i) - min(i) for i in [[int(i) for i in row.split()] for row in data])
 
 
-def part_2(data: list[str]):
+def part_2(data: list[str]) -> int:
     """
     >>> print(part_2(parsers.inline_test(TEST2)))
     9"""

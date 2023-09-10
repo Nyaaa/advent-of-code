@@ -2,7 +2,7 @@ from tools import parsers, loader
 
 
 class Firewall:
-    def __init__(self, data: list[str]):
+    def __init__(self, data: list[str]) -> None:
         self.layers = {int(k): int(v) for k, v in (line.split(': ') for line in data)}
 
     def traverse(self, step: int = 0) -> list[int]:
@@ -17,13 +17,13 @@ class Firewall:
             step += 1
         return hits
 
-    def part_1(self):
+    def part_1(self) -> int:
         """
         >>> print(Firewall(parsers.lines('test.txt')).part_1())
         24"""
         return sum(i * self.layers[i] for i in self.traverse())
 
-    def part_2(self):
+    def part_2(self) -> int:
         """
         >>> print(Firewall(parsers.lines('test.txt')).part_2())
         10"""

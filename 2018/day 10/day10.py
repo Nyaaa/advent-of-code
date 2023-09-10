@@ -1,11 +1,12 @@
 import re
 import numpy as np
+from numpy.typing import NDArray
 from tools import parsers, loader, common
 
 np.set_printoptions(threshold=np.inf, linewidth=np.inf)
 
 
-def stars(data: list):
+def stars(data: list[str]) -> tuple[NDArray, int]:
     data = np.asarray([[int(i) for i in re.findall(r'-?\d+', line)] for line in data])
     locations = data[:, :2]
     vectors = data[:, 2:]

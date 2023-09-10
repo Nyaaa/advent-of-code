@@ -1,7 +1,7 @@
 from tools import parsers, loader
 
 
-def part_1(data):
+def part_1(data: str) -> int:
     direction = 1j
     location = 0j
     for i in data.split(', '):
@@ -10,7 +10,7 @@ def part_1(data):
     return int(abs(location.real) + abs(location.imag))
 
 
-def part_2(data):
+def part_2(data: str) -> int:
     direction = 1j
     location = 0j
     seen = set()

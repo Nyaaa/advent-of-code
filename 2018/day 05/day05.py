@@ -2,7 +2,7 @@ from tools import parsers, loader
 from string import ascii_lowercase
 
 
-def part_1(data: str):
+def part_1(data: str) -> int:
     """
     >>> print(part_1('dabAcCaCBAcCcaDA'))
     10"""
@@ -20,7 +20,7 @@ def part_1(data: str):
     return len(out)
 
 
-def part_2(data: str):
+def part_2(data: str) -> int:
     """
     >>> print(part_2('dabAcCaCBAcCcaDA'))
     4"""

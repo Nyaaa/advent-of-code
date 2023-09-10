@@ -5,7 +5,7 @@ from itertools import cycle
 from tools import parsers, loader
 
 
-def marbles(data: str, part2: bool):
+def marbles(data: str, part2: bool) -> int:
     """
     >>> print(marbles('10 players; last marble is worth 1618 points', False))
     8317"""

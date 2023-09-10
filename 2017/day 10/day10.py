@@ -4,7 +4,7 @@ from collections import deque
 from more_itertools import chunked
 
 
-def get_hash(size: int, data: list[int], times: int) -> deque:
+def get_hash(size: int, data: list[int], times: int) -> deque[int]:
     rope = deque(range(size))
     skip = rotated = 0
     for _ in range(times):

@@ -5,7 +5,7 @@ import difflib
 from tools import parsers, loader
 
 
-def part_1():
+def part_1() -> int:
     counts = {2: 0, 3: 0}
     for line in data:
         c = Counter(line).values()
@@ -16,7 +16,7 @@ def part_1():
     return counts[2] * counts[3]
 
 
-def part_2():
+def part_2() -> str:
     matcher = difflib.SequenceMatcher()
     for a, b in combinations(data, 2):
         matcher.set_seqs(a, b)

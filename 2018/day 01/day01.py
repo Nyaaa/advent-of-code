@@ -1,7 +1,7 @@
 from tools import parsers, loader
 
 
-def part_2():
+def part_2() -> int:
     seen = set()
     out = 0
     while True:

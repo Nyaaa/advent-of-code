@@ -3,17 +3,17 @@ from tools import parsers, loader
 
 
 class Sleigh:
-    def __init__(self, data: list):
+    def __init__(self, data: list[str]) -> None:
         edges = [(j[1], j[7]) for j in (i.split() for i in data)]
         self.G = nx.DiGraph(edges)
 
-    def part_1(self):
+    def part_1(self) -> str:
         """
         >>> print(Sleigh(parsers.lines('test.txt')).part_1())
         CABDFE"""
         return ''.join(nx.lexicographical_topological_sort(self.G))
 
-    def part_2(self):
+    def part_2(self) -> int:
         time = 0
         for node in self.G.nodes:
             self.G.nodes[node]['work'] = ord(node) - 4

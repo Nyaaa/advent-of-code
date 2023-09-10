@@ -12,17 +12,17 @@ class Claim(NamedTuple):
     rows: int
 
     @property
-    def sheet_size(self):
+    def sheet_size(self) -> tuple[slice, slice]:
         return (slice(self.start_col, self.start_col + self.cols),
                 slice(self.start_row, self.start_row + self.rows))
 
 
 class Fabric:
-    def __init__(self, data: list):
+    def __init__(self, data: list[str]) -> None:
         self.array = np.zeros((1000, 1000), dtype=int)
         self.claims = [Claim(*map(int, re.findall(r'\d+', line))) for line in data]
 
-    def part_1(self):
+    def part_1(self) -> int:
         """
         >>> print(Fabric(parsers.lines('test.txt')).part_1())
         4"""
@@ -30,7 +30,7 @@ class Fabric:
             self.array[claim.sheet_size] += 1
         return np.count_nonzero(self.array >= 2)
 
-    def part_2(self):
+    def part_2(self) -> int:
         """
         >>> print(Fabric(parsers.lines('test.txt')).part_2())
         3"""

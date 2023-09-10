@@ -8,7 +8,7 @@ DIRECTIONS = {
 }
 
 
-def walk(data: str):
+def walk(data: str) -> tuple[int, int]:
     """
     >>> print(walk('ne,ne,s,s')[0])
     2

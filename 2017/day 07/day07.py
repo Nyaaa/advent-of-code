@@ -5,7 +5,7 @@ import re
 
 
 class Tower:
-    def __init__(self, data: list[str]):
+    def __init__(self, data: list[str]) -> None:
         self.G = nx.DiGraph()
         for line in data:
             name, weight, *names = re.findall(r'\w+', line)
@@ -13,13 +13,13 @@ class Tower:
             for i in names:
                 self.G.add_edge(name, i)
 
-    def part_1(self):
+    def part_1(self) -> str:
         """
         >>> print(Tower(parsers.lines('test.txt')).part_1())
         tknk"""
         return next(nx.lexicographical_topological_sort(self.G))
 
-    def part_2(self):
+    def part_2(self) -> int:
         """
         >>> print(Tower(parsers.lines('test.txt')).part_2())
         60"""

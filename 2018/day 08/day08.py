@@ -3,10 +3,10 @@ from itertools import islice
 
 
 class Navigation:
-    def __init__(self, data: str):
+    def __init__(self, data: str) -> None:
         self.data = iter(int(i) for i in data.split())
 
-    def part_1(self):
+    def part_1(self) -> int:
         """
         >>> print(Navigation('2 3 0 3 10 11 12 1 1 0 1 99 2 1 1 2').part_1())
         138"""
@@ -15,7 +15,7 @@ class Navigation:
         meta_value = sum(islice(self.data, meta))
         return child_value + meta_value
 
-    def part_2(self):
+    def part_2(self) -> int:
         """
         >>> print(Navigation('2 3 0 3 10 11 12 1 1 0 1 99 2 1 1 2').part_2())
         66"""

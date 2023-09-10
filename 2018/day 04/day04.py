@@ -4,7 +4,7 @@ from tools import parsers, loader
 
 
 class Guards:
-    def __init__(self, data: list):
+    def __init__(self, data: list[str]) -> None:
         self.timetable = defaultdict(list)
         guard_id = None
         sleep_start = None
@@ -19,14 +19,14 @@ class Guards:
                 for x in range(sleep_start, time):
                     self.timetable[guard_id].append(x)
 
-    def part_1(self):
+    def part_1(self) -> int:
         """
         >>> print(Guards(parsers.lines('test.txt')).part_1())
         240"""
         guard, times = max(self.timetable.items(), key=lambda i: len(i[1]))
         return guard * Counter(times).most_common(1)[0][0]
 
-    def part_2(self):
+    def part_2(self) -> int:
         """
         >>> print(Guards(parsers.lines('test.txt')).part_2())
         4455"""

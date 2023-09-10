@@ -6,17 +6,17 @@ from numba import njit
 
 
 @njit
-def rolling_window(array: NDArray, window_shape: tuple):
+def rolling_window(array: NDArray, window_shape: tuple[int, int]) -> NDArray:
     windows = sliding_window_view(array, window_shape)
     return np.asarray([[np.sum(i) for i in j] for j in windows])
 
 
 class Fuel:
-    def __init__(self, data: str):
+    def __init__(self, data: str) -> None:
         self.serial = int(data)
-        self.grid = np.fromfunction(self.get_power_level, (300, 300), dtype=int)
+        self.grid: NDArray = np.fromfunction(self.get_power_level, (300, 300), dtype=int)
 
-    def get_power_level(self, x, y):
+    def get_power_level(self, x: int, y: int) -> int:
         """
         >>> print(Fuel('57').get_power_level(122, 79))
         -5"""
@@ -24,14 +24,14 @@ class Fuel:
         power = (cell_id * y + self.serial) * cell_id
         return (power // 100 % 10) - 5
 
-    def part_1(self):
+    def part_1(self) -> tuple[int, ...]:
         """
         >>> print(Fuel('18').part_1())
         (33, 45)"""
         sums = rolling_window(self.grid, (3, 3))
         return np.unravel_index(sums.argmax(), sums.shape)
 
-    def part_2(self):
+    def part_2(self) -> tuple[int, ...]:
         """
         >>> print(Fuel('18').part_2())
         (90, 269, 16)"""

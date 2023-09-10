@@ -3,7 +3,7 @@ import numpy as np
 
 
 class Area:
-    def __init__(self, data: list):
+    def __init__(self, data: list[str]) -> None:
         self.points = {(int(row), int(col)): 0 for col, row in (line.split(', ') for line in data)}
         self.max_col = max(self.points, key=lambda x: x[1])[1]
         self.max_row = max(self.points, key=lambda x: x[0])[0]
@@ -13,10 +13,10 @@ class Area:
         self.infinite = set()
 
     @staticmethod
-    def manhattan_distance(point, other) -> int:
+    def manhattan_distance(point: tuple[int, ...], other: tuple[int, ...]) -> int:
         return abs(point[0] - other[0]) + abs(point[1] - other[1])
 
-    def start(self, max_distance: int):
+    def start(self, max_distance: int) -> tuple[int, int]:
         """
         >>> print(Area(parsers.lines('test.txt')).start(32))
         (17, 16)"""

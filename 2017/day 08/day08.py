@@ -11,7 +11,7 @@ OPERATIONS = {
 }
 
 
-def registers(data: list[str]):
+def registers(data: list[str]) -> tuple[int, int]:
     """
     >>> print(registers(parsers.lines('test.txt')))
     (1, 10)"""

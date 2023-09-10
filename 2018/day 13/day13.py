@@ -1,6 +1,7 @@
 from __future__ import annotations
 from dataclasses import dataclass, field
 from itertools import cycle
+from typing import Iterator
 
 from tools import parsers, loader
 
@@ -10,24 +11,24 @@ class Cart:
     id: int
     location: complex
     direction: complex
-    turn: cycle = field(default_factory=lambda: cycle([1j, 1, -1j]))
+    turn: cycle[complex] = field(default_factory=lambda: cycle([1j, 1, -1j]))
 
-    def __eq__(self, other):
+    def __eq__(self, other: Cart) -> bool:
         return self.location == other.location
 
-    def __lt__(self, other):
+    def __lt__(self, other: Cart) -> bool:
         return (self.location.imag, self.location.real) < (other.location.imag, other.location.real)
 
-    def __str__(self):
+    def __str__(self) -> str:
         return f'{self.id} L: {self.location} D: {self.direction}'
 
-    def loc_str(self):
+    def loc_str(self) -> str:
         return f'{int(self.location.imag)},{int(self.location.real)}'
 
-    def __hash__(self):
+    def __hash__(self) -> int:
         return hash(self.location)
 
-    def rotate(self, tile):
+    def rotate(self, tile: str) -> None:
         match tile:
             case '+':
                 self.direction *= next(self.turn)
@@ -40,7 +41,7 @@ class Cart:
 class Tracks:
     DIRECTIONS = {'^': -1, 'v': 1, '<': -1j, '>': 1j}
 
-    def __init__(self, data: list):
+    def __init__(self, data: list[str]) -> None:
         self.map = {}
         self.carts = []
         _id = 1
@@ -54,7 +55,7 @@ class Tracks:
                     self.carts.append(Cart(_id, location, self.DIRECTIONS[tile]))
                     _id += 1
 
-    def simulate(self):
+    def simulate(self) -> Iterator[Cart]:
         while len(self.carts) > 1:
             for cart in sorted(self.carts):
                 cart.location += cart.direction
@@ -63,13 +64,13 @@ class Tracks:
                     self.carts = [i for i in self.carts if i.location != cart.location]
                     yield cart
 
-    def part_1(self):
+    def part_1(self) -> str:
         """
         >>> print(Tracks(parsers.lines('test.txt')).part_1())
         7,3"""
         return next(self.simulate()).loc_str()
 
-    def part_2(self):
+    def part_2(self) -> str:
         """
         >>> print(Tracks(parsers.lines('test2.txt', False)).part_2())
         6,4"""
