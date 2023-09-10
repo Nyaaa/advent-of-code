@@ -38,5 +38,6 @@ def part_2(data: str) -> str:
     return ''.join(f'{i:02x}' for i in res)
 
 
-print(part_1(parsers.string(loader.get()), 256))  # 5577
-print(part_2(parsers.string(loader.get())))  # 44f4befb0f303c0bafd085f97741d51d
+if __name__ == '__main__':
+    print(part_1(parsers.string(loader.get()), 256))  # 5577
+    print(part_2(parsers.string(loader.get())))  # 44f4befb0f303c0bafd085f97741d51d
