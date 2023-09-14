@@ -1,5 +1,6 @@
 """A collection of common functions for AoC."""
-from typing import Iterator, Any
+from __future__ import annotations
+from typing import Iterator, Any, NamedTuple
 from numpy.typing import NDArray
 from numba import njit
 import numpy as np
@@ -68,3 +69,12 @@ def convert_to_image(array: NDArray) -> NDArray:
     image[image == '1'] = '█'
     image[image == '0'] = ' '
     return image
+
+
+class Point(NamedTuple):
+    """A point in a 2d space."""
+    row: int
+    col: int
+
+    def __add__(self, other: Point) -> Point:
+        return Point(self.row + other.row, self.col + other.col)
