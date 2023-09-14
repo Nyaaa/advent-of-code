@@ -1,24 +1,6 @@
-from __future__ import annotations
 import re
-from typing import NamedTuple
-
+from tools.common import Point
 from tools import parsers, loader
-
-
-class Point(NamedTuple):
-    row: int
-    col: int
-
-    def __repr__(self):
-        return f'({self.row}, {self.col})'
-
-    def __add__(self, other: Point) -> Point:
-        if other == 0:
-            other = Point(0, 0)
-        return Point(self.row + other.row, self.col + other.col)
-
-    def __radd__(self, other: Point):
-        return self.__add__(other)
 
 
 VECTORS = {'e': Point(0, 1), 'w': Point(0, -1),
@@ -35,17 +17,17 @@ class Path:
     (0, 0)"""
     directions = re.compile(r'e|se|sw|w|nw|ne')
 
-    def __init__(self, line: str):
+    def __init__(self, line: str) -> None:
         self.nodes = re.findall(self.directions, line)
         self.v = [VECTORS[i] for i in self.nodes]
         self.target = sum(self.v)
 
-    def __repr__(self):
+    def __repr__(self) -> str:
         return str(self.nodes)
 
 
 class Tiles:
-    def __init__(self, data: list):
+    def __init__(self, data: list[str]) -> None:
         self.paths = [Path(i) for i in data]
         self.tile_state = {key.target: False for key in self.paths}
 
@@ -66,7 +48,7 @@ class Tiles:
             tile_state = not tile_state
         return tile_state
 
-    def part_2(self):
+    def part_2(self) -> int:
         """
         >>> print(Tiles(parsers.lines('test.txt')).part_2())
         2208"""

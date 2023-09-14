@@ -1,6 +1,4 @@
-from __future__ import annotations
-from typing import NamedTuple
-
+from tools.common import Point
 from tools import parsers, loader
 
 TEST0 = """R8,U5,L5,D3
@@ -11,22 +9,11 @@ TEST2 = """R98,U47,R26,D63,R33,U87,L62,D20,R33,U53,R51
 U98,R91,D20,R16,D67,R40,U7,R15,U6,R7"""
 
 
-class Point(NamedTuple):
-    row: int
-    col: int
-
-    def __add__(self, other: Point) -> Point:
-        return Point(self.row + other.row, self.col + other.col)
-
-    def manhattan_distance(self, other: Point) -> int:
-        return abs(self.row - other.row) + abs(self.col - other.col)
-
-
 class PCB:
     directions = {'R': Point(0, 1), 'L': Point(0, -1),
                   'U': Point(1, 0), 'D': Point(-1, 0)}
 
-    def __init__(self, data: list):
+    def __init__(self, data: list[str]) -> None:
         self.wires = []
         for line in data:
             new_wire = list()

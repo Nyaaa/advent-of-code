@@ -1,7 +1,7 @@
 from tools import parsers, loader
 import re
-from typing import NamedTuple
 import numpy as np
+from tools.common import Point
 
 np.set_printoptions(threshold=np.inf, linewidth=np.inf)
 DIRECTIONS = {'up': ('left', 'right', 3),
@@ -10,13 +10,8 @@ DIRECTIONS = {'up': ('left', 'right', 3),
               'left': ('down', 'up', 2)}
 
 
-class Point(NamedTuple):
-    col: int
-    row: int
-
-
 class Cube:
-    def __init__(self, data, part2=False):
+    def __init__(self, data: list[list[str]], part2: bool = False) -> None:
         self.part2 = part2
         _map = [list(i) for i in data[0]]
         path = re.split(r"(\d+)([A-Z])", *data[1])
@@ -24,7 +19,7 @@ class Cube:
         self.direction = 'right'
         max_len = np.max([len(a) for a in _map])
         self.map = np.asarray([np.pad(a, (0, max_len - len(a)), 'constant', constant_values=' ') for a in _map])
-        self.location = Point(np.nonzero(self.map[0] == '.')[0][0], 0)
+        self.location = Point(0, np.nonzero(self.map[0] == '.')[0][0])
 
     def warp(self, row: int, col: int) -> Point:
         match self.direction:
@@ -32,7 +27,7 @@ class Cube:
             case 'left': col = np.nonzero(self.map[row])[0][-1]
             case 'up': row = np.nonzero(self.map[:, col])[0][-1]
             case 'down': row = np.nonzero(self.map[:, col])[0][0]
-        return Point(col, row)
+        return Point(col=col, row=row)
 
     def shift(self, row: int, col: int) -> tuple[Point, str]:
         """Hardcoded rotations because screw this puzzle.
@@ -54,37 +49,36 @@ class Cube:
         # positions relative to face
         rel_row, rel_col = row % 50, col % 50
 
-        match (face, self.direction):
-            case(1, 'left'): mv = Point(0, 149 - rel_row), 'right'  # -> face 5
-            case(1, 'up'): mv = Point(0, rel_col + 150), 'right'  # -> face 6
+        match face, self.direction:
+            case 1, 'left': mv = Point(149 - rel_row, 0), 'right'  # -> face 5
+            case 1, 'up': mv = Point(rel_col + 150, 0), 'right'  # -> face 6
 
-            case (2, 'up'): mv = Point(rel_col, 199), 'up'  # -> face 6
-            case (2, 'right'): mv = Point(99, 149 - rel_row), 'left'  # -> face 4
-            case (2, 'down'): mv = Point(99, rel_col + 50), 'left'  # -> face 3
+            case 2, 'up': mv = Point(199, rel_col), 'up'  # -> face 6
+            case 2, 'right': mv = Point(149 - rel_row, 99), 'left'  # -> face 4
+            case 2, 'down': mv = Point(rel_col + 50, 99), 'left'  # -> face 3
 
-            case (3, 'left'): mv = Point(rel_row, 100), 'down'  # -> face 5
-            case (3, 'right'): mv = Point(rel_row + 100, 49), 'up'  # -> face 2
+            case 3, 'left': mv = Point(100, rel_row), 'down'  # -> face 5
+            case 3, 'right': mv = Point(49, rel_row + 100), 'up'  # -> face 2
 
-            case (4, 'down'): mv = Point(49, rel_col + 150), 'left'  # -> face 6
-            case (4, 'right'): mv = Point(149, 49 - rel_row), 'left'  # -> face 2
+            case 4, 'down': mv = Point(rel_col + 150, 49), 'left'  # -> face 6
+            case 4, 'right': mv = Point(49 - rel_row, 149), 'left'  # -> face 2
 
-            case (5, 'left'): mv = Point(50, 49 - rel_row), 'right'  # -> face 1
-            case (5, 'up'): mv = Point(50, rel_col + 50), 'right'  # -> face 3
+            case 5, 'left': mv = Point(49 - rel_row, 50), 'right'  # -> face 1
+            case 5, 'up': mv = Point(rel_col + 50, 50), 'right'  # -> face 3
 
-            case (6, 'right'): mv = Point(rel_row + 50, 149), 'up'  # -> face 4
-            case (6, 'down'): mv = Point(rel_col + 100, 0), 'down'  # -> face 2
-            case (6, 'left'): mv = Point(rel_row + 50, 0), 'down'  # -> face 1
+            case 6, 'right': mv = Point(149, rel_row + 50), 'up'  # -> face 4
+            case 6, 'down': mv = Point(0, rel_col + 100), 'down'  # -> face 2
+            case 6, 'left': mv = Point(0, rel_row + 50), 'down'  # -> face 1
 
             case _:
-                self.draw()
                 raise NotImplementedError(f'No transition {self.direction} from face {face}.')
         return mv
 
-    def move(self, distance: int):
+    def move(self, distance: int) -> None:
         # print(distance, self.direction)
 
         for _ in range(distance):
-            col, row = self.location
+            row, col = self.location
             current_location = self.location
             current_direction = self.direction
 
@@ -102,7 +96,7 @@ class Cube:
             match (cell, self.part2):
                 case (' ', False): _next = self.warp(row, col)
                 case (' ', True): _next, self.direction = self.shift(current_location.row, current_location.col)
-                case _: _next = Point(col, row)
+                case _: _next = Point(row, col)
 
             match self.map[_next.row][_next.col]:
                 case '.' | 'X': self.location = _next
@@ -110,7 +104,7 @@ class Cube:
 
             self.map[self.location.row][self.location.col] = 'X'
 
-    def start(self):
+    def start(self) -> int:
         """test part 1:
         >>> c = Cube(parsers.blocks('test.txt'))
         >>> print(c.start())

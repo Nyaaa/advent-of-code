@@ -1,10 +1,11 @@
-from typing import NamedTuple
+from numpy.typing import NDArray
+from tools.common import Point
 from tools import parsers, loader, intcode, common
 import numpy as np
 from more_itertools import split_at
 
 
-def get_map():
+def get_map() -> NDArray:
     pc = intcode.Intcode(parsers.lines(loader.get()))
     pc.run()
     image = list(split_at(pc.logged_output, lambda x: x == 10))
@@ -14,7 +15,7 @@ def get_map():
     return arr
 
 
-def part_1():
+def part_1() -> int:
     arr = get_map()
     params = []
     for i, val in np.ndenumerate(arr):
@@ -25,14 +26,6 @@ def part_1():
     return sum(params)
 
 
-class Point(NamedTuple):
-    row: int
-    col: int
-
-    def __add__(self, other):
-        return Point(self.row + other.row, self.col + other.col)
-
-
 DIRECTIONS = {'up': Point(-1, 0), 'down': Point(1, 0),
               'left': Point(0, -1), 'right': Point(0, 1)}
 TURNS = {'up': ('left', 'right'),
@@ -41,7 +34,7 @@ TURNS = {'up': ('left', 'right'),
          'left': ('down', 'up')}
 
 
-def part_2():
+def part_2() -> int:
     """Not a general solution, input-specific."""
     img = get_map()
     path = set(Point(i, j) for i, j in np.argwhere(img == 1))

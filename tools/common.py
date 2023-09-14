@@ -78,3 +78,14 @@ class Point(NamedTuple):
 
     def __add__(self, other: Point) -> Point:
         return Point(self.row + other.row, self.col + other.col)
+
+    def __radd__(self, other: Point) -> Point:
+        if other == 0:
+            other = Point(0, 0)
+        return self.__add__(other)
+
+    def __repr__(self) -> str:
+        return f'({self.row}, {self.col})'
+
+    def manhattan_distance(self, other: Point) -> int:
+        return abs(self.row - other.row) + abs(self.col - other.col)

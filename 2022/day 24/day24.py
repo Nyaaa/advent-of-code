@@ -1,16 +1,8 @@
 from tools import parsers, loader
 from collections import deque
 from math import lcm
-from typing import NamedTuple
+from tools.common import Point
 import numpy as np
-
-
-class Point(NamedTuple):
-    row: int
-    col: int
-
-    def __add__(self, other):
-        return Point(row=self.row + other.row, col=self.col + other.col)
 
 
 DIRECTIONS = {'>': Point(0, 1), '<': Point(0, -1), '^': Point(-1, 0), 'v': Point(1, 0)}
@@ -18,7 +10,7 @@ ADJACENT = (Point(0, 1), Point(0, -1), Point(-1, 0), Point(1, 0), Point(0, 0))
 
 
 class Blizzard:
-    def __init__(self, data):
+    def __init__(self, data: list[str]) -> None:
         self.data = np.asarray([list(line) for line in data])
         self.max_rows, self.max_cols = self.data.shape
         self.start = Point(row=0, col=1)
@@ -70,13 +62,13 @@ class Blizzard:
                 queue += [(next_point, _time + 1) for next_point in self.adjacent(start, _map_num)]
         return _time - time
 
-    def part_1(self):
+    def part_1(self) -> int:
         """
         >>> print(Blizzard(parsers.lines('test.txt')).part_1())
         18"""
         return self.search(self.start, self.end, 0)
 
-    def part_2(self):
+    def part_2(self) -> int:
         """
         >>> print(Blizzard(parsers.lines('test.txt')).part_2())
         54"""
