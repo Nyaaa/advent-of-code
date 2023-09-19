@@ -1,6 +1,8 @@
 """A collection of common functions for AoC."""
 from __future__ import annotations
-from typing import Iterator, Any, NamedTuple
+
+from collections.abc import Generator
+from typing import Any, NamedTuple
 from numpy.typing import NDArray
 from numba import njit
 import numpy as np
@@ -11,7 +13,7 @@ def get_adjacent(
         array: NDArray,
         position: tuple[int, int],
         with_corners: bool = False,
-        with_self: bool = False) -> Iterator[tuple[tuple[int, int], Any]]:
+        with_self: bool = False) -> Generator[tuple[tuple[int, int], Any]]:
     """
     Get adjacent cells in NumPy 2d array. Compiled with Numba.
     Args:
@@ -89,3 +91,17 @@ class Point(NamedTuple):
 
     def manhattan_distance(self, other: Point) -> int:
         return abs(self.row - other.row) + abs(self.col - other.col)
+
+
+def slice_with_complex(arr: NDArray, value: complex) -> Any:
+    """
+    Return the value at the specified index in the input array.
+
+    Parameters:
+        arr: A 2D Numpy array.
+        value: An index to slice the array with.
+
+    Returns:
+        A value at the specified index in the input array.
+    """
+    return arr[int(value.real), int(value.imag)]

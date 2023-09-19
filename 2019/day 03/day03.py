@@ -1,5 +1,5 @@
-from tools.common import Point
 from tools import parsers, loader
+
 
 TEST0 = """R8,U5,L5,D3
 U7,R6,D4,L4"""
@@ -10,14 +10,13 @@ U98,R91,D20,R16,D67,R40,U7,R15,U6,R7"""
 
 
 class PCB:
-    directions = {'R': Point(0, 1), 'L': Point(0, -1),
-                  'U': Point(1, 0), 'D': Point(-1, 0)}
+    directions = {'R': 1j, 'L': -1j, 'U': 1, 'D': -1}
 
     def __init__(self, data: list[str]) -> None:
         self.wires = []
         for line in data:
             new_wire = list()
-            current_point = Point(0, 0)
+            current_point = 0j
             for turn in line.split(','):
                 for _ in range(int(turn[1:])):
                     current_point += self.directions[turn[:1]]
@@ -37,11 +36,11 @@ class PCB:
 
         >>> print(PCB(parsers.inline_test(TEST2)).start(True))
         410"""
-        start = Point(0, 0)
+        start = 0j
         lowest_distance = float('inf')
         for i in set(self.wires[0]).intersection(self.wires[1]):
             if not part2:
-                curr_distance = start.manhattan_distance(i)
+                curr_distance = int(abs(start.real - i.real) + abs(start.imag - i.imag))
             else:
                 curr_distance = self.wires[0].index(i) + self.wires[1].index(i) + 2
             if curr_distance < lowest_distance and curr_distance != 0:

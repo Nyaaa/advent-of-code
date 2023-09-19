@@ -1,35 +1,34 @@
 from tools import parsers, loader
 from collections import deque
 from math import lcm
-from tools.common import Point
 import numpy as np
 
 
-DIRECTIONS = {'>': Point(0, 1), '<': Point(0, -1), '^': Point(-1, 0), 'v': Point(1, 0)}
-ADJACENT = (Point(0, 1), Point(0, -1), Point(-1, 0), Point(1, 0), Point(0, 0))
+DIRECTIONS = {'>': 1j, '<': -1j, '^': -1, 'v': 1}
 
 
 class Blizzard:
     def __init__(self, data: list[str]) -> None:
         self.data = np.asarray([list(line) for line in data])
         self.max_rows, self.max_cols = self.data.shape
-        self.start = Point(row=0, col=1)
-        self.end = Point(row=self.max_rows - 1, col=self.max_cols - 2)
+        self.start = 1j
+        self.end = complex(self.max_rows - 1, self.max_cols - 2)
         self.map_num = lcm(self.max_rows - 2, self.max_cols - 2)
         self.map_list = self.precalculate_maps()
 
-    def precalculate_maps(self) -> list[set[Point]]:
+    def precalculate_maps(self) -> list[set[complex]]:
         map_list = []
-        wind_map = [(Point(r, c), d) for d in DIRECTIONS.keys() for r, c in list(zip(*np.where(self.data == d)))]
+        wind_map = [(complex(r, c), d) for d in DIRECTIONS.keys() for r, c in list(zip(*np.where(self.data == d)))]
         for _ in range(self.map_num + 1):
             wind_map = self.generate_map(wind_map)
             map_list.append(set(point for point, d in wind_map))
         return map_list
 
-    def generate_map(self, wind_map: list[tuple[Point, str]]) -> list[tuple[Point, str]]:
+    def generate_map(self, wind_map: list[tuple[complex, str]]) -> list[tuple[complex, str]]:
         _map = []
         for point, d in wind_map:
-            row, col = point + DIRECTIONS[d]
+            i = point + DIRECTIONS[d]
+            row, col = i.real, i.imag
             if row == self.max_rows - 1:
                 row = 1
             elif row == 0:
@@ -40,17 +39,17 @@ class Blizzard:
             elif col == 0:
                 col = self.max_cols - 2
 
-            _map.append((Point(row, col), d))
+            _map.append((complex(row, col), d))
         return _map
 
-    def adjacent(self, point: Point, map_num: int) -> list[Point]:
-        points = [point + adj for adj in ADJACENT]
+    def adjacent(self, point: complex, map_num: int) -> list[complex]:
+        points = [point + adj for adj in (1j, -1j, -1, 1, 0)]
         return [point for point in points if
-                (1 <= point.row < self.max_rows - 1 and 1 <= point.col < self.max_cols - 1
+                (1 <= point.real < self.max_rows - 1 and 1 <= point.imag < self.max_cols - 1
                  or point in (self.start, self.end))
                 and point not in self.map_list[map_num]]
 
-    def search(self, start: Point, end: Point, time: int) -> int:
+    def search(self, start: complex, end: complex, time: int) -> int:
         queue = deque([(start, time)])
         done = set()
         _time = 0

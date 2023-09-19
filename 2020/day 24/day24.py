@@ -1,11 +1,10 @@
 import re
-from tools.common import Point
 from tools import parsers, loader
 
 
-VECTORS = {'e': Point(0, 1), 'w': Point(0, -1),
-           'se': Point(1, 0), 'sw': Point(1, -1),
-           'nw': Point(-1, 0), 'ne': Point(-1, 1)}
+VECTORS = {'e': complex(0, 1), 'w': complex(0, -1),
+           'se': complex(1, 0), 'sw': complex(1, -1),
+           'nw': complex(-1, 0), 'ne': complex(-1, 1)}
 
 
 class Path:
@@ -14,7 +13,7 @@ class Path:
     ['e', 'se', 'ne', 'e']
 
     >>> print(Path('nwwswee').target)
-    (0, 0)"""
+    0j"""
     directions = re.compile(r'e|se|sw|w|nw|ne')
 
     def __init__(self, line: str) -> None:
@@ -39,7 +38,7 @@ class Tiles:
             self.tile_state[i.target] = not self.tile_state[i.target]
         return sum(self.tile_state.values())
 
-    def calculate_tile_state(self, tile: Point) -> bool:
+    def calculate_tile_state(self, tile: complex) -> bool:
         adjacent = [tile + i for i in VECTORS.values()]
         adj_flipped = sum(self.tile_state.get(i) or False for i in adjacent)
         tile_state = self.tile_state.get(tile) or False
@@ -53,8 +52,8 @@ class Tiles:
         >>> print(Tiles(parsers.lines('test.txt')).part_2())
         2208"""
         self.part_1()
-        _min = min(self.tile_state.keys(), key=lambda x: x.row).row - 10
-        _max = max(self.tile_state.keys(), key=lambda x: x.col).col + 10
+        _min = int(min(self.tile_state.keys(), key=lambda x: x.real).real - 10)
+        _max = int(max(self.tile_state.keys(), key=lambda x: x.imag).imag + 10)
         for _ in range(100):
             floor = self.tile_state.copy()
             _min -= 1
@@ -62,7 +61,7 @@ class Tiles:
             floor_size = range(_min, _max)
             for row in floor_size:
                 for col in floor_size:
-                    tile = Point(row, col)
+                    tile = complex(row, col)
                     floor[tile] = self.calculate_tile_state(tile)
             self.tile_state = floor
         return sum(self.tile_state.values())

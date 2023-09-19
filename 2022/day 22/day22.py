@@ -1,13 +1,13 @@
 from tools import parsers, loader
 import re
 import numpy as np
-from tools.common import Point
+from tools.common import slice_with_complex
 
 np.set_printoptions(threshold=np.inf, linewidth=np.inf)
-DIRECTIONS = {'up': ('left', 'right', 3),
-              'right': ('up', 'down', 0),
-              'down': ('right', 'left', 1),
-              'left': ('down', 'up', 2)}
+DIRECTIONS = {-1: 3,  # up
+              1j: 0,  # right
+              1: 1,  # down
+              -1j: 2}  # left
 
 
 class Cube:
@@ -16,20 +16,21 @@ class Cube:
         _map = [list(i) for i in data[0]]
         path = re.split(r"(\d+)([A-Z])", *data[1])
         self.path = iter(list(filter(None, path)))
-        self.direction = 'right'
+        self.direction = 1j
         max_len = np.max([len(a) for a in _map])
         self.map = np.asarray([np.pad(a, (0, max_len - len(a)), 'constant', constant_values=' ') for a in _map])
-        self.location = Point(0, np.nonzero(self.map[0] == '.')[0][0])
+        self.location = complex(0, np.nonzero(self.map[0] == '.')[0][0])
 
-    def warp(self, row: int, col: int) -> Point:
+    def warp(self, loc: complex) -> complex:
+        row, col = int(loc.real), int(loc.imag)
         match self.direction:
-            case 'right': col = np.nonzero(self.map[row])[0][0]
-            case 'left': col = np.nonzero(self.map[row])[0][-1]
-            case 'up': row = np.nonzero(self.map[:, col])[0][-1]
-            case 'down': row = np.nonzero(self.map[:, col])[0][0]
-        return Point(col=col, row=row)
+            case 1j: col = np.nonzero(self.map[row])[0][0]
+            case -1j: col = np.nonzero(self.map[row])[0][-1]
+            case -1: row = np.nonzero(self.map[:, col])[0][-1]
+            case 1: row = np.nonzero(self.map[:, col])[0][0]
+        return complex(row, col)
 
-    def shift(self, row: int, col: int) -> tuple[Point, str]:
+    def shift(self, loc: complex) -> tuple[complex, complex]:
         """Hardcoded rotations because screw this puzzle.
 
             |1|2|
@@ -38,6 +39,7 @@ class Cube:
           |6|
 
         """
+        row, col = loc.real, loc.imag
         if 0 <= row <= 49 and 50 <= col <= 99: face = 1
         elif 0 <= row <= 49 and 100 <= col <= 149: face = 2
         elif 50 <= row <= 99 and 50 <= col <= 99: face = 3
@@ -50,25 +52,25 @@ class Cube:
         rel_row, rel_col = row % 50, col % 50
 
         match face, self.direction:
-            case 1, 'left': mv = Point(149 - rel_row, 0), 'right'  # -> face 5
-            case 1, 'up': mv = Point(rel_col + 150, 0), 'right'  # -> face 6
+            case 1, -1j: mv = complex(149 - rel_row, 0), 1j  # -> face 5
+            case 1, -1: mv = complex(rel_col + 150, 0), 1j  # -> face 6
 
-            case 2, 'up': mv = Point(199, rel_col), 'up'  # -> face 6
-            case 2, 'right': mv = Point(149 - rel_row, 99), 'left'  # -> face 4
-            case 2, 'down': mv = Point(rel_col + 50, 99), 'left'  # -> face 3
+            case 2, -1: mv = complex(199, rel_col), -1  # -> face 6
+            case 2, 1j: mv = complex(149 - rel_row, 99), -1j  # -> face 4
+            case 2, 1: mv = complex(rel_col + 50, 99), -1j  # -> face 3
 
-            case 3, 'left': mv = Point(100, rel_row), 'down'  # -> face 5
-            case 3, 'right': mv = Point(49, rel_row + 100), 'up'  # -> face 2
+            case 3, -1j: mv = complex(100, rel_row), 1  # -> face 5
+            case 3, 1j: mv = complex(49, rel_row + 100), -1  # -> face 2
 
-            case 4, 'down': mv = Point(rel_col + 150, 49), 'left'  # -> face 6
-            case 4, 'right': mv = Point(49 - rel_row, 149), 'left'  # -> face 2
+            case 4, 1: mv = complex(rel_col + 150, 49), -1j  # -> face 6
+            case 4, 1j: mv = complex(49 - rel_row, 149), -1j  # -> face 2
 
-            case 5, 'left': mv = Point(49 - rel_row, 50), 'right'  # -> face 1
-            case 5, 'up': mv = Point(rel_col + 50, 50), 'right'  # -> face 3
+            case 5, -1j: mv = complex(49 - rel_row, 50), 1j  # -> face 1
+            case 5, -1: mv = complex(rel_col + 50, 50), 1j  # -> face 3
 
-            case 6, 'right': mv = Point(149, rel_row + 50), 'up'  # -> face 4
-            case 6, 'down': mv = Point(0, rel_col + 100), 'down'  # -> face 2
-            case 6, 'left': mv = Point(0, rel_row + 50), 'down'  # -> face 1
+            case 6, 1j: mv = complex(149, rel_row + 50), -1  # -> face 4
+            case 6, 1: mv = complex(0, rel_col + 100), 1  # -> face 2
+            case 6, -1j: mv = complex(0, rel_row + 50), 1  # -> face 1
 
             case _:
                 raise NotImplementedError(f'No transition {self.direction} from face {face}.')
@@ -76,33 +78,26 @@ class Cube:
 
     def move(self, distance: int) -> None:
         # print(distance, self.direction)
-
         for _ in range(distance):
-            row, col = self.location
             current_location = self.location
             current_direction = self.direction
-
-            match self.direction:
-                case 'right': col += 1
-                case 'left': col -= 1
-                case 'up': row -= 1
-                case 'down': row += 1
+            self.location += self.direction
 
             try:
-                cell = self.map[row][col]
+                cell = slice_with_complex(self.map, self.location)
             except IndexError:
                 cell = ' '
 
             match (cell, self.part2):
-                case (' ', False): _next = self.warp(row, col)
-                case (' ', True): _next, self.direction = self.shift(current_location.row, current_location.col)
-                case _: _next = Point(row, col)
+                case (' ', False): _next = self.warp(self.location)
+                case (' ', True): _next, self.direction = self.shift(current_location)
+                case _: _next = self.location
 
-            match self.map[_next.row][_next.col]:
+            match slice_with_complex(self.map, _next):
                 case '.' | 'X': self.location = _next
                 case '#': self.location, self.direction = current_location, current_direction
 
-            self.map[self.location.row][self.location.col] = 'X'
+            self.map[int(self.location.real), int(self.location.imag)] = 'X'
 
     def start(self) -> int:
         """test part 1:
@@ -119,14 +114,12 @@ class Cube:
                 move = int(next(self.path))
                 self.move(move)
                 turn = next(self.path)
-                turn = 1 if turn == 'R' else 0
-                self.direction = DIRECTIONS[self.direction][turn]
+                self.direction *= -1j if turn == 'R' else 1j
             except StopIteration:
-                col = self.location.col + 1
-                row = self.location.row + 1
-                direction = DIRECTIONS[self.direction][2]
+                self.location += 1+1j
+                direction = DIRECTIONS[self.direction]
                 # print(self.map)
-                return (1000 * row) + (4 * col) + direction
+                return int((1000 * self.location.real) + (4 * self.location.imag) + direction)
 
 
 print(Cube(parsers.blocks(loader.get())).start())  # 76332

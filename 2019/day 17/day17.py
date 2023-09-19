@@ -1,5 +1,4 @@
 from numpy.typing import NDArray
-from tools.common import Point
 from tools import parsers, loader, intcode, common
 import numpy as np
 from more_itertools import split_at
@@ -26,23 +25,14 @@ def part_1() -> int:
     return sum(params)
 
 
-DIRECTIONS = {'up': Point(-1, 0), 'down': Point(1, 0),
-              'left': Point(0, -1), 'right': Point(0, 1)}
-TURNS = {'up': ('left', 'right'),
-         'right': ('up', 'down'),
-         'down': ('right', 'left'),
-         'left': ('down', 'up')}
-
-
-def part_2() -> int:
-    """Not a general solution, input-specific."""
+def get_path() -> list:
     img = get_map()
-    path = set(Point(i, j) for i, j in np.argwhere(img == 1))
-    pos = Point(*np.argwhere(img == 94)[0])  # 94 = ^
-    direction = 'up'
+    path = set(complex(i, j) for i, j in np.argwhere(img == 1))
+    pos = complex(*np.argwhere(img == 94)[0])  # 94 = ^
+    direction = -1
     track = []
     while True:
-        new_pos = pos + DIRECTIONS[direction]
+        new_pos = pos + direction
         if new_pos in path:
             pos = new_pos
             if isinstance(track[-1], int):
@@ -53,14 +43,18 @@ def part_2() -> int:
             if len(track) > 2 and isinstance(track[-1], str):
                 track.pop()
                 break
-            new_pos = pos + DIRECTIONS[TURNS[direction][0]]
+            new_pos = pos + direction * 1j
             if new_pos in path:
-                direction = TURNS[direction][0]
+                direction *= 1j
                 track.append('L')
             else:
-                direction = TURNS[direction][1]
+                direction *= -1j
                 track.append('R')
+    return track
 
+
+def part_2() -> int:
+    """Not a general solution, input-specific."""
     program = ('A,C,A,B,A,C,B,C,B,C\n'
                'R,10,R,10,R,6,R,4\n'
                'R,4,L,4,L,10,L,10\n'

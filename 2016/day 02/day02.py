@@ -1,10 +1,10 @@
 from numpy.typing import NDArray
 from tools import parsers, loader
-from tools.common import Point
 import numpy as np
+from tools.common import slice_with_complex
 
 
-DIRECTIONS = {'U': Point(-1, 0), 'D': Point(1, 0), 'L': Point(0, -1), 'R': Point(0, 1)}
+DIRECTIONS = {'U': -1, 'D': 1, 'L': -1j, 'R': 1j}
 TEST = """ULL
 RRDDD
 LURDL
@@ -14,14 +14,14 @@ UUUUD
 
 def move(numpad: NDArray, data: list[str]) -> str:
     numpad = np.pad(numpad, 1, 'constant', constant_values=0)
-    current = Point(*np.argwhere(numpad == '5')[0])
+    current = complex(*np.argwhere(numpad == '5')[0])
     code = ''
     for line in data:
         for i in line:
             _new = current + DIRECTIONS[i]
-            if numpad[_new] != '0':
+            if slice_with_complex(numpad, _new) != '0':
                 current = _new
-        code += numpad[current]
+        code += slice_with_complex(numpad, current)
     return code
 
 
