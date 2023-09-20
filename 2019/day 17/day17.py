@@ -2,6 +2,7 @@ from numpy.typing import NDArray
 from tools import parsers, loader, intcode, common
 import numpy as np
 from more_itertools import split_at
+import re
 
 
 def get_map() -> NDArray:
@@ -25,7 +26,7 @@ def part_1() -> int:
     return sum(params)
 
 
-def get_path() -> list:
+def get_path() -> str:
     img = get_map()
     path = set(complex(i, j) for i, j in np.argwhere(img == 1))
     pos = complex(*np.argwhere(img == 94)[0])  # 94 = ^
@@ -50,16 +51,18 @@ def get_path() -> list:
             else:
                 direction *= -1j
                 track.append('R')
-    return track
+    return ','.join(str(i) for i in track)
 
 
 def part_2() -> int:
-    """Not a general solution, input-specific."""
-    program = ('A,C,A,B,A,C,B,C,B,C\n'
-               'R,10,R,10,R,6,R,4\n'
-               'R,4,L,4,L,10,L,10\n'
-               'R,10,R,10,L,4\n'
-               'n\n')
+    path = get_path() + ','
+    pattern = re.compile(r'^(.{1,20})\1*?(.{1,20})(?:\1|\2)*?(.{1,20})(?:\1|\2|\3)*$')
+    chunks = dict(zip(re.match(pattern, path).groups(), ['A', 'B', 'C']))
+    program = ''
+    for chunk, letter in chunks.items():
+        path = re.sub(chunk, letter, path)
+        program += f'{chunk[:-1]}\n'
+    program = f"{','.join(path)}\n{program}\n\n"
     compiled = list(map(ord, list(program)))
     pc = intcode.Intcode(parsers.lines(loader.get()))
     pc.data[0] = 2
