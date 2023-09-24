@@ -17,6 +17,8 @@ The solutions are mostly general and should work with all inputs, with some exce
 
 
 ## Completion
+
+[![Completion Status](https://img.shields.io/endpoint?url=https://raw.githubusercontent.com/Nyaaa/advent-of-code/master/2015/badge.json)](https://github.com/Nyaaa/advent-of-code/tree/master/2015)\
 [![Completion Status](https://img.shields.io/endpoint?url=https://raw.githubusercontent.com/Nyaaa/advent-of-code/master/2016/badge.json)](https://github.com/Nyaaa/advent-of-code/tree/master/2016)\
 [![Completion Status](https://img.shields.io/endpoint?url=https://raw.githubusercontent.com/Nyaaa/advent-of-code/master/2017/badge.json)](https://github.com/Nyaaa/advent-of-code/tree/master/2017)\
 [![Completion Status](https://img.shields.io/endpoint?url=https://raw.githubusercontent.com/Nyaaa/advent-of-code/master/2018/badge.json)](https://github.com/Nyaaa/advent-of-code/tree/master/2018)\
