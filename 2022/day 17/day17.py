@@ -1,7 +1,9 @@
-from itertools import cycle, chain, repeat
-from numpy.typing import NDArray
+from itertools import cycle, repeat
 from tools import parsers, loader, timer
 import numpy as np
+from more_itertools import roundrobin
+from numpy.lib.stride_tricks import sliding_window_view
+
 
 np.set_printoptions(threshold=np.inf, linewidth=100)
 test = '>>><<><>><<<>><>>><<<>>><<<><<<>><>><<>>'
@@ -18,23 +20,22 @@ DIRS = {
 
 
 class Cave:
-    def __init__(self, jets):
+    def __init__(self, jets: str) -> None:
         self.cavern = np.ones((1, 7), dtype=bool)
         self.stones = cycle(STONES)
-        self.jets = roundrobin(jets)
+        self.jets = roundrobin(cycle(jets), repeat('d'))
 
-    def spawn_stone(self, stone: list[tuple]):
+    def spawn_stone(self, stone: list[tuple[int, int]]) -> None:
         stone_height = len(set(row for row, _ in stone))
         # only checking top 10 rows
         empty_rows = np.count_nonzero(np.all(~self.cavern[:10], axis=1))
         to_add = stone_height + 3 - empty_rows
         if to_add > 0:
-            # numpy padding: [(top, bottom), (left, right)] value is thickness
-            self.cavern = np.pad(self.cavern, [(to_add, 0), (0, 0)], mode='constant', constant_values=0)
+            self.cavern = np.r_[np.zeros((to_add, 7), dtype=bool), self.cavern]
         elif to_add < 0:
-            self.cavern = np.delete(self.cavern, np.s_[0:abs(to_add)], 0)
+            self.cavern = np.delete(self.cavern, slice(0, abs(to_add)), 0)
 
-    def move(self, stone: list[tuple]):
+    def move(self, stone: list[tuple[int, int]]) -> None:
         while True:
             direction = next(self.jets)
             _stone = [(unit[0] + DIRS[direction][0], unit[1] + DIRS[direction][1]) for unit in stone]
@@ -69,10 +70,9 @@ class Cave:
 
             if not seq_length and rocks > 2022:
                 top = self.cavern[5:25]  # increase the window size if fails
-                found = np.all(np.all(rolling_window(self.cavern, top.shape) == top, axis=2), axis=2).nonzero()
-                rez = found[0]
-                if 3 >= len(rez) > 1 and rez[-1] not in matches:
-                    matches[rez[-1]] = counter
+                found = np.all(np.all(sliding_window_view(self.cavern, top.shape) == top, axis=2), axis=2).nonzero()[0]
+                if 3 >= len(found) > 1 and found[-1] not in matches:
+                    matches[found[-1]] = counter
                 if len(matches) == 2:
                     seq_length = int(np.diff(list(matches.keys())))
                     seq_stones = int(np.diff(list(matches.values())))
@@ -84,21 +84,8 @@ class Cave:
 
         # Trim empty rows at the top
         empty_rows = np.count_nonzero(np.all(~self.cavern[:20], axis=1))
-        self.cavern = np.delete(self.cavern, np.s_[0:empty_rows], 0)
+        self.cavern = np.delete(self.cavern, slice(0, empty_rows), 0)
         return len(self.cavern) - 1 + skipped_height
-
-
-def rolling_window(arr: NDArray, shape: tuple) -> NDArray:
-    """Rolling window for 2D numpy array"""
-    s = (arr.shape[0] - shape[0] + 1,) + (arr.shape[1] - shape[1] + 1,) + shape
-    strides = arr.strides + arr.strides
-    return np.lib.stride_tricks.as_strided(arr, shape=s, strides=strides)
-
-
-def roundrobin(jets):
-    """Alternate between two iterators"""
-    nexts = cycle(iter(it).__next__ for it in (cycle(jets), repeat('d')))
-    yield from chain.from_iterable(inext() for inext in nexts)
 
 
 with timer.context():
