@@ -8,13 +8,13 @@ from itertools import count, combinations
 
 class State(NamedTuple):
     elevator: int
-    floors: frozenset
+    floors: frozenset[complex]
     steps: int = 0
 
     def __eq__(self, other: State) -> bool:
         return self.floors == other.floors and self.elevator == other.elevator
 
-    def __hash__(self):
+    def __hash__(self) -> int:
         return hash(self.floors) + self.elevator
 
     def is_valid(self) -> bool:
@@ -88,3 +88,4 @@ class Facility:
 
 
 print(Facility(parsers.lines(loader.get())).start())  # 33
+print(Facility(parsers.lines(loader.get()), True).start())  # 57, very slow!
