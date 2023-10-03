@@ -14,7 +14,7 @@ def part1_hasher(salt: str) -> Generator[tuple[int, str]]:
         yield index, h.hexdigest()
 
 
-def part2_hasher(salt: str):
+def part2_hasher(salt: str) -> Generator[tuple[int, str]]:
     _hasher = part1_hasher(salt)
     while True:
         i, h = next(_hasher)
@@ -23,7 +23,14 @@ def part2_hasher(salt: str):
         yield i, h
 
 
-def find_keys(hasher):
+def find_keys(salt: str, part2: bool) -> int:
+    """
+    >>> print(find_keys('abc', False))
+    22728
+
+    >>> print(find_keys('abc', True))
+    22551"""
+    hasher = part2_hasher(salt) if part2 else part1_hasher(salt)
     keys = []
     candidates = []
     while len(keys) < 64:
@@ -31,29 +38,13 @@ def find_keys(hasher):
 
         candidates = [i for i in candidates if i[1] + 1000 >= index]
         for cand, i in candidates:
-            quintuplet = re.search(fr'({cand})\1\1\1\1', _hash)
-            if quintuplet:
+            if re.search(fr'({cand})\1\1\1\1', _hash):
                 keys.append(i)
 
-        triplet = re.search(r'(.)\1\1', _hash)
-        if triplet:
+        if triplet := re.search(r'(.)\1\1', _hash):
             candidates.append((triplet.group(1), index))
     return sorted(keys)[63]
 
 
-def start(salt: str, part2: bool) -> int:
-    """
-    >>> print(start('abc', False))
-    22728
-
-    >>> print(start('abc', True))
-    22551"""
-    if not part2:
-        hasher = part1_hasher(salt)
-    else:
-        hasher = part2_hasher(salt)
-    return find_keys(hasher)
-
-
-print(start(parsers.string(loader.get()), False))  # 16106
-print(start(parsers.string(loader.get()), True))  # 22423
+print(find_keys(parsers.string(loader.get()), False))  # 16106
+print(find_keys(parsers.string(loader.get()), True))  # 22423
