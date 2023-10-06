@@ -1,10 +1,12 @@
-from tools import parsers, loader, common
-import numpy as np
 from collections import deque
+
+import numpy as np
+
+from tools import common, loader, parsers
 
 
 class Octopi:
-    def __init__(self, data):
+    def __init__(self, data: list[str]) -> None:
         data = [list(i) for i in data]
         self.grid = np.asarray(data, dtype=int)
 
@@ -27,7 +29,7 @@ class Octopi:
             while flashed:
                 i = flashed.popleft()
                 done.append(i)
-                for index, value in common.get_adjacent(self.grid, i, with_corners=True):
+                for index, _value in common.get_adjacent(self.grid, i, with_corners=True):
                     self.grid[index] += 1
                     if self.grid[index] > 9 and index not in flashed and index not in done:
                         flashed.append(index)

@@ -1,13 +1,16 @@
 import re
-from tools import parsers, loader, common
-import numpy as np
 from operator import itemgetter
+
+import numpy as np
+from numpy.typing import NDArray
+
+from tools import common, loader, parsers
 
 np.set_printoptions(linewidth=np.inf)
 
 
 class Paper:
-    def __init__(self, data):
+    def __init__(self, data: list[list[str]]) -> None:
         self.instructions = []
         points = [(int(col), int(row)) for row, col in (i.split(',') for i in data[0])]
         max_rows = max(points, key=itemgetter(0))[0] + 1
@@ -23,7 +26,7 @@ class Paper:
             p = pattern.search(i)
             self.instructions.append((p.group(1), int(p.group(2))))
 
-    def fold(self, instruction: tuple[str, int]):
+    def fold(self, instruction: tuple[str, int]) -> None:
         axis = 1 if instruction[0] == 'x' else 0
         index = instruction[1]
 
@@ -31,14 +34,14 @@ class Paper:
         side_b = np.flip(split[2], axis=axis)
         self.sheet = split[0] | side_b
 
-    def part_1(self):
+    def part_1(self) -> int:
         """
         >>> print(Paper(parsers.blocks('test.txt')).part_1())
         17"""
         self.fold(self.instructions[0])
         return np.count_nonzero(self.sheet)
 
-    def part_2(self):
+    def part_2(self) -> NDArray:
         for i in self.instructions:
             self.fold(i)
         return common.convert_to_image(self.sheet)

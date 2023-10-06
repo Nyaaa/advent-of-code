@@ -1,5 +1,6 @@
-from tools import parsers, loader
 import numpy as np
+
+from tools import loader, parsers
 
 
 class Area:
@@ -27,7 +28,8 @@ class Area:
                 part2 += 1
             closest_point = min(distances, key=lambda x: x[0])[1]
             self.points[closest_point] += 1
-            if point[0] == 0 or point[0] == self.max_row or point[1] == 0 or point[1] == self.max_col:
+            if (point[0] == 0 or point[0] == self.max_row
+                    or point[1] == 0 or point[1] == self.max_col):
                 self.infinite.add(closest_point)
         part1 = max(v for k, v in self.points.items() if k not in self.infinite)
         return part1, part2

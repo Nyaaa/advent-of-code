@@ -1,8 +1,9 @@
-from tools import parsers, loader, common
 import string
+
 import networkx as nx
 import numpy as np
 
+from tools import common, loader, parsers
 
 test = """Sabqponm
 abcryxxl
@@ -19,7 +20,7 @@ class Graph:
     weights['S'] = 0
     weights['E'] = 25
 
-    def __init__(self, array: list, start: str):
+    def __init__(self, array: list, start: str) -> None:
         _grid = []
         self.start_coord = []
         self.end_coord = None
@@ -40,14 +41,14 @@ class Graph:
         self.grid = np.array(_grid, dtype=str)
         self.build_graph()
 
-    def build_graph(self):
+    def build_graph(self) -> None:
         for index, letter in np.ndenumerate(self.grid):
             for ajd_index, adj_value in common.get_adjacent(self.grid, index):
                 weight = self.weights[letter]
                 if self.weights[adj_value] <= weight + 1:
                     self.digraph.add_edge(index, ajd_index)
 
-    def solve(self):
+    def solve(self) -> int:
         """test part1:
         >>> Graph(parsers.inline_test(test), 'S').solve()
         31
@@ -59,7 +60,9 @@ class Graph:
         distance = float('inf')
         for point in self.start_coord:
             try:
-                attempt = nx.shortest_path_length(self.digraph, source=point, target=self.end_coord)
+                attempt = nx.shortest_path_length(
+                    self.digraph, source=point, target=self.end_coord
+                )
             except nx.exception.NetworkXNoPath:
                 continue
             if attempt <= distance:

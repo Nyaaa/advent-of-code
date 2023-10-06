@@ -1,5 +1,6 @@
 import networkx as nx
-from tools import parsers, loader
+
+from tools import loader, parsers
 
 
 class Sleigh:

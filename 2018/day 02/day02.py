@@ -1,8 +1,8 @@
+import difflib
 from collections import Counter
 from itertools import combinations
-import difflib
 
-from tools import parsers, loader
+from tools import loader, parsers
 
 
 def part_1() -> int:

@@ -1,17 +1,18 @@
 from collections import Counter
-from tools import parsers, loader
-from itertools import pairwise
 from functools import cache
+from itertools import pairwise
+
+from tools import loader, parsers
 
 
 class Polymer:
-    def __init__(self, data):
+    def __init__(self, data: list[list[str]]) -> None:
         self.template: str = data[0][0]
-        self.rules: dict = {i: j for i, j in (x.split(' -> ') for x in data[1])}
+        self.rules: dict = dict(x.split(' -> ') for x in data[1])
         self.counter: Counter = Counter(self.template)
 
     @cache
-    def count(self, pair: str, steps: int):
+    def count(self, pair: str, steps: int) -> Counter | None:
         if steps == 0:
             return None
         new = self.rules[pair]
@@ -20,7 +21,7 @@ class Polymer:
             _counter.update(self.count(pair=i, steps=steps - 1))
         return _counter
 
-    def start(self, steps: int):
+    def start(self, steps: int) -> int:
         """test part 1:
         >>> print(Polymer(parsers.blocks('test.txt')).start(10))
         1588

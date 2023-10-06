@@ -1,11 +1,13 @@
 import re
 from typing import NamedTuple
-from tools import parsers, loader
+
 import numpy as np
+
+from tools import loader, parsers
 
 
 class Claim(NamedTuple):
-    id: int
+    ident: int
     start_col: int
     start_row: int
     cols: int
@@ -37,7 +39,7 @@ class Fabric:
         self.part_1()
         for claim in self.claims:
             if np.all(self.array[claim.sheet_size] == 1):
-                return claim.id
+                return claim.ident
 
 
 print(Fabric(parsers.lines(loader.get())).part_1())  # 118223

@@ -1,8 +1,9 @@
-from tools import parsers, loader
 from collections import deque
 from math import lcm
+
 import numpy as np
 
+from tools import loader, parsers
 
 DIRECTIONS = {'>': 1j, '<': -1j, '^': -1, 'v': 1}
 
@@ -18,10 +19,11 @@ class Blizzard:
 
     def precalculate_maps(self) -> list[set[complex]]:
         map_list = []
-        wind_map = [(complex(r, c), d) for d in DIRECTIONS.keys() for r, c in list(zip(*np.where(self.data == d)))]
+        wind_map = [(complex(r, c), d) for d in DIRECTIONS
+                    for r, c in list(zip(*np.where(self.data == d)))]
         for _ in range(self.map_num + 1):
             wind_map = self.generate_map(wind_map)
-            map_list.append(set(point for point, d in wind_map))
+            map_list.append({point for point, d in wind_map})
         return map_list
 
     def generate_map(self, wind_map: list[tuple[complex, str]]) -> list[tuple[complex, str]]:

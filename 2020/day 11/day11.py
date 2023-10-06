@@ -1,13 +1,14 @@
-from tools import parsers, loader, common
 import numpy as np
+
+from tools import common, loader, parsers
 
 
 class Lobby:
-    def __init__(self, data):
+    def __init__(self, data: list[str]) -> None:
         # 0 = floor, 1 = free seat, 2 = occupied seat
-        self.map = np.array([list(0 if i == '.' else 1 for i in row) for row in data])
+        self.map = np.array([[0 if i == '.' else 1 for i in row] for row in data])
 
-    def part_1(self):
+    def part_1(self) -> int:
         """
         >>> print(Lobby(parsers.lines('test.txt')).part_1())
         37"""
@@ -40,7 +41,7 @@ class Lobby:
                 next_cell = (next_cell[0] + direction[0], next_cell[1] + direction[1])
         return occupied
 
-    def part_2(self):
+    def part_2(self) -> int:
         """
         >>> print(Lobby(parsers.lines('test.txt')).part_2())
         26"""

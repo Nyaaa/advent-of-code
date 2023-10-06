@@ -1,20 +1,20 @@
-from tools import parsers, loader
+from tools import loader, parsers
 
 DIGITS = {7: 8, 3: 7, 4: 4, 2: 1}
 TEST = 'acedgfb cdfbe gcdfa fbcad dab cefabd cdfgeb eafb cagedb ab | cdfeb fcadb cdfeb cdbaf'
 
 
 class Display:
-    def __init__(self, data):
+    def __init__(self, data: list[str]) -> None:
         self.data = [[a.split(), b.split()] for a, b in (i.split(' | ') for i in data)]
 
-    def part_1(self):
+    def part_1(self) -> int:
         """
         >>> print(Display(parsers.lines('test.txt')).part_1())
         26"""
         return sum([sum(1 for i in out if len(i) in DIGITS) for _, out in self.data])
 
-    def part_2(self):
+    def part_2(self) -> int:
         """
         >>> print(Display(parsers.lines('test.txt')).part_2())
         61229"""
@@ -41,7 +41,7 @@ class Display:
                         case (6, _, 4): vals[9] = i
                         case (6, _, _): vals[0] = i
 
-            di = dict((v, k) for k, v in vals.items())
+            di = {v: k for k, v in vals.items()}
             num = ''
             for i in out:
                 i = frozenset(i)

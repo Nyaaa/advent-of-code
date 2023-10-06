@@ -1,12 +1,13 @@
 import re
-from collections import defaultdict, Counter
+from collections import Counter, defaultdict
 from functools import cached_property
+from itertools import permutations
 from math import prod, sqrt
 
-from numpy.typing import NDArray
-from tools import parsers, loader
 import numpy as np
-from itertools import permutations
+from numpy.typing import NDArray
+
+from tools import loader, parsers
 
 # monster is handled as a tile to get rotations
 MONSTER = ["0",
@@ -16,15 +17,15 @@ MONSTER = ["0",
 
 
 class Tile:
-    def __init__(self, tile_data: list):
+    def __init__(self, tile_data: list[str]) -> None:
         self.id = int(re.findall(r'\d+', tile_data[0])[0])
-        self.pixels = np.array([list(1 if i == '#' else 0 for i in row) for row in tile_data[1:]])
+        self.pixels = np.array([[1 if i == '#' else 0 for i in row] for row in tile_data[1:]])
 
-    def __repr__(self):
+    def __repr__(self) -> str:
         return str(self.id)
 
     @cached_property
-    def all_rotations(self):
+    def all_rotations(self) -> list[tuple[NDArray, ...]]:
         tile = self.pixels
         rotations = []
         for _ in range(2):
@@ -38,21 +39,22 @@ class Tile:
         return rotations
 
     @cached_property
-    def all_edges(self):
-        return [str(element) for sublist in (i[1] for i in self.all_rotations) for element in sublist]
+    def all_edges(self) -> list[str]:
+        return [str(element) for sublist in
+                (i[1] for i in self.all_rotations) for element in sublist]
 
-    def get_edges(self, tile: NDArray = None):
+    def get_edges(self, tile: NDArray = None) -> tuple[int, ...]:
         if tile is None:
             tile = self.pixels
         return tile[0], tile[-1], tile[:, 0], tile[:, -1]  # top, bottom, left, right
 
 
 class Jigsaw:
-    def __init__(self, data: list):
+    def __init__(self, data: list[list[str]]) -> None:
         self.tiles = [Tile(i) for i in data]
         self.size = int(sqrt(len(self.tiles)))
 
-    def get_matching_borders(self):
+    def get_matching_borders(self) -> defaultdict:
         matches = defaultdict(set)
         for tile, other in permutations(self.tiles, 2):
             for i in tile.all_edges:
@@ -68,20 +70,21 @@ class Jigsaw:
         c = Counter([i.pop() for i in values if len(i) == 1])
         return [key for key, value in c.items() if value == 4]
 
-    def part_1(self):
+    def part_1(self) -> int:
         """
         >>> print(Jigsaw(parsers.blocks('test.txt')).part_1())
         20899048083289"""
         return prod([i.id for i in self.get_corners()])
 
-    def compose_map(self):
+    def compose_map(self) -> NDArray[Tile]:
         matches = self.get_matching_borders()
         grid = np.zeros(shape=(self.size, self.size), dtype=Tile)
         for corner in self.get_corners():
             corner_edges = corner.get_edges()
             outer_edges = [i for i in corner_edges if len(matches[str(i)]) == 1]
             for tile, edges in corner.all_rotations:
-                if np.array_equal(outer_edges[0], edges[2]) and np.array_equal(outer_edges[1], edges[0]):
+                if (np.array_equal(outer_edges[0], edges[2])
+                        and np.array_equal(outer_edges[1], edges[0])):
                     corner.pixels = tile
                     grid[0, 0] = corner
         for i, val in np.ndenumerate(grid):
@@ -106,7 +109,7 @@ class Jigsaw:
                     grid[i] = bottom_tile
         return grid
 
-    def part_2(self):
+    def part_2(self) -> int:
         """
         >>> print(Jigsaw(parsers.blocks('test.txt')).part_2())
         273"""

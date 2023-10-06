@@ -1,15 +1,16 @@
-from tools import parsers, loader, intcode
-from more_itertools import sliced, ilen
+from more_itertools import ilen, sliced
+
+from tools import intcode, loader, parsers
 
 
 class Game:
-    def __init__(self):
+    def __init__(self) -> None:
         self.pc = intcode.Intcode(parsers.lines(loader.get()))
         self.ball = None
         self.paddle = None
-        self.window = dict()
+        self.window = {}
 
-    def compose_window(self, output):
+    def compose_window(self, output: list[int]) -> None:
         for col, row, _id in sliced(output, 3):
             point = (row, col)
             self.window[point] = _id
@@ -18,12 +19,12 @@ class Game:
             elif _id == 4:
                 self.ball = point
 
-    def part_1(self):
+    def part_1(self) -> int:
         self.pc.run()
         self.compose_window(self.pc.logged_output)
         return ilen(i for i in self.window.values() if i == 2)
 
-    def part_2(self):
+    def part_2(self) -> int:
         self.pc.data[0] = 2
         result = self.pc.run()
         self.compose_window(result)

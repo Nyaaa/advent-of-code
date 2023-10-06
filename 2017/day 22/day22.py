@@ -1,4 +1,4 @@
-from tools import parsers, loader
+from tools import loader, parsers
 
 TEST = """..#
 #..
@@ -8,7 +8,7 @@ TEST = """..#
 
 class Virus:
     def __init__(self, data: list[str]) -> None:
-        self.infected = dict()  # row, column
+        self.infected = {}  # row, column
         for i, row in enumerate(data):
             for j, cell in enumerate(row):
                 if cell == '#':

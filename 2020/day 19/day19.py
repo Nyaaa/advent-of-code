@@ -1,11 +1,11 @@
 import regex as re
 
-from tools import parsers, loader
+from tools import loader, parsers
 
 
 class Message:
-    def __init__(self, data: list):
-        self.rules = dict()
+    def __init__(self, data: list[list[str]]) -> None:
+        self.rules = {}
         self.messages = data[1]
         for line in data[0]:
             name, sets = line.split(': ')
@@ -15,27 +15,27 @@ class Message:
             self.rules[name] = sets
         self.pattern = self.compose_pattern()
 
-    def compose_pattern(self):
+    def compose_pattern(self) -> re.Pattern:
         pattern = self.rules['0']
         while match := re.search(r'\d+', pattern):
             val = self.rules[match.group()]
             pattern = f'{pattern[:match.start()]} {val} {pattern[match.end():]}'
         return re.compile(f'^{pattern}$'.replace(' ', ''))
 
-    def part_1(self):
+    def part_1(self) -> int:
         """
         >>> print(Message(parsers.blocks('test.txt')).part_1())
         3"""
-        return sum((1 for message in self.messages if self.pattern.match(message)))
+        return sum(1 for message in self.messages if self.pattern.match(message))
 
-    def part_2(self):
+    def part_2(self) -> int:
         """
         >>> print(Message(parsers.blocks('test.txt')).part_2())
         12"""
         self.rules['8'] = '(?: 42 )+'
         self.rules['11'] = '(?P <R> 42 (?&R)? 31 )'  # recursive regexp
         self.pattern = self.compose_pattern()
-        return sum((1 for message in self.messages if self.pattern.match(message)))
+        return sum(1 for message in self.messages if self.pattern.match(message))
 
 
 print(Message(parsers.blocks(loader.get())).part_1())  # 230

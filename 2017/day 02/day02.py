@@ -1,5 +1,6 @@
-from tools import parsers, loader
 from itertools import permutations
+
+from tools import loader, parsers
 
 TEST = """5 1 9 5
 7 5 3

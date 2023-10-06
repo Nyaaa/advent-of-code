@@ -1,7 +1,8 @@
 import queue
 import re
 from collections.abc import Generator
-from tools import parsers, loader
+
+from tools import loader, parsers
 
 
 class Crane:

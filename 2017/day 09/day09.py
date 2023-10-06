@@ -1,5 +1,6 @@
-from tools import parsers, loader
 import re
+
+from tools import loader, parsers
 
 
 def part_1(data: str) -> int:

@@ -1,4 +1,4 @@
-from tools import parsers, loader
+from tools import loader, parsers
 
 
 def reallocate_mem(data: str, part2: bool) -> int:

@@ -1,0 +1,5 @@
+[tool.ruff]
+line-length = 99
+select = ['E', 'F', 'UP', 'NPY', 'SIM', 'ICN', 'C4', 'A', 'B', 'ANN', 'N', 'I']
+ignore = ['E701', 'ANN101']
+exclude = ['tools/*']

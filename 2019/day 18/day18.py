@@ -1,17 +1,19 @@
 import heapq
 from functools import cached_property
-from tools import parsers, loader, common
+
 import numpy as np
+
+from tools import common, loader, parsers
 
 
 class Maze:
-    def __init__(self, data: list[str]):
+    def __init__(self, data: list[str]) -> None:
         self.grid = np.asarray([list(i) for i in data], dtype=str)
         self.keys = {i: val for i, val in np.ndenumerate(self.grid) if val.islower()}
         self.locations = self.keys.copy()
 
     @cached_property
-    def all_paths(self):
+    def all_paths(self) -> dict[str, dict[str, tuple[int, frozenset]]]:
         paths = {}
         for pos, item in self.locations.items():
             queue = [(0, pos, frozenset())]
@@ -32,7 +34,7 @@ class Maze:
             paths[item] = _paths
         return paths
 
-    def part_1(self):
+    def part_1(self) -> int:
         """
         >>> print(Maze(parsers.lines('test.txt')).part_1())
         86
@@ -63,7 +65,7 @@ class Maze:
                     _current = f'{current[:i]}{next_pos}{current[i + 1:]}'
                     heapq.heappush(queue, (steps + _steps, _current, keys | {next_pos}))
 
-    def part_2(self):
+    def part_2(self) -> int:
         """
         >>> print(Maze(parsers.lines('test5.txt')).part_2())
         32"""

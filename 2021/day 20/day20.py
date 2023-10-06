@@ -1,6 +1,7 @@
-from tools import parsers, loader
 import numpy as np
 from numpy.typing import NDArray
+
+from tools import loader, parsers
 
 
 def parse(data: list[list[str]]) -> tuple[NDArray, NDArray]:
@@ -11,7 +12,7 @@ def parse(data: list[list[str]]) -> tuple[NDArray, NDArray]:
     return algorithm, image
 
 
-def enhance(data, steps: int) -> int:
+def enhance(data: list[list[str]], steps: int) -> int:
     """test part 1:
     >>> print(enhance(parsers.blocks('test.txt'), 2))
     35

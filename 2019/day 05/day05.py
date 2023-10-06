@@ -1,4 +1,4 @@
-from tools import parsers, loader, intcode
+from tools import intcode, loader, parsers
 
 pc = intcode.Intcode(parsers.lines(loader.get()))
 print(f'Part 1: {pc.run([1])}')  # 14155342

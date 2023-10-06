@@ -1,8 +1,9 @@
+import hashlib
 import re
 from collections.abc import Generator
-from tools import parsers, loader
-import hashlib
 from itertools import count
+
+from tools import loader, parsers
 
 
 def part1_hasher(salt: str) -> Generator[tuple[int, str]]:

@@ -1,11 +1,12 @@
-from collections import deque
-from tools import parsers, loader
-import sys
 import operator
+import sys
+from collections import deque
+
+from tools import loader, parsers
 
 
 class Monkey:
-    def __init__(self, data):
+    def __init__(self, data: list[str]) -> None:
         self.known = {}
         self.unknown = {}
 
@@ -17,7 +18,7 @@ class Monkey:
                 self.unknown[line[0]] = [*line[1:]]
 
     @staticmethod
-    def operation(a, op, b):
+    def operation(a: int, op: str, b: int) -> int:
         match op:
             case '+':
                 result = operator.add(a, b)
@@ -31,7 +32,7 @@ class Monkey:
                 raise KeyError
         return result
 
-    def part_1(self):
+    def part_1(self) -> int:
         """test part 1:
         >>> print(Monkey(parsers.lines('test.txt')).part_1())
         152"""
@@ -46,7 +47,7 @@ class Monkey:
                 iterate.append(i)
         return int(known['root'])
 
-    def part_2(self):
+    def part_2(self) -> int:
         """Binary search
         test part 2:
         >>> print(Monkey(parsers.lines('test.txt')).part_2())

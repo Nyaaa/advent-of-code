@@ -1,5 +1,6 @@
-from tools import parsers, loader
 import re
+
+from tools import loader, parsers
 
 
 def decompress(line: str, part2: bool) -> int:

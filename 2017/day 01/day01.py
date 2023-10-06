@@ -1,4 +1,4 @@
-from tools import parsers, loader
+from tools import loader, parsers
 
 
 def part_1(data: str) -> int:
@@ -12,7 +12,8 @@ def part_2(data: str) -> int:
     """
     >>> print(part_2('123425'))
     4"""
-    return sum(int(val) for i, val in enumerate(data) if val == data[(i + len(data) // 2) % len(data)])
+    return sum(int(val) for i, val in enumerate(data)
+               if val == data[(i + len(data) // 2) % len(data)])
 
 
 print(part_1(parsers.string(loader.get())))  # 1228

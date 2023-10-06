@@ -1,14 +1,14 @@
-from tools import parsers, loader, intcode
+from tools import intcode, loader, parsers
 
 
 class SpringScript:
-    def __init__(self):
+    def __init__(self) -> None:
         self.pc = intcode.Intcode(parsers.lines(loader.get()))
 
-    def start(self, program: list[str]):
-        return self.pc.run(list(ord(x) for x in '\n'.join(program) + '\n'))
+    def start(self, program: list[str]) -> int:
+        return self.pc.run([ord(x) for x in '\n'.join(program) + '\n'])
 
-    def part_1(self):
+    def part_1(self) -> int:
         program = [
             'NOT A J',
             'NOT B T',
@@ -20,7 +20,7 @@ class SpringScript:
         ]
         return self.start(program)
 
-    def part_2(self):
+    def part_2(self) -> int:
         program = [
             'NOT C J',
             'AND D J',

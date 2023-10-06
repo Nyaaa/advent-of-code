@@ -1,5 +1,6 @@
-from tools import parsers, loader
 from string import ascii_lowercase
+
+from tools import loader, parsers
 
 
 def part_1(data: str) -> int:

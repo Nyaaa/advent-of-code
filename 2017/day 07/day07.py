@@ -1,7 +1,9 @@
-from collections import Counter
-from tools import parsers, loader
-import networkx as nx
 import re
+from collections import Counter
+
+import networkx as nx
+
+from tools import loader, parsers
 
 
 class Tower:
@@ -25,7 +27,7 @@ class Tower:
         60"""
         seen = set()
         while True:
-            for node, weight in self.G.nodes(data=True):
+            for node, _weight in self.G.nodes(data=True):
                 children = set(self.G.neighbors(node))
                 if not children:
                     seen.add(node)
@@ -37,7 +39,9 @@ class Tower:
                 count = Counter(total_weight)
                 if len(count) != 1:
                     self_weight = count.most_common()[-1][0]
-                    self_weight = next(i['self_weight'] for i in weights if i['weight'] == self_weight)
+                    self_weight = next(
+                        i['self_weight'] for i in weights if i['weight'] == self_weight
+                    )
                     return self_weight - (max(total_weight) - min(total_weight))
                 if weights:
                     self.G.nodes[node]['weight'] += sum(total_weight)

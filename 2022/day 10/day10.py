@@ -1,17 +1,20 @@
-from tools import parsers, loader
-
-d = parsers.lines(loader.get())
-t = parsers.lines('test10.txt')
+from tools import loader, parsers
 
 
 class CRT:
-    def __init__(self, data):
+    def __init__(self, data: list[str]) -> None:
         self.next_line = iter(data)
         self.image = ['', '', '', '', '', '']
         self.out = {}
         self.run()
 
-    def run(self, x=1, tick=0, timer=0, offset=20, v_line=0, row=-1, cmd=None, value=None):
+    def run(self) -> None:
+        x = 1
+        tick = timer = v_line = value = 0
+        offset = 20
+        row = -1
+        cmd = ''
+
         while True:
             if tick % 40 == 0:
                 row += 1
@@ -42,16 +45,16 @@ class CRT:
             sprite = (x, x + 1, x + 2)
             self.image[row] += '█' if v_line in sprite else '⠀'
 
-    def part_1(self):
+    def part_1(self) -> int:
         """test part 1:
-        >>> print(CRT(t).part_1())
+        >>> print(CRT(parsers.lines('test10.txt')).part_1())
         13140
         """
         return sum([i * self.out[i] for i in self.out])
 
-    def part_2(self):
+    def part_2(self) -> str:
         """test part 1:
-        >>> print(CRT(t).part_2())
+        >>> print(CRT(parsers.lines('test10.txt')).part_2())
         ██⠀⠀██⠀⠀██⠀⠀██⠀⠀██⠀⠀██⠀⠀██⠀⠀██⠀⠀██⠀⠀██⠀⠀
         ███⠀⠀⠀███⠀⠀⠀███⠀⠀⠀███⠀⠀⠀███⠀⠀⠀███⠀⠀⠀███⠀
         ████⠀⠀⠀⠀████⠀⠀⠀⠀████⠀⠀⠀⠀████⠀⠀⠀⠀████⠀⠀⠀⠀
@@ -69,5 +72,5 @@ class CRT:
         return result
 
 
-print(CRT(d).part_1())  # 15680
-print(CRT(d).part_2())  # ZFBFHGUP
+print(CRT(parsers.lines(loader.get())).part_1())  # 15680
+print(CRT(parsers.lines(loader.get())).part_2())  # ZFBFHGUP

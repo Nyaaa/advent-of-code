@@ -1,4 +1,4 @@
-from tools import parsers, loader
+from tools import loader, parsers
 
 MATCHES = ('()', '[]', '<>', '{}')
 SCORE = {
@@ -24,7 +24,7 @@ class Brackets:
             return new_string
         return self.remove_closed(new_string)
 
-    def part_1(self, data) -> int:
+    def part_1(self, data: list[str]) -> int:
         """
         >>> print(Brackets().part_1(parsers.lines('test.txt')))
         26397"""
@@ -32,19 +32,19 @@ class Brackets:
         for line in data:
             compressed = self.remove_closed(line)
             for i in compressed:
-                if i in SCORE.keys():
+                if i in SCORE:
                     result += SCORE[i]
                     break
         return result
 
-    def part_2(self, data):
+    def part_2(self, data: list[str]) -> int:
         """
         >>> print(Brackets().part_2(parsers.lines('test.txt')))
         288957"""
         scores = []
         for line in data:
             compressed = self.remove_closed(line)
-            if all(i not in SCORE.keys() for i in compressed):
+            if all(i not in SCORE for i in compressed):
                 line_score = 0
                 for i in compressed[::-1]:
                     line_score = line_score * 5 + CLOSE[i]

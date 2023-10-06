@@ -1,10 +1,11 @@
-from tools import parsers, loader, common
 import networkx as nx
 import numpy as np
 
+from tools import common, loader, parsers
+
 
 class Cave:
-    def __init__(self, data, part2: bool = False):
+    def __init__(self, data: list[str], part2: bool = False) -> None:
         self.grid = np.array([[int(i) for i in j] for j in (list(x) for x in data)])
 
         if part2:
@@ -16,19 +17,19 @@ class Cave:
         self.target = (self.grid.shape[0] - 1, self.grid.shape[1] - 1)
         self.build_graph()
 
-    def multiply_grid(self, axis: int):
+    def multiply_grid(self, axis: int) -> None:
         grid = self.grid.copy()
         for _ in range(4):
             grid += 1
             grid[grid > 9] = 1
             self.grid = np.append(self.grid, grid, axis=axis)
 
-    def build_graph(self):
+    def build_graph(self) -> None:
         for index in np.ndindex(self.grid.shape):
             for ajd_index, value in common.get_adjacent(self.grid, index):
                 self.graph.add_edge(index, ajd_index, weight=value)
 
-    def start(self):
+    def start(self) -> int:
         """test part 1:
         >>> print(Cave(parsers.lines('test.txt')).start())
         40

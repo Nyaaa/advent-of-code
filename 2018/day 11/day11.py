@@ -1,8 +1,9 @@
 import numpy as np
-from numpy.typing import NDArray
-from numpy.lib.stride_tricks import sliding_window_view
-from tools import parsers, loader
 from numba import njit
+from numpy.lib.stride_tricks import sliding_window_view
+from numpy.typing import NDArray
+
+from tools import loader, parsers
 
 
 @njit
@@ -36,7 +37,7 @@ class Fuel:
         >>> print(Fuel('18').part_2())
         (90, 269, 16)"""
         best = 0
-        result = tuple()
+        result = ()
         no_increase = 0
         for i in range(3, 301):
             sums = rolling_window(self.grid, (i, i))

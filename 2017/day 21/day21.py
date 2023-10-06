@@ -1,7 +1,7 @@
-from numpy.typing import NDArray
-from tools import parsers, loader
 import numpy as np
+from numpy.typing import NDArray
 
+from tools import loader, parsers
 
 TEST = """../.# => ##./#../...
 .#./..#/### => #..#/..../..../#..#
@@ -9,7 +9,7 @@ TEST = """../.# => ##./#../...
 
 
 def all_rotations(tile: str) -> list[NDArray]:
-    tile = np.array([list(1 if i == '#' else 0 for i in row) for row in tile.split('/')])
+    tile = np.array([[1 if i == '#' else 0 for i in row] for row in tile.split('/')])
     rotations = []
     for _ in range(2):
         for _ in range(4):
@@ -27,7 +27,7 @@ def start(data: list[str], steps: int) -> int:
     rules = {}
     for i in data:
         inp, out = i.split(' => ')
-        out = np.array([list(1 if i == '#' else 0 for i in row) for row in out.split('/')])
+        out = np.array([[1 if i == '#' else 0 for i in row] for row in out.split('/')])
         for rotation in all_rotations(inp):
             rules[rotation.tobytes()] = out
     image = np.array([[0, 1, 0], [0, 0, 1], [1, 1, 1]])

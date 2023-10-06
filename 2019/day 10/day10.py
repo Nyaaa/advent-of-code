@@ -1,25 +1,27 @@
 from __future__ import annotations
-from collections import defaultdict, deque
-from typing import NamedTuple
-from tools import parsers, loader
+
 import math
+from collections import defaultdict, deque
 from itertools import permutations
+from typing import NamedTuple
+
+from tools import loader, parsers
 
 
 class Asteroid(NamedTuple):
     row: int
     col: int
 
-    def get_angle(self, other: Asteroid):
+    def get_angle(self, other: Asteroid) -> float:
         result = math.atan2(other.col - self.col, self.row - other.row) * 180 / math.pi
         return 360 + result if result < 0 else result
 
-    def distance(self, other: Asteroid):
+    def distance(self, other: Asteroid) -> int:
         return abs(self.col - other.col) + abs(self.row - other.row)
 
 
 class Space:
-    def __init__(self, data: list[str]):
+    def __init__(self, data: list[str]) -> None:
         self.asteroids = []
         for i, row in enumerate(data):
             for j, cell in enumerate(row):
@@ -27,7 +29,7 @@ class Space:
                     self.asteroids.append(Asteroid(i, j))
         self.laser = None
 
-    def part_1(self):
+    def part_1(self) -> int:
         """
         >>> print(Space(parsers.lines('test.txt')).part_1())
         210"""
@@ -37,7 +39,7 @@ class Space:
         self.laser, result = max(vision.items(), key=lambda x: len(x[1]))
         return len(result)
 
-    def part_2(self):
+    def part_2(self) -> int:
         """
         >>> print(Space(parsers.lines('test.txt')).part_2())
         802"""

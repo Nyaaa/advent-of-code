@@ -1,9 +1,10 @@
-from tools import parsers, loader
 import re
+
+from tools import loader, parsers
 
 
 class Probe:
-    def __init__(self, data: str):
+    def __init__(self, data: str) -> None:
         target_area = re.findall(r'\d+|-\d+', data)
         # x -> cols, y -> rows
         self.col_min, self.col_max, self.row_min, self.row_max = (int(i) for i in target_area)
@@ -27,7 +28,7 @@ class Probe:
                 return max_height
         return None
 
-    def start(self):
+    def start(self) -> tuple[int, int]:
         """
         >>> print(Probe('target area: x=20..30, y=-10..-5').start())
         (45, 112)"""

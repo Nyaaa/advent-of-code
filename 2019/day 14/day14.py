@@ -1,18 +1,22 @@
-import sys
-from collections import deque, defaultdict
-from math import ceil
-from tools import parsers, loader
 import re
+import sys
+from collections import defaultdict, deque
+from math import ceil
+
+from tools import loader, parsers
 
 
 class Factory:
-    def __init__(self, data: list[str]):
+    def __init__(self, data: list[str]) -> None:
         self.recipes = {}
         for line in data:
             elements = re.findall(r'(\d+)\s+(\w+)', line)
-            self.recipes[elements[-1][1]] = (int(elements[-1][0]), {k: int(v) for v, k in elements[:-1]})
+            self.recipes[elements[-1][1]] = (
+                int(elements[-1][0]),
+                {k: int(v) for v, k in elements[:-1]}
+            )
 
-    def produce(self, requirement: int):
+    def produce(self, requirement: int) -> int:
         production = deque([('FUEL', requirement)])
         inventory = defaultdict(int)
 
@@ -27,17 +31,17 @@ class Factory:
                 request_num = amount - inventory[element]
                 output_num, recipes = self.recipes[element]
                 multiplier = ceil(request_num / output_num)
-                production.extendleft(((i[0], i[1] * multiplier) for i in recipes.items()))
+                production.extendleft((i[0], i[1] * multiplier) for i in recipes.items())
                 inventory[element] = multiplier * output_num - request_num
         return inventory['ORE']
 
-    def part_1(self):
+    def part_1(self) -> int:
         """
         >>> print(Factory(parsers.lines('test.txt')).part_1())
         2210736"""
         return self.produce(1)
 
-    def part_2(self):
+    def part_2(self) -> int:
         """Binary search
         >>> print(Factory(parsers.lines('test.txt')).part_2())
         460664"""

@@ -1,10 +1,12 @@
-from tools import parsers, loader
-import networkx as nx
 import re
+
+import networkx as nx
+
+from tools import loader, parsers
 
 
 class Cave:
-    def __init__(self, data):
+    def __init__(self, data: list[str]) -> None:
         self.cavern = nx.Graph()
 
         for line in data:
@@ -17,13 +19,16 @@ class Cave:
         self.distances = nx.floyd_warshall(self.cavern)
         self.traverse = [i for i in self.cavern.nodes if self.cavern.nodes[i]['flowrate'] > 0]
 
-    def path_finder(self, path: list, time: int, done: list = None, paths: list = None) -> list[list[str]]:
+    def path_finder(
+            self,
+            path: list,
+            time: int,
+            done: list = None,
+            paths: list = None
+    ) -> list[list[str]]:
         if paths is None:
-            paths = list()
-        if done is None:
-            done = path.copy()
-        else:
-            done = done.copy()
+            paths = []
+        done = path.copy() if done is None else done.copy()
 
         paths.append(path)
         for node in self.traverse:
@@ -39,7 +44,7 @@ class Cave:
             pressure += time * self.cavern.nodes[path[i]]['flowrate']
         return pressure
 
-    def part_1(self):
+    def part_1(self) -> int:
         """test part 1:
         >>> print(Cave(parsers.lines('test.txt')).part_1())
         1651"""
@@ -49,7 +54,7 @@ class Cave:
             pressure = max(pressure, self.total_flow(path, 30))
         return pressure
 
-    def part_2(self):
+    def part_2(self) -> int:
         """test part 2:
         >>> print(Cave(parsers.lines('test.txt')).part_2())
         1707"""

@@ -1,4 +1,4 @@
-from tools import parsers, loader
+from tools import loader, parsers
 
 
 def jumps(data: list[str], part2: bool) -> int:

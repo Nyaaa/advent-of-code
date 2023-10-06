@@ -1,5 +1,4 @@
-from tools import parsers, loader
-
+from tools import loader, parsers
 
 DIRECTIONS = {
     'n': 1j, 's': -1j,

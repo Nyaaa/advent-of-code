@@ -1,7 +1,7 @@
-from tools import parsers, loader
+from tools import loader, parsers
 
 
-def find_seat(line: str):
+def find_seat(line: str) -> int:
     """
     >>> print(find_seat('FBFBBFFRLR'))
     357
@@ -32,12 +32,12 @@ def find_seat(line: str):
     return row[0] * 8 + col[0]
 
 
-def start(data):
+def start(data: list[str]) -> tuple[int, int]:
     ids = [find_seat(line) for line in data]
     ids.sort()
     set_actual = set(ids)
     set_complete = set(range(ids[0], ids[-1] + 1))
-    return max(ids), set_complete.difference(set_actual)
+    return max(ids), *set_complete.difference(set_actual)
 
 
 print(start(parsers.lines(loader.get())))  # 850, 599

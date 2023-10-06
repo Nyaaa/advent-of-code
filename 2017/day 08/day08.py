@@ -1,7 +1,7 @@
-from collections import defaultdict
 import operator
-from tools import parsers, loader
+from collections import defaultdict
 
+from tools import loader, parsers
 
 OPERATIONS = {
     '<=': operator.le, '>=': operator.ge,

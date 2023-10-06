@@ -1,25 +1,27 @@
 from __future__ import annotations
+
+import re
 from dataclasses import dataclass
 from typing import NamedTuple
-from tools import parsers, loader
-import re
+
+from tools import loader, parsers
 
 
 class Side(NamedTuple):
-    min: int
-    max: int
+    mini: int
+    maxi: int
 
     def __contains__(self, item: Side) -> bool:
-        return self.min <= item.min and self.max >= item.max
+        return self.mini <= item.mini and self.maxi >= item.maxi
 
     def intersects(self, other: Side) -> bool:
-        return self.min <= other.max and self.max >= other.min
+        return self.mini <= other.maxi and self.maxi >= other.mini
 
     def split_side(self, other: Side) -> tuple[Side, Side]:
-        if self.min < other.min <= self.max:
-            return Side(self.min, other.min - 1), Side(other.min, self.max)
-        elif self.min <= other.max < self.max:
-            return Side(other.max + 1, self.max), Side(self.min, other.max)
+        if self.mini < other.mini <= self.maxi:
+            return Side(self.mini, other.mini - 1), Side(other.mini, self.maxi)
+        elif self.mini <= other.maxi < self.maxi:
+            return Side(other.maxi + 1, self.maxi), Side(self.mini, other.maxi)
         raise IndexError
 
 
@@ -34,10 +36,14 @@ class Cube:
         return item.x in self.x and item.y in self.y and item.z in self.z
 
     def intersects(self, other: Cube) -> bool:
-        return self.x.intersects(other.x) and self.y.intersects(other.y) and self.z.intersects(other.z)
+        return (self.x.intersects(other.x)
+                and self.y.intersects(other.y)
+                and self.z.intersects(other.z))
 
     def size(self) -> int:
-        return (self.x.max - self.x.min + 1) * (self.y.max - self.y.min + 1) * (self.z.max - self.z.min + 1)
+        return ((self.x.maxi - self.x.mini + 1)
+                * (self.y.maxi - self.y.mini + 1)
+                * (self.z.maxi - self.z.mini + 1))
 
     def split(self, other: Cube) -> list[Cube]:
         new = []
@@ -62,7 +68,7 @@ class Cube:
 def generate_cuboids(data: list[str], limit: bool) -> list[Cube]:
     commands = []
     for line in data:
-        op = True if line.split(' ')[0] == 'on' else False
+        op = line.split(' ')[0] == 'on'
         vals = [int(i) for i in re.findall(r'-?\d+', line)]
         if limit and (min(vals) < -50 or max(vals) > 50):
             continue
@@ -73,7 +79,7 @@ def generate_cuboids(data: list[str], limit: bool) -> list[Cube]:
     return commands
 
 
-def start(data: list[str], limit: bool):
+def start(data: list[str], limit: bool) -> int:
     """ test part 1:
     >>> print(start(parsers.lines('test.txt'), limit=True))
     474140

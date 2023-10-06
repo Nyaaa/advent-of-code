@@ -1,20 +1,21 @@
 import re
-from tools import parsers, loader, intcode
 from itertools import combinations
+
+from tools import intcode, loader, parsers
 
 
 class Game:
-    def __init__(self):
+    def __init__(self) -> None:
         self.pc = intcode.Intcode(parsers.lines(loader.get()))
 
     def execute(self, command: str) -> list | int:
         return self.pc.run([ord(i) for i in command + '\n'])
 
-    def manage_inv(self, _items: list | tuple, operation: str):
+    def manage_inv(self, _items: list | tuple, operation: str) -> None:
         for n in _items:
             self.execute(f'{operation} {n}')
 
-    def collect_items(self):
+    def collect_items(self) -> list[str]:
         for i in parsers.lines('path.txt'):
             self.execute(i)
 
@@ -24,7 +25,7 @@ class Game:
         items = [i for i in items if i and i[0].islower()]
         return items
 
-    def find_combination(self):
+    def find_combination(self) -> int:
         items = self.collect_items()
         self.manage_inv(items, 'drop')
 

@@ -1,7 +1,8 @@
-from itertools import product
 import re
 from dataclasses import dataclass, field
-from tools import parsers, loader
+from itertools import product
+
+from tools import loader, parsers
 
 
 @dataclass
@@ -32,13 +33,14 @@ class Chunk:
                     case '1': out += '1'
                     case '0': out += bin_val[i]
                     case 'X': out += 'X'
-            for a in (out.replace('X', '{}').format(*p) for p in product('01', repeat=out.count('X'))):
+            for a in (out.replace('X', '{}').format(*p)
+                      for p in product('01', repeat=out.count('X'))):
                 output[int(a, 2)] = val
         return output
 
 
 class Bitmap:
-    def __init__(self, data: list):
+    def __init__(self, data: list) -> None:
         self.program = []
         for line in data:
             if 'mask' in line:

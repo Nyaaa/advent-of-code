@@ -1,7 +1,9 @@
 import re
+
 import numpy as np
 from numpy.typing import NDArray
-from tools import parsers, loader, common
+
+from tools import common, loader, parsers
 
 np.set_printoptions(threshold=np.inf, linewidth=np.inf)
 

@@ -1,19 +1,20 @@
-from itertools import chain
 from collections import Counter
-from tools import parsers, loader
+from itertools import chain
+
+from tools import loader, parsers
 
 test = ['30373', '25512', '65332', '33549', '35390']
 d = parsers.lines(loader.get())
 
 
 class Forest:
-    def __init__(self, data):
+    def __init__(self, data: list[str]) -> None:
         self.grid = [[int(i) for i in row] for row in data]
         self.x = len(self.grid[0])
         self.y = len(self.grid)
         self.tree = None
 
-    def get_score(self, side, direction):
+    def get_score(self, side: list[int], direction: int) -> int:
         """part 2"""
 
         _score = 0
@@ -29,7 +30,7 @@ class Forest:
 
         return _score
 
-    def is_visible(self, _x, _y):
+    def is_visible(self, _x: int, _y: int) -> tuple[str, int]:
         """part 1"""
 
         # getting edges
@@ -50,12 +51,15 @@ class Forest:
         s_down = self.get_score(down, 0)
         _score = s_right * s_left * s_up * s_down
 
-        if self.tree > max(left) or self.tree > max(right) or self.tree > max(up) or self.tree > max(down):
+        if (self.tree > max(left)
+                or self.tree > max(right)
+                or self.tree > max(up)
+                or self.tree > max(down)):
             return 'Visible', _score
 
         return 'Hidden', _score
 
-    def solve(self, part: int):
+    def solve(self, part: int) -> int:
         """test part 1:
         >>> print(Forest(test).solve(1))
         21

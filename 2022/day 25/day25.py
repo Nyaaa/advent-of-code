@@ -1,11 +1,11 @@
-from tools import parsers, loader
+from tools import loader, parsers
 
 SNAFU_INT = {'1': 1, '2': 2, '0': 0, '-': -1, '=': -2}
 INT_SNAFU = {1: '1', 2: '2', 0: '0', 3: '=', 4: '-'}
 
 
 class Snafu:
-    def __init__(self, data: list[str]):
+    def __init__(self, data: list[str]) -> None:
         self.numbers = data
 
     @staticmethod
@@ -13,7 +13,8 @@ class Snafu:
         """
         >>> print(Snafu([]).snafu_to_decimal('2=-01'))
         976"""
-        return sum([SNAFU_INT[val] * (5 ** (abs(pos) - 1)) for pos, val in enumerate(snafu, start=-len(snafu))])
+        return sum([SNAFU_INT[val] * (5 ** (abs(pos) - 1))
+                    for pos, val in enumerate(snafu, start=-len(snafu))])
 
     @staticmethod
     def decimal_to_snafu(dec: int) -> str:
@@ -26,7 +27,7 @@ class Snafu:
             dec = round(dec / 5)
         return snafu[::-1]
 
-    def part_1(self):
+    def part_1(self) -> str:
         """
         >>> print(Snafu(parsers.lines('test.txt')).part_1())
         2=-1=0"""

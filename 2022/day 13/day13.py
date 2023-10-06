@@ -1,8 +1,9 @@
 from itertools import zip_longest
-from tools import parsers, loader
+
+from tools import loader, parsers
 
 
-def compare(left, right) -> bool:
+def compare(left: list, right: list) -> bool:
     if not isinstance(left, list): left = [left]
     if not isinstance(right, list): right = [right]
 
@@ -32,7 +33,7 @@ def flatten(list_of_lists: list) -> list:
     return list_of_lists[:1] + flatten(list_of_lists[1:])
 
 
-def part_1(data):
+def part_1(data: list[list[str]]) -> int:
     """test part 1:
     >>> part_1(parsers.blocks('test13.txt'))
     13"""
@@ -44,7 +45,7 @@ def part_1(data):
     return sum(result[True])
 
 
-def part_2(data):
+def part_2(data: list[str]) -> int:
     """test part 2:
     >>> part_2(parsers.lines('test13.txt'))
     140"""

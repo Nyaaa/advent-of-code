@@ -1,4 +1,4 @@
-from tools import parsers, loader
+from tools import loader, parsers
 
 
 def part_1(data: str) -> int:

@@ -1,8 +1,9 @@
 from collections import Counter
-from tools import parsers, loader
+
+from tools import loader, parsers
 
 
-def count(data):
+def count(data: list[list[str]]) -> tuple[int, int]:
     """
     >>> print(count(parsers.blocks('test.txt')))
     (11, 6)"""

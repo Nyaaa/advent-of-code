@@ -1,10 +1,10 @@
 from collections import deque
 
-from tools import parsers, loader
+from tools import loader, parsers
 
 
 class Combat:
-    def __init__(self, data: list):
+    def __init__(self, data: list[list[str]]) -> None:
         self.player1 = deque([int(i) for i in data[0][1:]])
         self.player2 = deque([int(i) for i in data[1][1:]])
 
@@ -57,5 +57,5 @@ class Combat:
         return score
 
 
-print((Combat(parsers.blocks(loader.get())).start(False)))  # 35370
-print((Combat(parsers.blocks(loader.get())).start(True)))  # 36246
+print(Combat(parsers.blocks(loader.get())).start(False))  # 35370
+print(Combat(parsers.blocks(loader.get())).start(True))  # 36246

@@ -1,6 +1,7 @@
 import re
-from collections import defaultdict, Counter
-from tools import parsers, loader
+from collections import Counter, defaultdict
+
+from tools import loader, parsers
 
 
 class Guards:

@@ -1,15 +1,14 @@
-from tools import parsers, loader
-
+from tools import loader, parsers
 
 TEST = """5764801
 17807724"""
 
 
 class Decoder:
-    def __init__(self, data: list):
-        self.door, self.card = [int(i) for i in data]
+    def __init__(self, data: list[str]) -> None:
+        self.door, self.card = (int(i) for i in data)
 
-    def decode(self):
+    def decode(self) -> int:
         """
         >>> print(Decoder(parsers.inline_test(TEST)).decode())
         14897079"""

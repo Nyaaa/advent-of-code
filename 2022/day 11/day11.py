@@ -1,12 +1,10 @@
-from tools import parsers, loader
 import re
 
-d = parsers.blocks(loader.get())
-t = parsers.blocks('test11.txt')
+from tools import loader, parsers
 
 
 class Monke:
-    def __init__(self, _id: int):
+    def __init__(self, _id: int) -> None:
         self.id: int = _id
         self.inventory: list[int] = []
         self.test: int = 0
@@ -16,7 +14,7 @@ class Monke:
         self.op_val: str = ''
         self.inspected: int = 0
 
-    def action(self, relief: bool, monkeys: list, modulo: int):
+    def action(self, relief: bool, monkeys: list, modulo: int) -> None:
         for i, item in enumerate(self.inventory):
             self.inspected += 1
 
@@ -46,7 +44,7 @@ class Monke:
 
 
 class Main:
-    def __init__(self, data):
+    def __init__(self, data: list[list[str]]) -> None:
         self.monkeys = []
         self.modulo = 1
 
@@ -63,13 +61,13 @@ class Main:
         for monkey in self.monkeys:
             self.modulo *= monkey.test
 
-    def start(self, rounds: int, relief: bool):
+    def start(self, rounds: int, relief: bool) -> int:
         """test part 1:
-        >>> print(Main(t).start(20, True))
+        >>> print(Main(parsers.blocks('test11.txt')).start(20, True))
         10605
 
         test part 2:
-        >>> print(Main(t).start(10000, False))
+        >>> print(Main(parsers.blocks('test11.txt')).start(10000, False))
         2713310158"""
         _round = 0
         while _round < rounds:
@@ -83,7 +81,7 @@ class Main:
 
 
 # part 1
-print(Main(d).start(20, True))  # 78678
+print(Main(parsers.blocks(loader.get())).start(20, True))  # 78678
 
 # part 2
-print(Main(d).start(10000, False))  # 15333249714
+print(Main(parsers.blocks(loader.get())).start(10000, False))  # 15333249714

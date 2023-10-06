@@ -1,11 +1,11 @@
-from tools import parsers, loader
+from tools import loader, parsers
 
 
 def main(data: list[str]) -> tuple[str, int]:
     """
     >>> print(main(parsers.lines('test.txt', strip=False)))
     ('ABCDEF', 38)"""
-    grid = dict()
+    grid = {}
     for i, row in enumerate(data):
         for j, cell in enumerate(row):
             if cell != ' ' and cell != '\n':

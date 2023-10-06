@@ -1,6 +1,8 @@
 from collections import Counter
+
 import numpy as np
-from tools import parsers, loader
+
+from tools import loader, parsers
 
 
 def start(data: list[str]) -> tuple[str, str]:

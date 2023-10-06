@@ -1,8 +1,8 @@
 """A module for loading input files from submodule"""
 import inspect
 import os.path
-from pathlib import Path
 import re
+from pathlib import Path
 
 
 def get() -> str:

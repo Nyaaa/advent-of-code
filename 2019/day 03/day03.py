@@ -1,5 +1,4 @@
-from tools import parsers, loader
-
+from tools import loader, parsers
 
 TEST0 = """R8,U5,L5,D3
 U7,R6,D4,L4"""
@@ -15,7 +14,7 @@ class PCB:
     def __init__(self, data: list[str]) -> None:
         self.wires = []
         for line in data:
-            new_wire = list()
+            new_wire = []
             current_point = 0j
             for turn in line.split(','):
                 for _ in range(int(turn[1:])):

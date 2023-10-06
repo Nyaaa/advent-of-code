@@ -1,16 +1,17 @@
 from collections import Counter
-from itertools import pairwise
 from functools import cache
-from tools import parsers, loader
+from itertools import pairwise
+
+from tools import loader, parsers
 
 
-def prep(data: list) -> tuple:
+def prep(data: list) -> tuple[int, ...]:
     data = sorted(int(i) for i in data)
     joltages = [0] + data + [data[-1] + 3]
     return tuple(joltages)
 
 
-def part_1(joltages: tuple):
+def part_1(joltages: tuple[int, ...]) -> int:
     """ test part 1:
     >>> print(part_1(TEST))
     220"""
@@ -20,7 +21,7 @@ def part_1(joltages: tuple):
 
 
 @cache
-def part_2(joltages: tuple, item: int = None):
+def part_2(joltages: tuple[int, ...], item: int = None) -> int:
     """ test part 2:
     >>> print(part_2(TEST))
     19208"""

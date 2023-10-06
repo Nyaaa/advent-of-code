@@ -1,6 +1,8 @@
-from tools import parsers, loader, common
 from importlib.machinery import SourceFileLoader
+
 import numpy as np
+
+from tools import common, loader, parsers
 
 hasher = SourceFileLoader("knot_hash", "../day 10/day10.py").load_module()
 

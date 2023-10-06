@@ -1,6 +1,7 @@
-from tools import parsers, loader
-from itertools import count
 from hashlib import md5
+from itertools import count
+
+from tools import loader, parsers
 
 
 def start(data: str) -> tuple[str, str]:
@@ -8,7 +9,7 @@ def start(data: str) -> tuple[str, str]:
     >>> print(start('abc'))
     ('18f47a30', '05ace8e3')"""
     part1 = ''
-    part2 = dict()
+    part2 = {}
     for i in count():
         string = f'{data}{i}'
         _hash = md5(bytes(string, 'utf-8')).hexdigest()

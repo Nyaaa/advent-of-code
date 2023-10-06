@@ -1,5 +1,6 @@
-from tools import parsers, loader
 import re
+
+from tools import loader, parsers
 
 TEST = """1-3 a: abcde
 1-3 b: cdefg

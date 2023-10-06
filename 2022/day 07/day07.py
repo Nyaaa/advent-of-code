@@ -1,8 +1,8 @@
-from tools import parsers, loader
+from tools import loader, parsers
 
 
 class FileSystem:
-    def __init__(self, data):
+    def __init__(self, data: list[str]) -> None:
         self.files: dict[str:[list[dict]]] = {}  # { path : [{ path : size }] }
         self.folders: dict[str, int] = {}  # { path : size }
 
@@ -45,14 +45,16 @@ class FileSystem:
                     return 0
         return size
 
-    def part_1(self):
+    def part_1(self) -> int:
         """test part 1:
         >>> print(FileSystem(parsers.lines('test07.txt')).part_1())
         95437"""
 
-        return sum([self.folders[folder] for folder in self.folders if self.folders[folder] <= 100000])
+        return sum(
+            [self.folders[folder] for folder in self.folders if self.folders[folder] <= 100000]
+        )
 
-    def part_2(self):
+    def part_2(self) -> int:
         """test part 2:
         >>> print(FileSystem(parsers.lines('test07.txt')).part_2())
         24933642"""
@@ -62,7 +64,9 @@ class FileSystem:
         free = total - self.folders['//']
         target = needed - free
 
-        return min([self.folders[folder] for folder in self.folders if self.folders[folder] >= target])
+        return min(
+            [self.folders[folder] for folder in self.folders if self.folders[folder] >= target]
+        )
 
 
 print(FileSystem(parsers.lines(loader.get())).part_1())  # 1490523

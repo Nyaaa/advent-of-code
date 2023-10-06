@@ -1,7 +1,8 @@
-from numpy.typing import NDArray
-from tools import parsers, loader
 import numpy as np
 from numba import njit
+from numpy.typing import NDArray
+
+from tools import loader, parsers
 
 
 @njit(fastmath=True)
@@ -16,7 +17,7 @@ def fft(arr: NDArray, pattern: NDArray) -> NDArray:
     return arr
 
 
-def part_1(data: str):
+def part_1(data: str) -> str:
     """
     >>> print(part_1('80871224585914546619083218645595'))
     24176176"""
@@ -27,7 +28,7 @@ def part_1(data: str):
     return ''.join(str(i) for i in arr[:8])
 
 
-def part_2(data: str):
+def part_2(data: str) -> str:
     """
     >>> print(part_2('03036732577212944063491565474664'))
     84462026"""

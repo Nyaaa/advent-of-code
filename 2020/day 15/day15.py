@@ -1,8 +1,9 @@
-from tools import parsers, loader
 from collections import deque
 
+from tools import loader, parsers
 
-def recite(numbers: str, steps: int):
+
+def recite(numbers: str, steps: int) -> int:
     """
     >>> print(recite("0,3,6", 2020))
     436
@@ -17,10 +18,7 @@ def recite(numbers: str, steps: int):
     step = len(numbers)
     while step != steps:
         step += 1
-        if len(previous_number) <= 1:
-            new_value = 0
-        else:
-            new_value = previous_number[-1] - previous_number[-2]
+        new_value = 0 if len(previous_number) <= 1 else previous_number[-1] - previous_number[-2]
 
         if previous_number := called_numbers.get(new_value):
             previous_number.append(step)

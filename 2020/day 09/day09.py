@@ -1,5 +1,6 @@
 from itertools import combinations
-from tools import parsers, loader
+
+from tools import loader, parsers
 
 
 def part_1(data: list, chunk: int = 25, part2: bool = False) -> int:
@@ -20,7 +21,7 @@ def part_1(data: list, chunk: int = 25, part2: bool = False) -> int:
             value = val
     if part2:
         lengths = []
-        for i, v in enumerate(data):
+        for i, _v in enumerate(data):
             counter = 0
             _sum = 0
             while _sum <= value:

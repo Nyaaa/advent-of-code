@@ -1,7 +1,9 @@
 from math import prod
-from numpy.typing import NDArray
-from tools import parsers, loader
+
 import numpy as np
+from numpy.typing import NDArray
+
+from tools import loader, parsers
 
 
 def descend(grid: NDArray, step: tuple[int, int]) -> int:
@@ -14,7 +16,7 @@ def descend(grid: NDArray, step: tuple[int, int]) -> int:
     return sum(path[1:])
 
 
-def start(data: list, part2: bool):
+def start(data: list, part2: bool) -> int:
     """test part 1:
     >>> print(start(parsers.lines('test.txt'), False))
     7

@@ -3,10 +3,10 @@ from collections import defaultdict
 
 
 class Intcode:
-    def __init__(self, data: list[str]):
+    def __init__(self, data: list[str]) -> None:
         data = [int(i) for i in data[0].split(',')]
         self.data: defaultdict[int, int] = defaultdict(int)
-        self.data.update({k: v for k, v in enumerate(data)})
+        self.data.update(dict(enumerate(data)))
         self.step = 0
         self.relative_base = 0
         self.logged_output = []
@@ -36,7 +36,7 @@ class Intcode:
             case _:
                 return self.data[index]
 
-    def run(self, input_value: list[int, ...] = None) -> int | list:
+    def run(self, input_value: list[int] = None) -> int | list[int]:
         """
         Args:
             input_value: A list of program input values.

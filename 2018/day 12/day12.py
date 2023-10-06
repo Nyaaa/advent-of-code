@@ -1,6 +1,7 @@
 import numpy as np
 from numpy.lib.stride_tricks import sliding_window_view
-from tools import parsers, loader
+
+from tools import loader, parsers
 
 
 class Plants:
@@ -8,7 +9,7 @@ class Plants:
         data = [i.replace('#', '1').replace('.', '0') for i in data]
         self.current_state = np.array([int(i) for i in data[0].split(': ')[1]], dtype=int)
         self.zero = 0
-        self.rules = dict()
+        self.rules = {}
         for rule in data[2:]:
             condition, result = rule.split(' => ')
             arr = np.array([int(i) for i in condition], dtype=int)

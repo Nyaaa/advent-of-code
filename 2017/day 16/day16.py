@@ -1,12 +1,14 @@
-import numpy as np
-from tools import parsers, loader
 from string import ascii_lowercase
+
+import numpy as np
+
+from tools import loader, parsers
 
 
 class Dance:
     def __init__(self, data: str, length: int = 16) -> None:
         self.commands = data.split(',')
-        letters = [i for i in ascii_lowercase[:length]]
+        letters = list(ascii_lowercase[:length])
         self.progs = np.asarray(letters, dtype=str)
         self.initial = self.progs.copy()
 

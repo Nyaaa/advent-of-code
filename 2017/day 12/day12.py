@@ -1,6 +1,8 @@
 import re
-from tools import parsers, loader
+
 import networkx as nx
+
+from tools import loader, parsers
 
 
 class Pipes:

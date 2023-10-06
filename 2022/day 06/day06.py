@@ -1,7 +1,7 @@
-from tools import parsers, loader
+from tools import loader, parsers
 
 
-def puzzle(data: str, length: int):
+def puzzle(data: str, length: int) -> int:
     """ Rolling window, 1D array
 
     test part 1:

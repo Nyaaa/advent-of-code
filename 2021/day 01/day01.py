@@ -1,11 +1,11 @@
-from tools import parsers, loader
+from tools import loader, parsers
 
 
 class Sonar:
-    def __init__(self, data):
+    def __init__(self, data: list[str]) -> None:
         self.data = [int(i) for i in data]
 
-    def part_1(self):
+    def part_1(self) -> int:
         """
         >>> print(Sonar(parsers.lines('test.txt')).part_1())
         7"""
@@ -14,7 +14,7 @@ class Sonar:
     def window(self, index: int) -> int:
         return sum([self.data[i] for i in (index, index - 1, index - 2)])
 
-    def part_2(self):
+    def part_2(self) -> int:
         """
         >>> print(Sonar(parsers.lines('test.txt')).part_2())
         5"""

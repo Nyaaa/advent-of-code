@@ -1,4 +1,4 @@
-from tools import parsers, loader
+from tools import loader, parsers
 
 
 def monorail(data: list[str], value: int = 0) -> int:

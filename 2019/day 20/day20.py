@@ -1,12 +1,14 @@
 from collections import defaultdict
-from tools import parsers, loader, common
-import numpy as np
-import networkx as nx
 from string import ascii_uppercase
+
+import networkx as nx
+import numpy as np
+
+from tools import common, loader, parsers
 
 
 class Maze:
-    def __init__(self, data: list[str]):
+    def __init__(self, data: list[str]) -> None:
         self.map = np.asarray([list(i.strip('\n')) for i in data], dtype=str)  # CRLF inputs
         self.G: nx.Graph = nx.grid_graph([self.map.shape[1], self.map.shape[0]])
         self.G.remove_nodes_from([tuple(i) for i in np.argwhere(self.map != '.')])
@@ -16,8 +18,8 @@ class Maze:
         self.start = self.portals.pop('AA')[0]
         self.stop = self.portals.pop('ZZ')[0]
 
-    def find_portals(self):
-        portals = dict()
+    def find_portals(self) -> dict[tuple[int, int], str]:
+        portals = {}
         for i, val in np.ndenumerate(self.map):
             if val in ascii_uppercase:
                 label = val
@@ -31,14 +33,16 @@ class Maze:
                         location = loc
                 if not location:
                     try:
-                        location = next(i for i, l in common.get_adjacent(self.map, adj_letter) if l == '.')
+                        location = next(
+                            i for i, j in common.get_adjacent(self.map, adj_letter) if j == '.'
+                        )
                     except StopIteration:
                         continue
                 if location not in portals:
                     portals[location] = label
         return portals
 
-    def part_1(self):
+    def part_1(self) -> int:
         """
         >>> print(Maze(parsers.lines('test.txt', strip=False)).part_1())
         23
@@ -48,7 +52,7 @@ class Maze:
         self.G.add_edges_from(self.portals.values())
         return nx.shortest_path_length(self.G, self.start, self.stop)
 
-    def part_2(self):
+    def part_2(self) -> int:
         """
         >>> print(Maze(parsers.lines('test3.txt', strip=False)).part_2())
         396"""

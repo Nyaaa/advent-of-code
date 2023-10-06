@@ -1,7 +1,7 @@
 import re
 from math import prod
 
-from tools import parsers, loader
+from tools import loader, parsers
 
 
 def do_the_math(expr: str) -> int:

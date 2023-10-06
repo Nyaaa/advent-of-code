@@ -1,11 +1,11 @@
-from tools import parsers, loader
+from tools import loader, parsers
 
 
 class Droplet:
-    def __init__(self, data):
+    def __init__(self, data: list[str]) -> None:
         self.cubes = [tuple(map(int, cube.split(','))) for cube in data]
 
-    def part_1(self):
+    def part_1(self) -> int:
         """test part 1:
         >>> print(Droplet(parsers.lines('test.txt')).part_1())
         64"""
@@ -16,12 +16,12 @@ class Droplet:
             exposed += 6 - len(covered)
         return exposed
 
-    def part_2(self):
+    def part_2(self) -> int:
         """test part 2:
         >>> print(Droplet(parsers.lines('test.txt')).part_2())
         58"""
-        min_x, min_y, min_z = [min(cube[i] - 1 for cube in self.cubes) for i in range(3)]
-        max_x, max_y, max_z = [max(cube[i] + 1 for cube in self.cubes) for i in range(3)]
+        min_x, min_y, min_z = (min(cube[i] - 1 for cube in self.cubes) for i in range(3))
+        max_x, max_y, max_z = (max(cube[i] + 1 for cube in self.cubes) for i in range(3))
         check = [(min_x, min_y, min_z)]
         checked = []
         exposed = 0
@@ -40,7 +40,7 @@ class Droplet:
         return exposed
 
     @staticmethod
-    def adjacent(cube):
+    def adjacent(cube: tuple[int, int, int]) -> set[tuple[int, int, int]]:
         x, y, z = cube
         return {(x + 1, y, z), (x - 1, y, z),
                 (x, y + 1, z), (x, y - 1, z),

@@ -1,6 +1,7 @@
-from numpy.typing import NDArray
-from tools import parsers, loader
 import numpy as np
+from numpy.typing import NDArray
+
+from tools import loader, parsers
 
 
 def cycle(arr: NDArray) -> NDArray:
@@ -24,7 +25,7 @@ def activate(data: list, part2: bool = False) -> int:
     >>> print(activate(parsers.lines('test.txt'), part2=True))
     848
     """
-    arr = np.array([list(1 if i == '#' else 0 for i in row) for row in data])
+    arr = np.array([[1 if i == '#' else 0 for i in row] for row in data])
     if not part2:
         arr.shape += (1, )
     else:

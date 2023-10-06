@@ -1,6 +1,6 @@
 import re
-from tools import parsers, loader
 
+from tools import loader, parsers
 
 VECTORS = {'e': complex(0, 1), 'w': complex(0, -1),
            'se': complex(1, 0), 'sw': complex(1, -1),

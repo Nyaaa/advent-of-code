@@ -1,16 +1,17 @@
 import re
 from collections import deque
-from tools import parsers, loader
+
+from tools import loader, parsers
 
 
 def parse(data: list[str]) -> dict:
     """
     >>> print(parse(['light red bags contain 1 bright white bag, 2 muted yellow bags.']))
     {'light red': {'bright white': 1, 'muted yellow': 2}}"""
-    out = dict()
+    out = {}
     for line in data:
         parent = re.findall(r'^(\w+\s\w+)', line)[0]
-        out[parent] = dict()
+        out[parent] = {}
         for child in re.findall(r'(\d+)\s(\w+\s\w+)\sbag', line):
             out[parent][child[1]] = int(child[0])
     return out

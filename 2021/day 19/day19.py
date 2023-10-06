@@ -1,13 +1,13 @@
 from __future__ import annotations
 
 import re
-from collections import deque, Counter
+from collections import Counter, deque
 from dataclasses import dataclass, field
 from functools import cache
 from itertools import permutations, product
-from typing import Optional, NoReturn, NamedTuple
+from typing import NamedTuple, NoReturn
 
-from tools import parsers, loader, timer
+from tools import loader, parsers, timer
 
 DATA = parsers.blocks(loader.get())
 TEST = parsers.blocks('test.txt')
@@ -15,11 +15,7 @@ TEST = parsers.blocks('test.txt')
 ROTATIONS = []
 for r in permutations(['x', 'y', 'z']):
     for s in product(['-', ''], repeat=3):
-        ROTATIONS.append(list(''.join(i) for i in zip(s, r)))
-
-
-class NotFoundException(Exception):
-    """Raised when no match is found"""
+        ROTATIONS.append([''.join(i) for i in zip(s, r)])
 
 
 class Point(NamedTuple):
@@ -39,15 +35,15 @@ class Point(NamedTuple):
 
 @dataclass
 class Scanner:
-    id: int
+    ident: int
     scans: frozenset[Point]
     rotations: list[frozenset[Point]] = field(init=False)
-    location: Optional[Point] = None
+    location: Point | None = None
 
-    def __repr__(self):
-        return f'Scanner {self.id}'
+    def __repr__(self) -> str:
+        return f'Scanner {self.ident}'
 
-    def __post_init__(self):
+    def __post_init__(self) -> None:
         """Calculate scan variants"""
         self.rotations = []
         for rotation in ROTATIONS:
@@ -66,11 +62,11 @@ class Scanner:
                 self.scans = frozenset(self.location + scan for scan in rotation)
                 break
         else:
-            raise NotFoundException
+            raise ValueError('No solution found')
 
 
 @cache
-def get_counts(rotation, scans):
+def get_counts(rotation: frozenset[Point], scans: frozenset[Point]) -> tuple[Point, int]:
     counts = [point_2 - point_1 for point_2 in scans for point_1 in rotation]
     return Counter(counts).most_common(1)[0]
 
@@ -86,7 +82,7 @@ def locate_scanners(scanners: list[Scanner]) -> list[Scanner]:
         for known_scanner in found:
             try:
                 unknown_scanner.locate(known_scanner)
-            except NotFoundException:
+            except ValueError:
                 continue
             found.append(unknown_scanner)
             break
@@ -106,7 +102,7 @@ def parse(data: list[list[str]]) -> list[Scanner]:
                 scanner_id = int(nums[0])
             else:
                 scans.append(Point(*(int(i) for i in nums)))
-        scanners.append(Scanner(id=scanner_id, scans=frozenset(scans)))
+        scanners.append(Scanner(ident=scanner_id, scans=frozenset(scans)))
     return scanners
 
 

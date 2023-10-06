@@ -1,7 +1,8 @@
-from collections.abc import Generator, Callable
-from tools import parsers, loader
+from collections.abc import Callable, Generator
+
 from numba import njit
 
+from tools import loader, parsers
 
 TEST = """Generator A starts with 65
 Generator B starts with 8921"""

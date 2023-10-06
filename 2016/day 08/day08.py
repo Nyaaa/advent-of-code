@@ -1,6 +1,7 @@
-from numpy.typing import NDArray
-from tools import parsers, loader, common
 import numpy as np
+from numpy.typing import NDArray
+
+from tools import common, loader, parsers
 
 np.set_printoptions(linewidth=500)
 TEST = """rect 3x2

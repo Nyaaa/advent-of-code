@@ -1,5 +1,6 @@
-from tools import parsers, loader
 import regex as re
+
+from tools import loader, parsers
 
 
 def part_1(data: list[str]) -> int:

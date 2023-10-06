@@ -1,18 +1,20 @@
 from collections import defaultdict
+
 from more_itertools import sliced
-from tools import parsers, loader, intcode
+
+from tools import intcode, loader, parsers
 
 
 class Network:
-    def __init__(self):
+    def __init__(self) -> None:
         program = parsers.lines(loader.get())
         self.net = {i: intcode.Intcode(program) for i in range(50)}
         self.queue = defaultdict(list)
         for i, pc in self.net.items():
             pc.run([i])
-        self.idle = {i: False for i in self.net.keys()}
+        self.idle = {i: False for i in self.net}
 
-    def start(self, part2: bool):
+    def start(self, part2: bool) -> int:
         result = 0
         while True:
             if all(self.idle.values()):

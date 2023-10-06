@@ -1,7 +1,7 @@
-from tools import parsers, loader
 from itertools import combinations
 from math import prod
 
+from tools import loader, parsers
 
 TEST = """1721
 979

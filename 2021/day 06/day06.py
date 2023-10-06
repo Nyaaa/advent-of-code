@@ -1,13 +1,13 @@
-from tools import parsers, loader
+from tools import loader, parsers
 
 
 class Fish:
-    def __init__(self, data: str):
+    def __init__(self, data: str) -> None:
         self.school = {n: 0 for n in reversed(range(9))}
         for i in data.split(','):
             self.school[int(i)] += 1
 
-    def start(self, timer: int):
+    def start(self, timer: int) -> int:
         """
         >>> print(Fish('3,4,3,1,2').start(80))
         5934

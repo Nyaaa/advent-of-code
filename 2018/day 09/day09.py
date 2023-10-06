@@ -1,8 +1,8 @@
 import re
-from collections import deque, defaultdict
+from collections import defaultdict, deque
 from itertools import cycle
 
-from tools import parsers, loader
+from tools import loader, parsers
 
 
 def marbles(data: str, part2: bool) -> int:

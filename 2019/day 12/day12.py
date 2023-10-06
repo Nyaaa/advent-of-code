@@ -1,9 +1,12 @@
 from __future__ import annotations
-from math import gcd
+
 import re
+from collections.abc import Generator
 from dataclasses import dataclass
 from itertools import combinations
-from tools import parsers, loader
+from math import gcd
+
+from tools import loader, parsers
 
 
 @dataclass(frozen=True)
@@ -12,16 +15,16 @@ class Point:
     y: int
     z: int
 
-    def __add__(self, other: Point):
+    def __add__(self, other: Point) -> Point:
         return Point(self.x + other.x, self.y + other.y, self.z + other.z)
 
-    def __sub__(self, other: Point):
+    def __sub__(self, other: Point) -> Point:
         return Point(self.x - other.x, self.y - other.y, self.z - other.z)
 
-    def __iter__(self):
+    def __iter__(self) -> Generator[int]:
         yield from (self.x, self.y, self.z)
 
-    def compare(self, other: Point):
+    def compare(self, other: Point) -> Point:
         vals = []
         for i, j in zip(self, other):
             if i > j:
@@ -38,26 +41,26 @@ class Moon:
     location: Point
     velocity: Point
 
-    def apply_gravity(self, other: Moon):
+    def apply_gravity(self, other: Moon) -> None:
         diff = self.location.compare(other.location)
         self.velocity += diff
         other.velocity -= diff
 
-    def apply_velocity(self):
+    def apply_velocity(self) -> None:
         self.location += self.velocity
 
-    def calculate_energy(self):
+    def calculate_energy(self) -> int:
         return sum(abs(i) for i in self.location) * sum(abs(i) for i in self.velocity)
 
 
 class Trajectory:
-    def __init__(self, data: list):
+    def __init__(self, data: list) -> None:
         self.moons = []
         for line in data:
             coords = Point(*(int(i) for i in re.findall(r'-?\d+', line)))
             self.moons.append(Moon(coords, Point(0, 0, 0)))
 
-    def part_1(self, steps: int):
+    def part_1(self, steps: int) -> int:
         """
         >>> print(Trajectory(parsers.lines('test.txt')).part_1(10))
         179
@@ -74,7 +77,7 @@ class Trajectory:
                 moon.apply_velocity()
         return sum(i.calculate_energy() for i in self.moons)
 
-    def part_2(self):
+    def part_2(self) -> int:
         """
         >>> print(Trajectory(parsers.lines('test.txt')).part_2())
         2772
@@ -96,8 +99,8 @@ class Trajectory:
                 moon1.apply_gravity(moon2)
             for moon in self.moons:
                 moon.apply_velocity()
-            locs = [[j for j in i.location] for i in self.moons]
-            vels = [[j for j in i.velocity] for i in self.moons]
+            locs = [list(i.location) for i in self.moons]
+            vels = [list(i.velocity) for i in self.moons]
             for i in range(3):
                 if ([j[i] for j in locs] == init_pos[i]
                         and [j[i] for j in vels] == [0, 0, 0, 0]

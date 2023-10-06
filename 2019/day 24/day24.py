@@ -1,13 +1,14 @@
-from numpy.typing import NDArray
-from tools import parsers, loader, common
 import numpy as np
+from numpy.typing import NDArray
+
+from tools import common, loader, parsers
 
 
 class Bugs:
-    def __init__(self, data: list[str]):
-        self.arr = np.array([list(1 if i == '#' else 0 for i in row) for row in data],
+    def __init__(self, data: list[str]) -> None:
+        self.arr = np.array([[1 if i == '#' else 0 for i in row] for row in data],
                             dtype=np.dtype('u1'))
-        self.levels: dict[int, NDArray] = dict()
+        self.levels: dict[int, NDArray] = {}
         self.size = self.arr.shape[0]
         mid = self.size // 2
         self.middle = (mid, mid)  # assuming square shape

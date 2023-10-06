@@ -1,8 +1,8 @@
 from functools import cache
-from typing import Iterator
-from tools import parsers, loader
 from itertools import cycle, islice, product
+from typing import Iterator
 
+from tools import loader, parsers
 
 TEST = """Player 1 starting position: 4
 Player 2 starting position: 8

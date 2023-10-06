@@ -1,10 +1,11 @@
 from collections.abc import Generator
-from tools import parsers, loader
+
+from tools import loader, parsers
 
 
 class Bridge:
     def __init__(self, data: list[str]) -> None:
-        self.pieces = set(tuple(map(int, line.split('/'))) for line in data)
+        self.pieces = {tuple(map(int, line.split('/'))) for line in data}
 
     def run(self, bridge: set[tuple[int, ...]], port: int) -> Generator[set[tuple[int, int]]]:
         for piece in (i for i in self.pieces if port in i and i not in bridge):

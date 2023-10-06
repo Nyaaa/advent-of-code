@@ -1,9 +1,11 @@
 from __future__ import annotations
-from collections import defaultdict, deque
-from typing import NamedTuple
-from tools import parsers, loader
+
 import re
-from itertools import count, combinations
+from collections import defaultdict, deque
+from itertools import combinations, count
+from typing import NamedTuple
+
+from tools import loader, parsers
 
 
 class State(NamedTuple):
@@ -32,14 +34,18 @@ class State(NamedTuple):
         False"""
         for i in range(4):
             gens = [j for j in self.floors if i == j.real and j.imag < 0]
-            chips = [j for j in self.floors if i == j.real and j.imag > 0 and complex(i, -j.imag) not in self.floors]
+            chips = [j for j in self.floors if i == j.real and j.imag > 0
+                     and complex(i, -j.imag) not in self.floors]
             if gens and chips:
                 return False
         return True
 
 
 class Facility:
-    ADDITION = 'elerium generator, elerium-compatible microchip, dilithium generator, dilithium-compatible microchip'
+    ADDITION = """elerium generator,
+    elerium-compatible microchip,
+    dilithium generator,
+    dilithium-compatible microchip"""
 
     def __init__(self, data: list[str], part2: bool = False) -> None:
         floors = set()

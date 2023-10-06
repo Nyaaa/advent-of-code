@@ -1,12 +1,12 @@
-from tools import parsers, loader, intcode
+from tools import intcode, loader, parsers
 
 
-def get_reading(x, y):
+def get_reading(x: int, y: int) -> int:
     pc = intcode.Intcode(parsers.lines(loader.get()))
     return pc.run([x, y])
 
 
-def part_2():
+def part_2() -> int:
     x = 0
     y = 100
     while True:

@@ -1,5 +1,6 @@
-from tools import parsers, loader
 from itertools import islice
+
+from tools import loader, parsers
 
 
 class Navigation:

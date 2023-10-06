@@ -1,5 +1,6 @@
 from collections import defaultdict
-from tools import parsers, loader
+
+from tools import loader, parsers
 
 
 class Coprocessor:
@@ -31,10 +32,7 @@ class Coprocessor:
 
     @staticmethod
     def is_prime(num: int) -> bool:
-        for i in range(2, num):
-            if num % i == 0:
-                return False
-        return True
+        return all(num % i != 0 for i in range(2, num))
 
     def part_2(self) -> int:
         self.mem['a'] = 1

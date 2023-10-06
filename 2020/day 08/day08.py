@@ -1,8 +1,9 @@
-from tools import parsers, loader
 from copy import deepcopy
 
+from tools import loader, parsers
 
-def load(commands: list):
+
+def load(commands: list[list[str, int, bool]]) -> tuple[int, bool]:
     accumulator = 0
     index = 0
     while index < len(commands):

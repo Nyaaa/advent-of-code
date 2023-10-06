@@ -1,8 +1,10 @@
-from numpy.typing import NDArray
-from tools import parsers, loader, intcode, common
+import re
+
 import numpy as np
 from more_itertools import split_at
-import re
+from numpy.typing import NDArray
+
+from tools import common, intcode, loader, parsers
 
 
 def get_map() -> NDArray:
@@ -28,7 +30,7 @@ def part_1() -> int:
 
 def get_path() -> str:
     img = get_map()
-    path = set(complex(i, j) for i, j in np.argwhere(img == 1))
+    path = {complex(i, j) for i, j in np.argwhere(img == 1)}
     pos = complex(*np.argwhere(img == 94)[0])  # 94 = ^
     direction = -1
     track = []

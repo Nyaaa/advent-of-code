@@ -1,14 +1,15 @@
 from __future__ import annotations
+
 from dataclasses import dataclass, field
 from itertools import cycle
 from typing import Iterator
 
-from tools import parsers, loader
+from tools import loader, parsers
 
 
 @dataclass
 class Cart:
-    id: int
+    ident: int
     location: complex
     direction: complex
     turn: cycle[complex] = field(default_factory=lambda: cycle([1j, 1, -1j]))
@@ -17,10 +18,11 @@ class Cart:
         return self.location == other.location
 
     def __lt__(self, other: Cart) -> bool:
-        return (self.location.imag, self.location.real) < (other.location.imag, other.location.real)
+        return ((self.location.imag, self.location.real)
+                < (other.location.imag, other.location.real))
 
     def __str__(self) -> str:
-        return f'{self.id} L: {self.location} D: {self.direction}'
+        return f'{self.ident} L: {self.location} D: {self.direction}'
 
     def loc_str(self) -> str:
         return f'{int(self.location.imag)},{int(self.location.real)}'

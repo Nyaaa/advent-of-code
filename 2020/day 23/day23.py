@@ -1,8 +1,8 @@
-from tools import parsers, loader
+from tools import loader, parsers
 
 
 class Cups:
-    def __init__(self, data: str, part2: bool = False):
+    def __init__(self, data: str, part2: bool = False) -> None:
         data = [int(i) for i in data]
         if part2:
             data.extend(list(range(10, 1_000_001)))
@@ -21,7 +21,7 @@ class Cups:
                 break
         return destination
 
-    def play(self, steps: int):
+    def play(self, steps: int) -> None:
         for _ in range(steps):
             cups = [cup1 := self.circle[self.current_cup],
                     cup2 := self.circle[cup1],
@@ -32,7 +32,7 @@ class Cups:
             self.circle[cups[-1]] = self.circle[destination]
             self.circle[destination] = cups[0]
 
-    def part_1(self):
+    def part_1(self) -> str:
         """"
         >>> print(Cups('389125467').part_1())
         67384529"""
@@ -44,7 +44,7 @@ class Cups:
             step = self.circle[step]
         return ''.join(str(i) for i in result[:-1])
 
-    def part_2(self):
+    def part_2(self) -> int:
         """"
         >>> print(Cups('389125467', True).part_2())
         149245887792"""

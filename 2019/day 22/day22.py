@@ -1,11 +1,11 @@
-from tools import parsers, loader
+from tools import loader, parsers
 
 
 class Shuffle:
-    def __init__(self):
+    def __init__(self) -> None:
         self.rules = parsers.lines(loader.get())
 
-    def part_1(self):
+    def part_1(self) -> int:
         deck = list(range(10007))
         for rule in self.rules:
             try:
@@ -24,7 +24,7 @@ class Shuffle:
                     deck = _deck
         return deck.index(2019)
 
-    def part_2(self):
+    def part_2(self) -> int:
         cards = 119315717514047
         times = 101741582076661
         index = 2020

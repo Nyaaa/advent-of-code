@@ -1,15 +1,16 @@
 from copy import deepcopy
-from tools import parsers, loader, intcode
+
+from tools import intcode, loader, parsers
 
 
-def part_1():
+def part_1() -> int:
     pc = deepcopy(init_pc)
     pc.data[1] = 12
     pc.data[2] = 2
     return pc.run()[0]
 
 
-def part_2():
+def part_2() -> int:
     for i in range(100):
         for j in range(100):
             pc = deepcopy(init_pc)

@@ -1,13 +1,15 @@
-from tools import parsers, loader, timer, common
-import numpy as np
-from itertools import cycle
 from collections import Counter
+from itertools import cycle
+
+import numpy as np
+
+from tools import common, loader, parsers, timer
 
 
 class Grove:
-    def __init__(self, data):
+    def __init__(self, data: list[str]) -> None:
         self._options = cycle(('n', 's', 'w', 'e'))
-        self.map = np.array([list(0 if i == '.' else 1 for i in row) for row in data])
+        self.map = np.array([[0 if i == '.' else 1 for i in row] for row in data])
 
     def plan(self, elf: tuple, direction: str) -> tuple | None:
         row, col = elf
@@ -42,7 +44,7 @@ class Grove:
     def get_elves(self) -> list[tuple]:
         self.map = np.pad(self.map, pad_width=1, mode='constant', constant_values=0)
         positions = np.where(self.map == 1)
-        return [(i, j) for i, j in zip(*positions)]
+        return list(zip(*positions))
 
     def part_1(self) -> int:
         """test part 1:

@@ -1,9 +1,9 @@
 import math
+import re
 from itertools import permutations
 from typing import Sequence
 
-from tools import parsers, loader
-import re
+from tools import loader, parsers
 
 PAIRS = re.compile(r'(\[\d+,\d+])')
 SINGLES = re.compile(r'\d+')

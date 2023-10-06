@@ -1,4 +1,4 @@
-from tools import parsers, loader
+from tools import loader, parsers
 
 
 def part_1(target: str) -> int:
@@ -23,7 +23,7 @@ def part_2(target: str) -> int:
     adjacent = [-1-1j, -1+0j, -1+1j,
                 0-1j, 0+0j, 0+1j,
                 1-1j, 1+0j, 1+1j]
-    spiral = dict()
+    spiral = {}
     adj = 0
     while adj <= target:
         adj = sum(spiral.get(location + direction * i, 0) for i in adjacent) or 1

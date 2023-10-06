@@ -1,5 +1,6 @@
 import math
-from tools import parsers, loader
+
+from tools import loader, parsers
 
 HEX_TO_BIN = {
     '0': '0000',
@@ -22,7 +23,7 @@ HEX_TO_BIN = {
 
 
 class Decoder:
-    def __init__(self, data: str):
+    def __init__(self, data: str) -> None:
         self.encoded: str = ''.join(HEX_TO_BIN[i] for i in data)
         self.packets: list[int] = []
 
@@ -39,7 +40,7 @@ class Decoder:
         return cur, value
 
     @staticmethod
-    def operations(pak_type: int, *args) -> int | None:
+    def operations(pak_type: int, *args: int) -> int | None:
         match pak_type:
             case 0: result = sum(args)
             case 1: result = math.prod(args)
@@ -83,7 +84,7 @@ class Decoder:
             if prefix == '0':
                 return cur, int(binary, 2)
 
-    def part_1(self):
+    def part_1(self) -> int:
         """test part 1:
         >>> print(Decoder('8A004A801A8002F478').part_1())
         16
@@ -100,7 +101,7 @@ class Decoder:
         self.decode_packet()
         return sum(self.packets)
 
-    def part_2(self):
+    def part_2(self) -> int:
         """test part 2:
         >>> print(Decoder('C200B40A82').part_2())
         3

@@ -1,12 +1,14 @@
-from collections import defaultdict
-from more_itertools import minmax
-from tools import parsers, loader
 import re
+from collections import defaultdict
+
+from more_itertools import minmax
+
+from tools import loader, parsers
 
 
 def factory(data: list[str]) -> tuple[str, int]:
     bots = defaultdict(list)
-    instructions = dict()
+    instructions = {}
     for line in data:
         if line.startswith('value'):
             value, bot = re.findall(r'\d+', line)

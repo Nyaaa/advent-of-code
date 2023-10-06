@@ -1,14 +1,14 @@
-from tools import parsers, loader
+from tools import loader, parsers
 
 test = ['2-4,6-8', '2-3,4-5', '5-7,7-9', '2-8,3-7', '6-6,4-6', '2-6,4-8']
 
 
-def get_task(_range):
+def get_task(_range: str) -> list[int]:
     start, stop = map(int, _range.split('-'))
     return list(range(start, stop + 1))
 
 
-def puzzle(data, part: int):
+def puzzle(data: list[str], part: int) -> int:
     """test part 1:
     >>> print(puzzle(test, 1))
     2

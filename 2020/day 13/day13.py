@@ -1,4 +1,4 @@
-from tools import parsers, loader
+from tools import loader, parsers
 
 TEST = """939
 7,13,x,x,59,x,31,19
@@ -6,7 +6,7 @@ TEST = """939
 
 
 class Timetable:
-    def __init__(self, data: list):
+    def __init__(self, data: list[str]) -> None:
         self.data = {int(bus): i for i, bus in enumerate(data[1].split(',')) if bus != 'x'}
         self.timestamp = int(data[0])
 
@@ -20,14 +20,14 @@ class Timetable:
             departure += bus
         return departure
 
-    def part_1(self):
+    def part_1(self) -> int:
         """
         >>> print(Timetable(parsers.inline_test(TEST)).part_1())
         295
         """
         shortest_wait = float('inf')
         best_bus = 0
-        for bus in self.data.keys():
+        for bus in self.data:
             departure = self.get_next_departure(bus)
             wait = departure - self.timestamp
             if wait <= shortest_wait:
@@ -35,7 +35,7 @@ class Timetable:
                 best_bus = bus
         return shortest_wait * best_bus
 
-    def part_2(self):
+    def part_2(self) -> int:
         """
         >>> print(Timetable(parsers.inline_test(TEST)).part_2())
         1068781

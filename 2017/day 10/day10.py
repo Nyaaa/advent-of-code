@@ -1,7 +1,9 @@
-import numpy as np
-from tools import parsers, loader
 from collections import deque
+
+import numpy as np
 from more_itertools import chunked
+
+from tools import loader, parsers
 
 
 def get_hash(size: int, data: list[int], times: int) -> deque[int]:

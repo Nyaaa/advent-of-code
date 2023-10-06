@@ -1,5 +1,6 @@
 from collections import deque
-from tools import parsers, loader
+
+from tools import loader, parsers
 
 
 def is_walkable(location: complex, number: int) -> bool:
@@ -21,7 +22,7 @@ def maze(target: complex, number: int) -> tuple[int, int]:
         if location in seen or not is_walkable(location, number):
             continue
         seen[location] = steps
-        queue.extend(((location + d, steps + 1) for d in directions))
+        queue.extend((location + d, steps + 1) for d in directions)
     return seen[target], sum(i <= 50 for i in seen.values())
 
 

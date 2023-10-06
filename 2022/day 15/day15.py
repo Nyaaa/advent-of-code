@@ -1,7 +1,9 @@
-from tools import parsers, loader
 from dataclasses import dataclass
-from shapely import union_all, clip_by_rect
-from shapely.geometry import mapping, Polygon, LineString
+
+from shapely import clip_by_rect, union_all
+from shapely.geometry import LineString, Polygon, mapping
+
+from tools import loader, parsers
 
 
 @dataclass
@@ -9,7 +11,7 @@ class Node:
     row: int
     col: int
 
-    def __hash__(self):
+    def __hash__(self) -> int:
         return hash(str(self))
 
 
@@ -20,7 +22,7 @@ class Sensor:
 
 
 class Main:
-    def __init__(self, data):
+    def __init__(self, data: list[str]) -> None:
         self.sensors = []
         self.area = []
         self.in_range = 0
@@ -32,7 +34,7 @@ class Main:
             coord = [int(i) for i in newstr.split()]
             sensor = Node(coord[0], coord[1])
             beacon = Node(coord[2], coord[3])
-            distance = abs(sensor.row - beacon.row) + abs(sensor.col - beacon.col)  # Manhattan distance
+            distance = abs(sensor.row - beacon.row) + abs(sensor.col - beacon.col)
             sensor = Sensor(sensor, distance)
             self.sensors.append(sensor)
             self.area.append(Polygon([(sensor.node.row - sensor.distance, sensor.node.col),

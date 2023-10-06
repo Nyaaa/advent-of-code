@@ -1,7 +1,8 @@
 from collections import defaultdict
 from concurrent.futures import ThreadPoolExecutor
-from queue import Queue, Empty
-from tools import parsers, loader
+from queue import Empty, Queue
+
+from tools import loader, parsers
 
 
 class Duet:

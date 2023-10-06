@@ -1,9 +1,10 @@
-from tools import parsers, loader
 from collections import Counter
+
+from tools import loader, parsers
 
 
 class Diagnostics:
-    def __init__(self, data):
+    def __init__(self, data: list[str]) -> None:
         self.data = data
 
     def counter(self, search: int) -> str:
@@ -12,7 +13,7 @@ class Diagnostics:
             val += Counter([n[i] for n in self.data]).most_common()[search][0]
         return val
 
-    def filter(self, high: str, low: str) -> str:
+    def filtr(self, high: str, low: str) -> str:
         lst = self.data.copy()
         while True:
             for i in range(len(lst[0])):
@@ -22,7 +23,7 @@ class Diagnostics:
                 if len(lst) == 1:
                     return lst[0]
 
-    def part_1(self):
+    def part_1(self) -> int:
         """
         >>> print(Diagnostics(parsers.lines('test.txt')).part_1())
         198"""
@@ -30,12 +31,12 @@ class Diagnostics:
         epsilon = int(self.counter(-1), 2)
         return gamma * epsilon
 
-    def part_2(self):
+    def part_2(self) -> int:
         """
         >>> print(Diagnostics(parsers.lines('test.txt')).part_2())
         230"""
-        oxygen = int(self.filter('1', '0'), 2)
-        co2 = int(self.filter('0', '1'), 2)
+        oxygen = int(self.filtr('1', '0'), 2)
+        co2 = int(self.filtr('0', '1'), 2)
         return oxygen * co2
 
 

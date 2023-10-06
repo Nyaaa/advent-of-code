@@ -1,16 +1,19 @@
 from collections import defaultdict
-from tools import parsers, loader
+
+from tools import loader, parsers
 
 
 class Graph:
-    def __init__(self, data):
+    def __init__(self, data: list[str]) -> None:
         self.nodes = defaultdict(list)
         for line in data:
             name, conn = line.split('-')
             self.nodes[name].append(conn)
             self.nodes[conn].append(name)
 
-    def count_paths(self, extra_visit: bool, node: str = 'start', seen: tuple = ('start', )) -> int:
+    def count_paths(
+            self, extra_visit: bool, node: str = 'start', seen: tuple = ('start', )
+    ) -> int:
         """
         >>> print(Graph(parsers.lines('test.txt')).count_paths(extra_visit=False))
         10

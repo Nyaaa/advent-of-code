@@ -1,9 +1,10 @@
 from itertools import cycle, repeat
-from tools import parsers, loader, timer
+
 import numpy as np
 from more_itertools import roundrobin
 from numpy.lib.stride_tricks import sliding_window_view
 
+from tools import loader, parsers, timer
 
 np.set_printoptions(threshold=np.inf, linewidth=100)
 test = '>>><<><>><<<>><>>><<<>>><<<><<<>><>><<>>'
@@ -26,7 +27,7 @@ class Cave:
         self.jets = roundrobin(cycle(jets), repeat('d'))
 
     def spawn_stone(self, stone: list[tuple[int, int]]) -> None:
-        stone_height = len(set(row for row, _ in stone))
+        stone_height = len({row for row, _ in stone})
         # only checking top 10 rows
         empty_rows = np.count_nonzero(np.all(~self.cavern[:10], axis=1))
         to_add = stone_height + 3 - empty_rows
@@ -38,7 +39,9 @@ class Cave:
     def move(self, stone: list[tuple[int, int]]) -> None:
         while True:
             direction = next(self.jets)
-            _stone = [(unit[0] + DIRS[direction][0], unit[1] + DIRS[direction][1]) for unit in stone]
+            _stone = [
+                (unit[0] + DIRS[direction][0], unit[1] + DIRS[direction][1]) for unit in stone
+            ]
 
             if direction != 'd':
                 if any(unit[1] < 0 or unit[1] >= 7 or self.cavern[unit] for unit in _stone):
@@ -70,7 +73,10 @@ class Cave:
 
             if not seq_length and rocks > 2022:
                 top = self.cavern[5:25]  # increase the window size if fails
-                found = np.all(np.all(sliding_window_view(self.cavern, top.shape) == top, axis=2), axis=2).nonzero()[0]
+                found = np.all(np.all(
+                    sliding_window_view(
+                        self.cavern, top.shape
+                    ) == top, axis=2), axis=2).nonzero()[0]
                 if 3 >= len(found) > 1 and found[-1] not in matches:
                     matches[found[-1]] = counter
                 if len(matches) == 2:

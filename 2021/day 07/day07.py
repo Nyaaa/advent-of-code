@@ -1,8 +1,8 @@
-from tools import parsers, loader
+from tools import loader, parsers
 
 
 class Crabs:
-    def __init__(self, data: str):
+    def __init__(self, data: str) -> None:
         self.data = [int(i) for i in data.split(',')]
 
     @staticmethod

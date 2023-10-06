@@ -1,8 +1,8 @@
-from numpy.typing import NDArray
-from tools import parsers, loader
 import numpy as np
-from tools.common import slice_with_complex
+from numpy.typing import NDArray
 
+from tools import loader, parsers
+from tools.common import slice_with_complex
 
 DIRECTIONS = {'U': -1, 'D': 1, 'L': -1j, 'R': 1j}
 TEST = """ULL

@@ -1,5 +1,6 @@
 from collections import Counter
-from tools import parsers, loader
+
+from tools import loader, parsers
 
 
 def validate(password: int, part2: bool) -> bool:
@@ -14,9 +15,9 @@ def validate(password: int, part2: bool) -> bool:
         elif not part2 and i == previous and not double:
             double = True
         previous = i
-    return True if double else False
+    return bool(double)
 
 
-START, STOP = [int(i) for i in parsers.string(loader.get()).split('-')]
+START, STOP = (int(i) for i in parsers.string(loader.get()).split('-'))
 print(sum(validate(i, False) for i in range(START, STOP)))  # 1919
 print(sum(validate(i, True) for i in range(START, STOP)))  # 1291

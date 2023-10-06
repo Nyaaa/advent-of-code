@@ -1,4 +1,4 @@
-from tools import parsers, loader
+from tools import loader, parsers
 
 TEST = """F10
 N3
@@ -9,7 +9,7 @@ F11
 
 
 class Navigation:
-    def __init__(self, data: list):
+    def __init__(self, data: list[str]) -> None:
         self.direction = 1j
         self.position = 0j
         self.waypoint = -1+10j
@@ -21,7 +21,7 @@ class Navigation:
             point *= -1j if heading == 'R' else 1j
         return point
 
-    def get_move(self, heading, distance) -> complex:
+    def get_move(self, heading: str, distance: int) -> complex:
         move = 0j
         match heading:
             case 'F': move = self.direction * distance

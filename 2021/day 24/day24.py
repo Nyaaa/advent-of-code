@@ -1,8 +1,9 @@
-from tools import parsers, loader
 from queue import LifoQueue
 
+from tools import loader, parsers
 
-def alu(data: list[str], part2: bool):
+
+def alu(data: list[str], part2: bool) -> str:
     stack = LifoQueue()
     output = {}
     for i in range(14):

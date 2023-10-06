@@ -3,9 +3,10 @@ from __future__ import annotations
 
 from collections.abc import Generator
 from typing import Any, NamedTuple
-from numpy.typing import NDArray
-from numba import njit
+
 import numpy as np
+from numba import njit
+from numpy.typing import NDArray
 
 
 @njit()

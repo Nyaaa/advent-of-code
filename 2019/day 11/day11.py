@@ -1,7 +1,9 @@
 from __future__ import annotations
-import numpy as np
-from tools import parsers, loader, intcode, common
 
+import numpy as np
+from numpy.typing import NDArray
+
+from tools import common, intcode, loader, parsers
 
 DIRECTIONS = {'up': ('left', 'right'),
               'right': ('up', 'down'),
@@ -13,7 +15,7 @@ np.set_printoptions(linewidth=np.inf)
 
 
 class Robot:
-    def __init__(self):
+    def __init__(self) -> None:
         self.pc = intcode.Intcode(parsers.lines(loader.get()))
         self.path = []
         self.direction = 'up'
@@ -21,7 +23,7 @@ class Robot:
         # Hardcoded array size, may not be enough for some cases.
         self.grid = np.zeros(shape=(150, 150), dtype=int)
 
-    def paint(self):
+    def paint(self) -> None:
         while True:
             self.path.append(self.current_loc)
             move = self.pc.run([self.grid[self.current_loc]])
@@ -34,11 +36,11 @@ class Robot:
             self.current_loc = (self.current_loc[0] + MOVES[self.direction][0],
                                 self.current_loc[1] + MOVES[self.direction][1])
 
-    def part_1(self):
+    def part_1(self) -> int:
         self.paint()
         return len(set(self.path))
 
-    def part_2(self):
+    def part_2(self) -> NDArray:
         self.grid[self.current_loc] = 1
         self.paint()
         trimmed = common.trim_array(self.grid)

@@ -1,19 +1,22 @@
-from tools import parsers, loader
-import numpy as np
 import re
-from operator import itemgetter
 from itertools import zip_longest
+from operator import itemgetter
+
+import numpy as np
+
+from tools import loader, parsers
 
 
 class Vents:
-    def __init__(self, data):
-        self.lines = [[(a, b), (c, d)] for a, b, c, d in [list(map(int, re.findall(r'\d+', i))) for i in data]]
+    def __init__(self, data: list[str]) -> None:
+        self.lines = [[(a, b), (c, d)] for a, b, c, d in
+                      [list(map(int, re.findall(r'\d+', i))) for i in data]]
         flat_list = [item for sublist in self.lines for item in sublist]
         row = max(flat_list, key=itemgetter(0))[0]
         col = max(flat_list, key=itemgetter(1))[1]
         self.map = np.zeros((row + 1, col + 1), dtype=int)
 
-    def get_points(self, part2: bool):
+    def get_points(self, part2: bool) -> list[tuple[int, int]]:
         points = []
         for start, end in self.lines:
             if start[1] == end[1]:
@@ -34,7 +37,7 @@ class Vents:
                 continue
         return points
 
-    def start(self, part2: bool):
+    def start(self, part2: bool) -> int:
         """ (x, y) = col, row
         >>> print(Vents(parsers.lines('test.txt')).start(part2=False))
         5

@@ -1,4 +1,4 @@
-from tools import parsers, loader
+from tools import loader, parsers
 
 test = """forward 5
 down 5
@@ -10,13 +10,13 @@ forward 2
 
 
 class Sub:
-    def __init__(self, data):
+    def __init__(self, data: list[str]) -> None:
         self.data = [[j[0], int(j[1])] for j in (i.split() for i in data)]
         self.depth = 0
         self.hor = 0
         self.aim = 0
 
-    def part_1(self):
+    def part_1(self) -> int:
         """
         >>> print(Sub(parsers.inline_test(test)).part_1())
         150"""
@@ -29,7 +29,7 @@ class Sub:
                 self.depth -= val
         return self.depth * self.hor
 
-    def part_2(self):
+    def part_2(self) -> int:
         """
         >>> print(Sub(parsers.inline_test(test)).part_2())
         900"""

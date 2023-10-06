@@ -1,6 +1,7 @@
-from itertools import count
-from tools import parsers, loader
 import re
+from itertools import count
+
+from tools import loader, parsers
 
 TEST = """Disc #1 has 5 positions; at time=0, it is at position 4.
 Disc #2 has 2 positions; at time=0, it is at position 1."""

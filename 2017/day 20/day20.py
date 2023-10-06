@@ -1,10 +1,11 @@
 from __future__ import annotations
+
+import re
 from collections import Counter
 from dataclasses import dataclass
 from typing import NamedTuple
-from tools import parsers, loader
-import re
 
+from tools import loader, parsers
 
 TEST = """p=< 3,0,0>, v=< 2,0,0>, a=<-1,0,0>
 p=< 4,0,0>, v=< 0,0,0>, a=<-2,0,0>"""
@@ -28,7 +29,7 @@ class Point(NamedTuple):
 
 @dataclass
 class Particle:
-    id: int
+    ident: int
     position: Point
     velocity: Point
     acceleration: Point
@@ -55,7 +56,9 @@ class Simulation:
         self.points = []
         for i, line in enumerate(data):
             nums = [int(i) for i in re.findall(r'-?\d+', line)]
-            self.points.append(Particle(i, Point(*nums[0:3]), Point(*nums[3:6]), Point(*nums[6:9])))
+            self.points.append(
+                Particle(i, Point(*nums[0:3]), Point(*nums[3:6]), Point(*nums[6:9]))
+            )
 
     def part_1(self) -> int:
         """
@@ -72,7 +75,7 @@ class Simulation:
                 times_closest = 1
             for i in self.points:
                 i.step()
-        return prev_closest.id
+        return prev_closest.ident
 
     def part_2(self) -> int:
         """

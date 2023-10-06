@@ -1,6 +1,8 @@
-from tools import parsers, loader
 import re
+
 import numpy as np
+
+from tools import loader, parsers
 from tools.common import slice_with_complex
 
 np.set_printoptions(threshold=np.inf, linewidth=np.inf)
@@ -18,7 +20,9 @@ class Cube:
         self.path = iter(list(filter(None, path)))
         self.direction = 1j
         max_len = np.max([len(a) for a in _map])
-        self.map = np.asarray([np.pad(a, (0, max_len - len(a)), 'constant', constant_values=' ') for a in _map])
+        self.map = np.asarray(
+            [np.pad(a, (0, max_len - len(a)), 'constant', constant_values=' ') for a in _map]
+        )
         self.location = complex(0, np.nonzero(self.map[0] == '.')[0][0])
 
     def warp(self, loc: complex) -> complex:
