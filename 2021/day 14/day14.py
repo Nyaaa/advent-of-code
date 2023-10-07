@@ -11,7 +11,7 @@ class Polymer:
         self.rules: dict = dict(x.split(' -> ') for x in data[1])
         self.counter: Counter = Counter(self.template)
 
-    @cache
+    @cache  # noqa: B019
     def count(self, pair: str, steps: int) -> Counter | None:
         if steps == 0:
             return None
@@ -38,4 +38,3 @@ class Polymer:
 
 print(Polymer(parsers.blocks(loader.get())).start(10))  # 2223
 print(Polymer(parsers.blocks(loader.get())).start(40))  # 2566282754493
-

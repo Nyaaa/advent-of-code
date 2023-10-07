@@ -1,5 +1,6 @@
-from tools import parsers, loader
 from more_itertools import grouper
+
+from tools import loader, parsers
 
 
 def gen_data(a: str) -> str:

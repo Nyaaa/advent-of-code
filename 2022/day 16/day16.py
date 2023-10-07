@@ -10,7 +10,7 @@ class Cave:
         self.cavern = nx.Graph()
 
         for line in data:
-            res = re.findall(r"[A-Z]+[A-Z]|\d+", line)
+            res = re.findall(r'[A-Z]+[A-Z]|\d+', line)
             node, conn = res[0], res[2:]
             self.cavern.add_node(node, flowrate=int(res[1]))
             for i in conn:

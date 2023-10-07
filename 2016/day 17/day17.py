@@ -1,6 +1,7 @@
-from collections import deque
-from tools import parsers, loader
 import hashlib
+from collections import deque
+
+from tools import loader, parsers
 
 
 def get_doors(path: str) -> dict[str, bool]:

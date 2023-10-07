@@ -16,5 +16,3 @@ def part_2(data: str) -> int:
 
 print(part_1(parsers.string(loader.get())))  # 232
 print(part_2(parsers.string(loader.get())))  # 1783
-
-

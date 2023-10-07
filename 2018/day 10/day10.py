@@ -16,7 +16,7 @@ def stars(data: list[str]) -> tuple[NDArray, int]:
     min_size = float('inf')
     time = 0
 
-    for time in range(15000):
+    for time in range(15000):  # noqa: B007
         size = np.amax(locations[:, 1]) - np.amin(locations[:, 1])
         if size <= min_size:
             min_size = size

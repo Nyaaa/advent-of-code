@@ -1,5 +1,9 @@
 [tool.ruff]
 line-length = 99
-select = ['E', 'F', 'UP', 'NPY', 'SIM', 'ICN', 'C4', 'A', 'B', 'ANN', 'N', 'I']
+select = ['E', 'F', 'UP', 'NPY', 'SIM', 'ICN', 'C4', 'A', 'B', 'ANN', 'N', 'I', 'Q', 'W']
 ignore = ['E701', 'ANN101']
 exclude = ['tools/*']
+
+[tool.ruff.flake8-quotes]
+inline-quotes = 'single'
+multiline-quotes = 'double'

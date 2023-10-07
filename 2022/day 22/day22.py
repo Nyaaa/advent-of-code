@@ -16,7 +16,7 @@ class Cube:
     def __init__(self, data: list[list[str]], part2: bool = False) -> None:
         self.part2 = part2
         _map = [list(i) for i in data[0]]
-        path = re.split(r"(\d+)([A-Z])", *data[1])
+        path = re.split(r'(\d+)([A-Z])', *data[1])
         self.path = iter(list(filter(None, path)))
         self.direction = 1j
         max_len = np.max([len(a) for a in _map])

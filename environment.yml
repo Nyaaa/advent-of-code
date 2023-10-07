@@ -9,3 +9,4 @@ dependencies:
   - regex
   - numpy
   - numba
+  - conda-forge::pre-commit

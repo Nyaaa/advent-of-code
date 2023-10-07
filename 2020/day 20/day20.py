@@ -10,10 +10,10 @@ from numpy.typing import NDArray
 from tools import loader, parsers
 
 # monster is handled as a tile to get rotations
-MONSTER = ["0",
-           "                  # ",
-           "#    ##    ##    ###",
-           " #  #  #  #  #  #   "]
+MONSTER = ['0',
+           '                  # ',
+           '#    ##    ##    ###',
+           ' #  #  #  #  #  #   ']
 
 
 class Tile:
