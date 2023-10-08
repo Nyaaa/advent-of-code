@@ -16,6 +16,7 @@ def puzzle(data: str, length: int) -> int:
         chunk = data[i: i + length]
         if len(set(chunk)) == len(chunk):
             return i + length
+    return None
 
 
 print(puzzle(parsers.string(loader.get()), 4))  # 1779

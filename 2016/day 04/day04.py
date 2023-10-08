@@ -27,6 +27,7 @@ def part_2(data: list[str]) -> int:
             result += ascii_lowercase[(letter + _id) % 26]
         if 'north' in result:
             return _id
+    return None
 
 
 print(part_1(parsers.lines(loader.get())))  # 409147

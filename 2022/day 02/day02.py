@@ -11,10 +11,9 @@ test = ['A Y', 'B X', 'C Z']
 def check_win(i: int, j: int) -> tuple[str, int]:
     if i == j:
         return 'draw', j + 3
-    elif (i, j) in wins:
+    if (i, j) in wins:
         return 'win', j + 6
-    else:
-        return 'loss', j + 0
+    return 'loss', j + 0
 
 
 def part_1(data: list[str]) -> int:

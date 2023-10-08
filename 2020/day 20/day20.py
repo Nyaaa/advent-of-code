@@ -131,6 +131,7 @@ class Jigsaw:
                         count += 1
             if count > 0:
                 return np.count_nonzero(final_image) - (count * np.count_nonzero(monster.pixels))
+        return None
 
 
 print(Jigsaw(parsers.blocks(loader.get())).part_1())  # 7492183537913

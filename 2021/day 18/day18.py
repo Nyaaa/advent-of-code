@@ -38,8 +38,7 @@ def explode(num: str) -> str:
             index = to_replace.span()
             new_value = int(value.group()) + int(to_replace.group())
             return f'{side_string[:index[0]]}{new_value}{side_string[index[1]:]}'
-        else:
-            return side_string
+        return side_string
 
     result = ''
     for match in PAIRS.finditer(num):
@@ -122,6 +121,7 @@ def magnitude(num: str) -> int:
             return int(num)
         except ValueError:
             return magnitude(num)
+    raise
 
 
 def part_1(data: Sequence[str]) -> int:

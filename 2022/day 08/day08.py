@@ -83,8 +83,7 @@ class Forest:
 
         if part == 1:
             return Counter(list(chain(*vis)))['Visible']
-        else:
-            return max(list(chain(*scores)))
+        return max(list(chain(*scores)))
 
 
 print(Forest(d).solve(1))  # 1543

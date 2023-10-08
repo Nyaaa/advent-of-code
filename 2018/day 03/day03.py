@@ -40,6 +40,7 @@ class Fabric:
         for claim in self.claims:
             if np.all(self.array[claim.sheet_size] == 1):
                 return claim.ident
+        return None
 
 
 print(Fabric(parsers.lines(loader.get())).part_1())  # 118223

@@ -20,8 +20,7 @@ class Grove:
                  }
         if all(sides.values()) or not any(sides.values()):
             return None
-        else:
-            return self.decide(elf, direction, sides)
+        return self.decide(elf, direction, sides)
 
     def decide(self, elf: tuple, direction: str, sides: dict[str: bool]) -> tuple:
         side = sides[direction]

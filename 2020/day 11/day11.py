@@ -22,8 +22,7 @@ class Lobby:
                     new_map[index] = 1
             if np.array_equal(self.map, new_map):
                 break
-            else:
-                self.map = new_map
+            self.map = new_map
         return np.count_nonzero(self.map == 2)
 
     def line_of_sight(self, index: tuple) -> int:
@@ -55,8 +54,7 @@ class Lobby:
                     new_map[index] = 1
             if np.array_equal(self.map, new_map):
                 break
-            else:
-                self.map = new_map
+            self.map = new_map
         return np.count_nonzero(self.map == 2)
 
 

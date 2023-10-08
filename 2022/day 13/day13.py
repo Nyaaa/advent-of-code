@@ -3,7 +3,7 @@ from itertools import zip_longest
 from tools import loader, parsers
 
 
-def compare(left: list, right: list) -> bool:
+def compare(left: list, right: list) -> bool | None:
     if not isinstance(left, list): left = [left]
     if not isinstance(right, list): right = [right]
 
@@ -11,7 +11,7 @@ def compare(left: list, right: list) -> bool:
     for i, j in zipped:
         if j is None:
             return False
-        elif i is None:
+        if i is None:
             return True
 
         if isinstance(i, int) and isinstance(j, int):
@@ -21,6 +21,7 @@ def compare(left: list, right: list) -> bool:
             out = compare(i, j)
             if out is not None:
                 return out
+    return None
 
 
 def flatten(list_of_lists: list) -> list:

@@ -24,9 +24,8 @@ class Navigation:
         meta_value = islice(self.data, meta)
         if child == 0:
             return sum(meta_value)
-        else:
-            children = {k: self.part_2() for k in range(1, child + 1)}
-            return sum(children.get(i, 0) for i in meta_value)
+        children = {k: self.part_2() for k in range(1, child + 1)}
+        return sum(children.get(i, 0) for i in meta_value)
 
 
 print(Navigation(parsers.string(loader.get())).part_1())  # 45194

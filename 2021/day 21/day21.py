@@ -51,7 +51,7 @@ def part_1(data: list[str]) -> int:
 def dirac(player1: tuple[int, int], player2: tuple[int, int]) -> tuple[int, int]:
     if player1[1] >= 21:
         return 1, 0
-    elif player2[1] >= 21:
+    if player2[1] >= 21:
         return 0, 1
     player1_wins = 0
     player2_wins = 0

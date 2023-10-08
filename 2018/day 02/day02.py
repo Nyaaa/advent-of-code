@@ -22,6 +22,7 @@ def part_2() -> str:
         matcher.set_seqs(a, b)
         if matcher.ratio() > 0.96:  # 1 char diff in 26 char string
             return ''.join(i[2] for i in difflib.ndiff(a, b) if i[0] == ' ')
+    return None
 
 
 data = parsers.lines(loader.get())

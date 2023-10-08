@@ -38,7 +38,7 @@ class Octopi:
             self.grid[self.grid >= 10] = 0
             if not part2 and step == 100:
                 return flashes
-            elif part2 and not self.grid.any():
+            if part2 and not self.grid.any():
                 return step
 
 

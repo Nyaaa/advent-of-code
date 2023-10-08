@@ -20,7 +20,7 @@ class Side(NamedTuple):
     def split_side(self, other: Side) -> tuple[Side, Side]:
         if self.mini < other.mini <= self.maxi:
             return Side(self.mini, other.mini - 1), Side(other.mini, self.maxi)
-        elif self.mini <= other.maxi < self.maxi:
+        if self.mini <= other.maxi < self.maxi:
             return Side(other.maxi + 1, self.maxi), Side(self.mini, other.maxi)
         raise IndexError
 

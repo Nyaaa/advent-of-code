@@ -15,8 +15,7 @@ def reallocate_mem(data: str, part2: bool) -> int:
         if s := tuple(data) in seen:
             if not part2:
                 break
-            else:
-                seen, counter, part2 = {s}, 0, False
+            seen, counter, part2 = {s}, 0, False
         seen.add(tuple(data))
         highest = max(data)
         index = data.index(highest)

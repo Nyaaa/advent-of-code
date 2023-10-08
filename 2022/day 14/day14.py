@@ -52,11 +52,11 @@ class Cave:
         if self.cavern[0][column] == 'S':
             raise IndexError('reached the top')
         if self.cavern[row][column] not in ['█', 'S']:
-            return self.fall(row + 1, column)
+            self.fall(row + 1, column)
         elif self.cavern[row][column - 1] not in ['█', 'S']:
-            return self.fall(row, column - 1)
+            self.fall(row, column - 1)
         elif self.cavern[row][column + 1] not in ['█', 'S']:
-            return self.fall(row, column + 1)
+            self.fall(row, column + 1)
         else:
             self.cavern[row - 1][column] = 'S'
             self.left = column if column < self.left else self.left

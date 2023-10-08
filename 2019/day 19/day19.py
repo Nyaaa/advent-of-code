@@ -14,8 +14,7 @@ def part_2() -> int:
             y_top = y - 99
             if get_reading(x + 99, y_top):
                 return 10000 * x + y_top
-            else:
-                y += 1
+            y += 1
         else:
             x += 1
 

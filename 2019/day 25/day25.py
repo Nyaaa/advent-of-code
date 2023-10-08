@@ -22,8 +22,7 @@ class Game:
         items = self.execute('inv')
         text = ''.join(chr(i) for i in items)
         items = text.replace('- ', '').split('\n')
-        items = [i for i in items if i and i[0].islower()]
-        return items
+        return [i for i in items if i and i[0].islower()]
 
     def find_combination(self) -> int:
         items = self.collect_items()

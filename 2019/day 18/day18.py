@@ -25,7 +25,7 @@ class Maze:
                 if letter != item and letter.islower():
                     _paths[letter] = (steps, doors)
                     continue
-                elif letter.isupper():
+                if letter.isupper():
                     doors = doors.union(letter.lower())
                 for next_pos, val in common.get_adjacent(self.grid, pos):
                     if next_pos not in seen and val != '#':
@@ -64,6 +64,7 @@ class Maze:
                         continue
                     _current = f'{current[:i]}{next_pos}{current[i + 1:]}'
                     heapq.heappush(queue, (steps + _steps, _current, keys | {next_pos}))
+        raise ValueError('No solution found')
 
     def part_2(self) -> int:
         """

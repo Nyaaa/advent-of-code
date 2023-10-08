@@ -12,7 +12,7 @@ def validate(password: int, part2: bool) -> bool:
     for i in (int(j) for j in string):
         if i < previous:
             return False
-        elif not part2 and i == previous and not double:
+        if not part2 and i == previous and not double:
             double = True
         previous = i
     return bool(double)

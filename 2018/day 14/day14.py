@@ -28,10 +28,11 @@ class Recipe:
         >>> print(Recipe('59414').part_2())
         2018"""
         target = [int(i) for i in self.target]
-        while True:
+        while not any(
+                target == i for i in (self.board[-len(target):], self.board[-len(target) - 1:-1])
+        ):
             self.step()
-            if self.board[-len(target):] == target or self.board[-len(target) - 1:-1] == target:
-                break
+
         return ''.join(str(i) for i in self.board).index(self.target)
 
 

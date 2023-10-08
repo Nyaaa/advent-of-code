@@ -24,6 +24,7 @@ class SIF:
             pixel = i[index]
             if pixel != 2:
                 return pixel
+        return None
 
     def part_2(self) -> NDArray:
         image = self.layers[0]
