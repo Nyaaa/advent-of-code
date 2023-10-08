@@ -64,9 +64,7 @@ class Ticket:
                     found.append(val[0])
                     del candidates[key]
                 else:
-                    for i, v in enumerate(val):
-                        if v in found:
-                            del val[i]
+                    candidates[key] = [v for v in val if v not in found]
 
         result = []
         for key, val in out.items():

@@ -34,7 +34,7 @@ class Forest:
         """part 1"""
 
         # getting edges
-        if _x == 0 or _x == self.x - 1 or _y == 0 or _y == self.y - 1:
+        if _x in (0, self.x - 1) or _y in (0, self.y - 1):
             return 'Visible', 0
 
         # getting rows

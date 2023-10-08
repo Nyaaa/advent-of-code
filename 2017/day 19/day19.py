@@ -8,7 +8,7 @@ def main(data: list[str]) -> tuple[str, int]:
     grid = {}
     for i, row in enumerate(data):
         for j, cell in enumerate(row):
-            if cell != ' ' and cell != '\n':
+            if cell not in {' ', '\n'}:
                 grid[complex(i, j)] = cell
     direction = 1-0j
     location = min(grid, key=lambda x: x.real)

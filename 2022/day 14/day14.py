@@ -16,11 +16,15 @@ class Cave:
         self.left, self.right = 500, 700
         self.cavern = np.chararray((1, self.right), unicode=True)
         self.cavern[:] = ' '
-        _data_clean = [
-            [[int(i) for i in coord.split(',')] for coord in line.split(' -> ')] for line in data
-        ]
+        self.draw_cavern(
+            [[[int(i) for i in coord.split(',')] for coord in line.split(' -> ')] for line in data]
+        )
+        if part == 2:
+            self.increase_depth(1, ' ')
+            self.increase_depth(1, '█')
 
-        for line in _data_clean:
+    def draw_cavern(self, data_clean: list[list[list[int]]]) -> None:
+        for line in data_clean:
             for i, (x, y) in enumerate(line):
                 try:
                     next_x, next_y = line[i + 1][0], line[i + 1][1]
@@ -33,23 +37,11 @@ class Cave:
                     add = max_y + 1 - len(self.cavern)
                     self.increase_depth(add, ' ')
 
-                if x - next_x > 0:
-                    for _x in range(next_x, x + 1):
-                        self.cavern[y, _x] = '█'
-                elif x - next_x < 0:
-                    for _x in range(x, next_x + 1):
-                        self.cavern[y, _x] = '█'
+                slice_x = np.s_[y, next_x:x + 1] if x - next_x > 0 else np.s_[y, x:next_x + 1]
+                self.cavern[slice_x] = '█'
 
-                if y - next_y > 0:
-                    for _y in range(next_y, y + 1):
-                        self.cavern[_y, x] = '█'
-                elif y - next_y < 0:
-                    for _y in range(y, next_y + 1):
-                        self.cavern[_y, x] = '█'
-
-        if part == 2:
-            self.increase_depth(1, ' ')
-            self.increase_depth(1, '█')
+                slice_y = np.s_[next_y:y + 1, x] if y - next_y > 0 else np.s_[y:next_y + 1, x]
+                self.cavern[slice_y] = '█'
 
     def increase_depth(self, lines: int, char: str) -> None:
         self.cavern = np.pad(
@@ -61,16 +53,14 @@ class Cave:
             raise IndexError('reached the top')
         if self.cavern[row][column] not in ['█', 'S']:
             return self.fall(row + 1, column)
+        elif self.cavern[row][column - 1] not in ['█', 'S']:
+            return self.fall(row, column - 1)
+        elif self.cavern[row][column + 1] not in ['█', 'S']:
+            return self.fall(row, column + 1)
         else:
-            if self.cavern[row][column - 1] not in ['█', 'S']:
-                return self.fall(row, column - 1)
-            else:
-                if self.cavern[row][column + 1] not in ['█', 'S']:
-                    return self.fall(row, column + 1)
-                else:
-                    self.cavern[row - 1][column] = 'S'
-                    self.left = column if column < self.left else self.left
-                    self.right = column if column > self.right else self.right
+            self.cavern[row - 1][column] = 'S'
+            self.left = column if column < self.left else self.left
+            self.right = column if column > self.right else self.right
 
     def go(self) -> int:
         """test part 1:
@@ -90,8 +80,5 @@ class Cave:
         return counter
 
 
-# part 1
 print(Cave(parsers.lines(loader.get()), part=1).go())  # 774
-
-# part 2
 print(Cave(parsers.lines(loader.get()), part=2).go())  # 22499

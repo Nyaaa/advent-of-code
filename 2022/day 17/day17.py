@@ -46,11 +46,10 @@ class Cave:
             if direction != 'd':
                 if any(unit[1] < 0 or unit[1] >= 7 or self.cavern[unit] for unit in _stone):
                     _stone = stone
-            else:
-                if any(self.cavern[unit] for unit in _stone):
-                    for i in stone:
-                        self.cavern[i] = 1
-                    break
+            elif any(self.cavern[unit] for unit in _stone):
+                for i in stone:
+                    self.cavern[i] = 1
+                break
             stone = _stone
 
     def start(self, rocks: int) -> int:

@@ -8,10 +8,10 @@ class FileSystem:
 
         path = ''
         for line in data:
-            line = line.split()
-            name = f'{path}/{line[1]}'
+            _line = line.split()
+            name = f'{path}/{_line[1]}'
 
-            match line:
+            match _line:
                 case ['$', 'ls']:
                     continue
                 case ['$', 'cd', '..']:
@@ -23,7 +23,7 @@ class FileSystem:
                 case ['dir', _]:
                     self.files[path].append({name: 0})
                 case _:
-                    self.files[path].append({name: int(line[0])})
+                    self.files[path].append({name: int(_line[0])})
 
         while True:
             for folder in self.folders:
@@ -38,11 +38,10 @@ class FileSystem:
             name, file_size = list(i.items())[0]
             if file_size != 0:
                 size += file_size
+            elif self.folders[name] != 0:
+                size += self.folders[name]
             else:
-                if self.folders[name] != 0:
-                    size += self.folders[name]
-                else:
-                    return 0
+                return 0
         return size
 
     def part_1(self) -> int:

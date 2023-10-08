@@ -69,7 +69,7 @@ class Bugs:
                 for i in np.ndindex(_arr.shape):
                     if i != self.middle:
                         adj = self.count_adjacent(level, i)
-                        if (arr[i] and adj == 1) or (not arr[i] and (adj == 1 or adj == 2)):
+                        if (arr[i] and adj == 1) or (not arr[i] and (adj in (1, 2))):
                             _arr[i] = 1
                 _levels[level] = _arr
             self.levels = _levels
