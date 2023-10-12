@@ -1,10 +1,9 @@
 # 🎄Advent of Code🎄
-Advent of Code puzzle solutions
+Advent of Code puzzle solutions.
 
-## Running
-This project uses [Conda](https://conda.io/projects/conda/en/latest/index.html) to manage virtual environments and dependencies.\
-To create a new virtual environment and install all required libraries, run: `conda env create -f environment.yml`
+The solutions are mostly general and should work with all inputs, with some exceptions where data is hardcoded.
 
+## Structure
 Input data for each puzzle is stored in a private submodule, as per the [creator's request](https://twitter.com/ericwastl/status/1465805354214830081):
 > In general I ask people not to publish their inputs, just to make it harder for someone to try to steal the whole
 site.
@@ -13,8 +12,17 @@ The solutions rely on a helper library ['tools'](https://github.com/Nyaaa/advent
 Parsers expect a text file, as given in the puzzle, with no modifications.
 All input data is parsed, with very rare exceptions where parsing is not practical.
 
-The solutions are mostly general and should work with all inputs, with some exceptions where data is hardcoded.
 
+## Setup
+
+This project uses [Conda](https://conda.io/projects/conda/en/latest/index.html) to manage virtual environments and
+dependencies.
+
+To create a new virtual environment and install all required libraries, run:\
+`conda env create -f environment.yml`
+
+Linting is handled by a global installation of Ruff, to enable pre-commit hooks run\
+`pre-commit install`
 
 ## Completion
 

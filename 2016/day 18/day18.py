@@ -1,5 +1,6 @@
-from tools import parsers, loader
 from numba import njit
+
+from tools import loader, parsers
 
 
 @njit
@@ -7,17 +8,14 @@ def generate_map(data: str, rows: int) -> int:
     """
     >>> print(generate_map('.^^.^.^^^^', 10))
     38"""
-    tiles = [False if i == '^' else True for i in data]
+    tiles = [i != '^' for i in data]
     zeros = 0
 
     for _ in range(rows):
         zeros += sum(tiles)
         row = [True] + tiles.copy() + [True]
         for i, (a, b) in enumerate(zip(row, row[2:])):
-            if (a and not b) or (not a and b):
-                tiles[i] = False
-            else:
-                tiles[i] = True
+            tiles[i] = not ((a and not b) or (not a and b))
     return zeros
 
 
