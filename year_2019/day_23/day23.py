@@ -2,7 +2,8 @@ from collections import defaultdict
 
 from more_itertools import sliced
 
-from tools import intcode, loader, parsers
+from tools import loader, parsers
+from year_2019 import intcode
 
 
 class Network:

@@ -2,7 +2,8 @@ from copy import deepcopy
 from itertools import permutations
 from typing import Iterable
 
-from tools import intcode, loader, parsers
+from tools import loader, parsers
+from year_2019 import intcode
 
 init_pc = intcode.Intcode(parsers.lines(loader.get()))
 

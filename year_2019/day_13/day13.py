@@ -1,6 +1,7 @@
 from more_itertools import ilen, sliced
 
-from tools import intcode, loader, parsers
+from tools import loader, parsers
+from year_2019 import intcode
 
 
 class Game:

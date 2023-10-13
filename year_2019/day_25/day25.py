@@ -1,7 +1,8 @@
 import re
 from itertools import combinations
 
-from tools import intcode, loader, parsers
+from tools import loader, parsers
+from year_2019 import intcode
 
 
 class Game:

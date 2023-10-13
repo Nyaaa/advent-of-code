@@ -1,6 +1,6 @@
 from unittest import TestCase
 
-from tools.intcode import Intcode
+from year_2019.intcode import Intcode
 
 
 class TestIntcode(TestCase):

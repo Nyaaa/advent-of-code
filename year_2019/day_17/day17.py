@@ -4,7 +4,8 @@ import numpy as np
 from more_itertools import split_at
 from numpy.typing import NDArray
 
-from tools import common, intcode, loader, parsers
+from tools import common, loader, parsers
+from year_2019 import intcode
 
 
 def get_map() -> NDArray:

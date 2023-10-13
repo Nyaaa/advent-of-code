@@ -10,7 +10,6 @@ class Intcode:
         self.step = 0
         self.relative_base = 0
         self.logged_output = []
-        self.done = False
 
     @staticmethod
     def parse_opcode(opcode: int) -> tuple[int, list[int]]:
@@ -71,10 +70,9 @@ class Intcode:
                         return self.logged_output
                     if not isinstance(val, int):
                         raise ValueError('Provide an integer input value.')
-                    else:
-                        out = self.get_write_index(self.step + 1, modes[0])
-                        self.data[out] = val
-                        self.step += 2
+                    out = self.get_write_index(self.step + 1, modes[0])
+                    self.data[out] = val
+                    self.step += 2
                 case 4:  # print to screen
                     output = param1
                     self.logged_output.append(output)
@@ -97,7 +95,6 @@ class Intcode:
                     self.relative_base += param1
                     self.step += 2
                 case 99:  # end of program
-                    self.done = True
                     return output if return_output else self.data
                 case _:
                     raise NotImplementedError(f'Unknown opcode: {opcode}')

@@ -3,7 +3,8 @@ from __future__ import annotations
 import numpy as np
 from numpy.typing import NDArray
 
-from tools import common, intcode, loader, parsers
+from tools import common, loader, parsers
+from year_2019 import intcode
 
 DIRECTIONS = {'up': ('left', 'right'),
               'right': ('up', 'down'),
