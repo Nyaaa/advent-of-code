@@ -1,7 +1,8 @@
 """A collection of parsers for processing input files"""
+from pathlib import Path
 
 
-def lines(file: str, strip: bool = True) -> list[str]:
+def lines(file: str | Path, strip: bool = True) -> list[str]:
     """Parses input file line by line.
 
     :param file: Text input
@@ -13,7 +14,7 @@ def lines(file: str, strip: bool = True) -> list[str]:
         return [line.strip() if strip else line for line in f.readlines()]
 
 
-def string(file: str) -> str:
+def string(file: str | Path) -> str:
     """Parses input file consisting of a single string.
 
     :param file: Text input
@@ -24,7 +25,7 @@ def string(file: str) -> str:
         return f.read().strip()
 
 
-def blocks(file: str) -> list[list[str]]:
+def blocks(file: str | Path) -> list[list[str]]:
     """Parses input file in blocks, separated by empty line.
 
     :param file: Text input

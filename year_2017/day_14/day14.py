@@ -4,7 +4,7 @@ import numpy as np
 
 from tools import common, loader, parsers
 
-hasher = SourceFileLoader('knot_hash', '../day 10/day10.py').load_module()
+hasher = SourceFileLoader('knot_hash', '../day_10/day10.py').load_module()
 
 
 class Defragment:
