@@ -1,4 +1,5 @@
 """A collection of parsers for processing input files"""
+import re
 from pathlib import Path
 
 
@@ -34,7 +35,7 @@ def blocks(file: str | Path) -> list[list[str]]:
 
     with open(file) as f:
         result = []
-        for line in f.read().split('\n\n'):
+        for line in re.split(r'\n\n+', f.read()):
             result.append([i for i in line.split('\n') if i != ''])
         return result
 
