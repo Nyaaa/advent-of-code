@@ -1,88 +1,8 @@
+import importlib
 import re
-import sys
 from inspect import getmembers, isfunction
 
 from tools import loader, parsers
-
-
-def instr_addr(instr: tuple, register: list) -> list:
-    register[instr[3]] = register[instr[1]] + register[instr[2]]
-    return register
-
-
-def instr_addi(instr: tuple, register: list) -> list:
-    register[instr[3]] = register[instr[1]] + instr[2]
-    return register
-
-
-def instr_mulr(instr: tuple, register: list) -> list:
-    register[instr[3]] = register[instr[1]] * register[instr[2]]
-    return register
-
-
-def instr_muli(instr: tuple, register: list) -> list:
-    register[instr[3]] = register[instr[1]] * instr[2]
-    return register
-
-
-def instr_banr(instr: tuple, register: list) -> list:
-    register[instr[3]] = register[instr[1]] & register[instr[2]]
-    return register
-
-
-def instr_bani(instr: tuple, register: list) -> list:
-    register[instr[3]] = register[instr[1]] & instr[2]
-    return register
-
-
-def instr_borr(instr: tuple, register: list) -> list:
-    register[instr[3]] = register[instr[1]] | register[instr[2]]
-    return register
-
-
-def instr_bori(instr: tuple, register: list) -> list:
-    register[instr[3]] = register[instr[1]] | instr[2]
-    return register
-
-
-def instr_setr(instr: tuple, register: list) -> list:
-    register[instr[3]] = register[instr[1]]
-    return register
-
-
-def instr_seti(instr: tuple, register: list) -> list:
-    register[instr[3]] = instr[1]
-    return register
-
-
-def instr_gtir(instr: tuple, register: list) -> list:
-    register[instr[3]] = 1 if instr[1] > register[instr[2]] else 0
-    return register
-
-
-def instr_gtri(instr: tuple, register: list) -> list:
-    register[instr[3]] = 1 if register[instr[1]] > instr[2] else 0
-    return register
-
-
-def instr_gtrr(instr: tuple, register: list) -> list:
-    register[instr[3]] = 1 if register[instr[1]] > register[instr[2]] else 0
-    return register
-
-
-def instr_eqir(instr: tuple, register: list) -> list:
-    register[instr[3]] = 1 if instr[1] == register[instr[2]] else 0
-    return register
-
-
-def instr_eqri(instr: tuple, register: list) -> list:
-    register[instr[3]] = 1 if register[instr[1]] == instr[2] else 0
-    return register
-
-
-def instr_eqrr(instr: tuple, register: list) -> list:
-    register[instr[3]] = 1 if register[instr[1]] == register[instr[2]] else 0
-    return register
 
 
 class Program:
@@ -91,8 +11,8 @@ class Program:
         self.samples = []
         for sample in data[:-1]:
             self.samples.append(list(map(int, re.findall(r'\d+', i))) for i in sample)
-        self.instructions = [m for n, m in getmembers(sys.modules[__name__], isfunction)
-                             if n.startswith('instr')]
+        self.instructions = [m for n, m in
+                             getmembers(importlib.import_module('operators'), isfunction)]
         self.known_instructions = {}
 
     def part_1(self) -> int:
