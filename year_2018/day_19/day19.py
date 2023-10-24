@@ -15,19 +15,27 @@ class Program:
         self.register = [0, 0, 0, 0, 0, 0]
 
     def part_1(self) -> int:
-        """
-        >>> print(Program(parsers.lines('test.txt')).part_1())
-        6"""
         while True:
             ip = self.register[self.ip_register]
             op, instruction = self.instructions[ip]
             self.register[self.ip_register] = ip
             register = self.ops[op](instruction, self.register)
+
+            # optimized calculation
+            if op == 'seti' and register[self.ip_register] == 0:  # start of a loop
+                number = register[2]
+                return sum(i for i in range(1, number + 1) if number % i == 0)
+
             ip = register[self.ip_register] + 1
             if not 0 <= ip < len(self.instructions):
                 break
             register[self.ip_register] = ip
-        return register[0]
+        return register[0]  # non-optimized calculation
+
+    def part_2(self) -> int:
+        self.register[0] = 1
+        return self.part_1()
 
 
 print(Program(parsers.lines(loader.get())).part_1())  # 1620
+print(Program(parsers.lines(loader.get())).part_2())  # 15827082
