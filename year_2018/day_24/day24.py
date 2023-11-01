@@ -1,14 +1,15 @@
 from __future__ import annotations
 
-import enum
 import re
+from collections import deque
 from dataclasses import dataclass
+from enum import Enum
 from itertools import count
 
 from tools import loader, parsers
 
 
-class AttackType(enum.Enum):
+class AttackType(Enum):
     slashing = 0
     bludgeoning = 1
     fire = 2
@@ -64,12 +65,15 @@ class Battle:
                 atk_type = AttackType[re.findall(r'does \d+ (\w+)', line)[0]]
                 self.groups.append(
                     UnitGroup(next(_id), team, units, hp, atk, atk_type, initiative, weak, immune))
+        self.winner = None
 
     def part_1(self) -> int:
         """
         >>> print(Battle(parsers.blocks('test.txt')).part_1())
         5216"""
+        history = deque([], maxlen=5)
         while True:
+            damage_dealt = 0
             targeted = set()
             self.groups.sort(key=lambda g: (g.effective_power, g.initiative), reverse=True)
             for attacker in self.groups:
@@ -77,6 +81,7 @@ class Battle:
                 enemies = [(i, i.potential_damage(attacker))
                            for i in self.groups if i.team != attacker.team]
                 if not enemies:
+                    self.winner = self.groups[0].team
                     return sum(i.units for i in self.groups)
                 targetable = [i for i in enemies if i[1] > 0 and i[0] not in targeted]
                 if not targetable:
@@ -89,10 +94,36 @@ class Battle:
             for attacker in self.groups.copy():
                 if not attacker.target or attacker.units <= 0:
                     continue
-                killed = attacker.target.potential_damage(attacker) // attacker.target.hp
+                damage = attacker.target.potential_damage(attacker)
+                damage_dealt += damage
+                killed = damage // attacker.target.hp
                 attacker.target.units -= killed
                 if attacker.target.units <= 0:
                     self.groups.remove(attacker.target)
+            # draw breaker
+            history.append(damage_dealt)
+            if len(history) >= 5 and len(set(history)) == 1:
+                self.winner = 1
+                return 0
+
+
+def part_2(data: list[list[str]]) -> int:
+    """
+    >>> print(part_2(parsers.blocks('test.txt')))
+    51"""
+    winner = 1
+    _boost = count()
+    result = 0
+    while winner != 0:
+        boost = next(_boost)
+        b = Battle(data)
+        immune = [i for i in b.groups if i.team == 0]
+        for i in immune:
+            i.atk += boost
+        result = b.part_1()
+        winner = b.winner
+    return result
 
 
 print(Battle(parsers.blocks(loader.get())).part_1())  # 16090
+print(part_2(parsers.blocks(loader.get())))  # 8291
