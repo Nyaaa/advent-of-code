@@ -9,7 +9,7 @@ DIRS = {'^': -1, '>': 1j, 'v': 1, '<': -1j}
 
 @dataclass
 class Actor:
-    position = 0+0j
+    position: complex = 0+0j
 
 
 def start(data: str, part_2: bool) -> int:

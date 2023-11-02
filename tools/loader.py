@@ -23,7 +23,7 @@ def get(year: int = None, day: int = None) -> Path:
     if not year:
         year = re.findall(r'\d{4}', caller_filename_full)[-1]
     root = Path(__file__).parent.parent
-    path = root / 'aoc-inputs' / str(year) / f'day{day}.txt'
+    path = root / 'aoc-inputs' / str(year) / f'day{day:02}.txt'
     if not path.exists():
         raise FileNotFoundError(path)
     return path
