@@ -10,3 +10,5 @@ dependencies:
   - numpy
   - numba
   - conda-forge::pre-commit
+  - conda-forge::notebook
+  - seaborn

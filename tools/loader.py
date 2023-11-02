@@ -4,17 +4,26 @@ import re
 from pathlib import Path
 
 
-def get() -> Path:
+def get(year: int = None, day: int = None) -> Path:
     """Gets the input of the same day as the caller module.
 
-    :return: Input file path
+    If year and day are not provided, attempts to determine them from the caller module.
+
+    Args:
+        year: format YYYY
+        day: format DD
+
+    Returns:
+        Input file path
     """
 
     caller_filename_full = inspect.stack()[1].filename
-    day = _get_day_number(caller_filename_full)
-    year = re.findall(r'\d{4}', caller_filename_full)[-1]
+    if not day:
+        day = _get_day_number(caller_filename_full)
+    if not year:
+        year = re.findall(r'\d{4}', caller_filename_full)[-1]
     root = Path(__file__).parent.parent
-    path = root / 'aoc-inputs' / year / f'day{day}.txt'
+    path = root / 'aoc-inputs' / str(year) / f'day{day}.txt'
     if not path.exists():
         raise FileNotFoundError(path)
     return path
