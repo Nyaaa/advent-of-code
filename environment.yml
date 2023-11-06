@@ -11,4 +11,4 @@ dependencies:
   - numba
   - conda-forge::pre-commit
   - conda-forge::notebook
-  - seaborn
+  - conda-forge::seaborn
