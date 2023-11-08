@@ -9,7 +9,7 @@ def start(data: list[str]) -> tuple[str, str]:
     """
     >>> print(start(parsers.lines('test.txt')))
     ('easter', 'advent')"""
-    arr = np.asarray([list(line) for line in data])
+    arr = np.genfromtxt(data, delimiter=1, dtype=str)
     part1 = part2 = ''
     for i in range(arr.shape[1]):
         counts = Counter(arr[:, i]).most_common()

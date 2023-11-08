@@ -13,7 +13,7 @@ def part_1(data: list[str]) -> int:
 
 
 def part_2(data: list[str]) -> int:
-    arr = np.asarray([line.split() for line in data], dtype=int)
+    arr = np.genfromtxt(data, dtype=int)
     valid = 0
     arr = np.reshape(arr, (arr.shape[1], arr.shape[0]), order='F').transpose()
     for a, b, c in arr:

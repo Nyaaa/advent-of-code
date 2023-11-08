@@ -6,7 +6,7 @@ from tools import common, loader, parsers
 
 class Cave:
     def __init__(self, data: list[str], part2: bool = False) -> None:
-        self.grid = np.array([[int(i) for i in j] for j in (list(x) for x in data)])
+        self.grid = np.genfromtxt(data, delimiter=1, dtype=int)
 
         if part2:
             self.multiply_grid(0)

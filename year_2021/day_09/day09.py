@@ -15,7 +15,7 @@ TEST = """2199943210
 
 class Floor:
     def __init__(self, data: list[str]) -> None:
-        self.grid = np.asarray([[int(i) for i in row] for row in data])
+        self.grid = np.genfromtxt(data, delimiter=1, dtype=int)
         self.rows, self.cols = self.grid.shape
 
     def get_lowest(self) -> Iterator[tuple[tuple[int, int], int]]:
