@@ -20,7 +20,7 @@ def animation(data: tuple[str], steps: int, part2: bool) -> int:
     while step != steps:
         arr_copy = np.zeros_like(arr)
         for i, val in np.ndenumerate(arr):
-            adj = sum([j for i, j in common.get_adjacent(arr, i, with_corners=True)])
+            adj = sum([j for _, j in common.get_adjacent(arr, i, with_corners=True)])
             if (val == 1 and adj in (2, 3)) or (val == 0 and adj == 3):
                 arr_copy[i] = 1
             else:
