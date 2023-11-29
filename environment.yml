@@ -2,7 +2,7 @@ name: advent-of-code
 channels:
   - defaults
 dependencies:
-  - python=3.11
+  - python=3.12
   - networkx
   - shapely
   - more-itertools
