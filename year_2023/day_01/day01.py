@@ -3,20 +3,11 @@ import regex as re
 from tools import loader, parsers
 
 
-def part_1(data: list[str]) -> int:
+def calibration(data: list[str], part2: bool = False) -> int:
     """
-    >>> print(part_1(parsers.lines('test.txt')))
-    142"""
-    result = 0
-    for line in data:
-        nums = re.findall(r'\d', line)
-        result += int(nums[0] + nums[-1])
-    return result
-
-
-def part_2(data: list[str]) -> int:
-    """
-    >>> print(part_2(parsers.lines('test2.txt')))
+    >>> print(calibration(parsers.lines('test.txt'), part2=False))
+    142
+    >>> print(calibration(parsers.lines('test2.txt'), part2=True))
     281"""
     words = {'one': '1', 'two': '2', 'three': '3',
              'four': '4', 'five': '5', 'six': '6',
@@ -24,11 +15,11 @@ def part_2(data: list[str]) -> int:
     re_words = re.compile('|'.join(words.keys()) + r'|\d')
     result = 0
     for line in data:
-        matches = re.findall(re_words, line, overlapped=True)
+        matches = re.findall(re_words if part2 else r'\d', line, overlapped=True)
         nums = [i if i.isdigit() else words[i] for i in matches]
         result += int(nums[0] + nums[-1])
     return result
 
 
-print(part_1(parsers.lines(loader.get())))  # 55002
-print(part_2(parsers.lines(loader.get())))  # 55093
+print(calibration(parsers.lines(loader.get()), part2=False))  # 55002
+print(calibration(parsers.lines(loader.get()), part2=True))  # 55093
