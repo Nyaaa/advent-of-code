@@ -33,4 +33,5 @@ Linting is handled by a global installation of Ruff, to enable pre-commit hooks 
 [![Completion Status](https://img.shields.io/endpoint?url=https://raw.githubusercontent.com/Nyaaa/advent-of-code/master/year_2019/badge.json)](https://github.com/Nyaaa/advent-of-code/tree/master/year_2019)\
 [![Completion Status](https://img.shields.io/endpoint?url=https://raw.githubusercontent.com/Nyaaa/advent-of-code/master/year_2020/badge.json)](https://github.com/Nyaaa/advent-of-code/tree/master/year_2020)\
 [![Completion Status](https://img.shields.io/endpoint?url=https://raw.githubusercontent.com/Nyaaa/advent-of-code/master/year_2021/badge.json)](https://github.com/Nyaaa/advent-of-code/tree/master/year_2021)\
-[![Completion Status](https://img.shields.io/endpoint?url=https://raw.githubusercontent.com/Nyaaa/advent-of-code/master/year_2022/badge.json)](https://github.com/Nyaaa/advent-of-code/tree/master/year_2022)
+[![Completion Status](https://img.shields.io/endpoint?url=https://raw.githubusercontent.com/Nyaaa/advent-of-code/master/year_2022/badge.json)](https://github.com/Nyaaa/advent-of-code/tree/master/year_2022)\
+[![Completion Status](https://img.shields.io/endpoint?url=https://raw.githubusercontent.com/Nyaaa/advent-of-code/master/year_2023/badge.json)](https://github.com/Nyaaa/advent-of-code/tree/master/year_2023)
