@@ -27,7 +27,7 @@ def parts(data: list[str]) -> tuple[int, int]:
                         gears[loc].add(int(num.group()))
             if is_valid:
                 part1 += int(num.group())
-    part2 = max(accumulate(prod(p) for p in gears.values() if len(p) > 1))
+    *_, part2 = accumulate(prod(p) for p in gears.values() if len(p) > 1)
     return part1, part2
 
 
