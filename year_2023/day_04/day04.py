@@ -26,17 +26,23 @@ def lottery(data: list[str]) -> tuple[int, int]:
 
     queue = deque([*tickets.items()])
     all_tickets = []
+    seen = {}
     while queue:
         index, (winning, ticket) = queue.popleft()
         all_tickets.append(index)
+        if index in seen:
+            queue.extend(seen[index])
+            continue
         matches = len(winning.intersection(ticket))
+        new_tickets = []
         for i in range(1, matches + 1):
             next_ticket = index + i
-            queue.append((next_ticket, tickets[next_ticket]))
+            new_tickets.append((next_ticket, tickets[next_ticket]))
+        seen[index] = new_tickets
+        queue.extend(new_tickets)
     part2 = Counter(all_tickets).total()
 
     return part1, part2
 
 
 print(lottery(parsers.lines(loader.get())))  # 32001, 5037841
-
