@@ -1,6 +1,6 @@
 from __future__ import annotations
 
-from collections import Counter, deque
+from collections import Counter
 from dataclasses import dataclass, field
 from enum import Enum
 
@@ -16,12 +16,14 @@ class CardTypes(Enum):
     four_kind = 5
     five_kind = 6
 
+    def __lt__(self, other: CardTypes) -> bool:
+        return self.value < other.value
+
 
 @dataclass
 class Hand:
     cards: list[int]
     bid: int
-    rank: int = 0
     hand_type: CardTypes = field(init=False)
 
     def __post_init__(self) -> None:
@@ -44,11 +46,12 @@ class Hand:
             self.hand_type = CardTypes.high_card
 
     def __lt__(self, other: Hand) -> bool:
+        if self.hand_type != other.hand_type:
+            return self.hand_type < other.hand_type
         for i, val in enumerate(self.cards):
             if val != other.cards[i]:
                 return val < other.cards[i]
         raise ValueError('Hands are identical')
-
 
 
 def camel_cards(data: list[str], part2: bool) -> int:
@@ -62,22 +65,7 @@ def camel_cards(data: list[str], part2: bool) -> int:
         card_values['J'] = 1
     hands = [Hand(cards=[card_values[i] for i in k], bid=int(v))
              for k, v in (x.split() for x in data)]
-
-    hand_rank = 1
-    for card_type in CardTypes:
-        queue = deque([h for h in hands if h.hand_type == card_type])
-        while queue:
-            left = queue.popleft()
-            if not queue:
-                left.rank = hand_rank
-                hand_rank += 1
-                break
-            if not all(left < i for i in queue):
-                queue.append(left)
-            else:
-                left.rank = hand_rank
-                hand_rank += 1
-    return sum(i.rank * i.bid for i in hands)
+    return sum(i * j.bid for i, j in enumerate(sorted(hands), start=1))
 
 
 print(camel_cards(parsers.lines(loader.get()), part2=False))  # 249483956
