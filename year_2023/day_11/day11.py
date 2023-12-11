@@ -14,8 +14,8 @@ def scan(data: list[str], multiplier: int) -> int:
     8410"""
     arr = np.asarray([[1 if i == '#' else 0 for i in row] for row in data],
                      dtype=np.dtype('u1'))
-    cols = {i[0] for i in np.argwhere(np.all(arr[..., :] == 0, axis=0))}
-    rows = {i[0] for i in np.argwhere(np.all(arr[..., :] == 0, axis=1))}
+    cols = set(np.where(np.all(arr == 0, axis=0))[0])
+    rows = set(np.where(np.all(arr == 0, axis=1))[0])
     galaxies = np.argwhere(arr != 0)
     distance = 0
     for a, b in combinations(galaxies, 2):
