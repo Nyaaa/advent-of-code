@@ -1,28 +1,31 @@
 from itertools import combinations
 
 import numpy as np
+from more_itertools import minmax
 
 from tools import loader, parsers
 
 
-def scan(data: list[str]) -> int:
+def scan(data: list[str], multiplier: int) -> int:
     """
-    >>> print(scan(parsers.lines('test.txt')))
-    374"""
+    >>> print(scan(parsers.lines('test.txt'), multiplier=2))
+    374
+    >>> print(scan(parsers.lines('test.txt'), multiplier=100))
+    8410"""
     arr = np.asarray([[1 if i == '#' else 0 for i in row] for row in data],
                      dtype=np.dtype('u1'))
-    cols = np.argwhere(np.all(arr[..., :] == 0, axis=0))
-    rows = np.argwhere(np.all(arr[..., :] == 0, axis=1))
-    for c in cols[::-1]:
-        arr = np.insert(arr, c[0], arr[:, c[0]], axis=1)
-    for r in rows[::-1]:
-        arr = np.insert(arr, r[0], arr[r[0]], axis=0)
+    cols = {i[0] for i in np.argwhere(np.all(arr[..., :] == 0, axis=0))}
+    rows = {i[0] for i in np.argwhere(np.all(arr[..., :] == 0, axis=1))}
     galaxies = np.argwhere(arr != 0)
-    paths = []
+    distance = 0
     for a, b in combinations(galaxies, 2):
-        paths.append(abs(a[0] - b[0]) + abs(a[1] - b[1]))
+        empty_rows = sum(i in rows for i in range(*minmax(a[0], b[0])))
+        empty_cols = sum(i in cols for i in range(*minmax(a[1], b[1])))
+        r = abs(a[0] - b[0]) + empty_rows * (multiplier - 1)
+        c = abs(a[1] - b[1]) + empty_cols * (multiplier - 1)
+        distance += r + c
+    return distance
 
-    return sum(paths)
 
-
-print(scan(parsers.lines(loader.get())))  # 9623138
+print(scan(parsers.lines(loader.get()), multiplier=2))  # 9623138
+print(scan(parsers.lines(loader.get()), multiplier=1_000_000))  # 726820169514
