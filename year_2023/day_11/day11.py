@@ -21,9 +21,8 @@ def scan(data: list[str], multiplier: int) -> int:
     for a, b in combinations(galaxies, 2):
         empty_rows = sum(i in rows for i in range(*minmax(a[0], b[0])))
         empty_cols = sum(i in cols for i in range(*minmax(a[1], b[1])))
-        r = abs(a[0] - b[0]) + empty_rows * (multiplier - 1)
-        c = abs(a[1] - b[1]) + empty_cols * (multiplier - 1)
-        distance += r + c
+        distance += abs(a[0] - b[0]) + empty_rows * (multiplier - 1)
+        distance += abs(a[1] - b[1]) + empty_cols * (multiplier - 1)
     return distance
 
 
