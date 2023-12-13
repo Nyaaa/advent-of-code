@@ -12,18 +12,18 @@ def mirrors(data: list[list[str]], part2: bool) -> int:
     400"""
     def find_split(arr: NDArray) -> int:
         size = arr.shape[0]
-        for axis in range(1, size):
-            split_size = min(axis, size - axis)
-            top, bottom = np.vsplit(arr[axis - split_size: axis + split_size], 2)
+        for row in range(1, size):
+            split_size = min(row, size - row)
+            top, bottom = np.vsplit(arr[row - split_size: row + split_size], 2)
             if np.sum(top != np.flipud(bottom)) == int(part2):
-                return axis
+                return row
         return 0
 
     result = 0
     for block in data:
         pattern = np.asarray([[j == '#' for j in i] for i in block], dtype=bool)
-        if row := find_split(pattern):
-            result += row * 100
+        if horizontal := find_split(pattern):
+            result += horizontal * 100
         else:
             result += find_split(pattern.T)
     return result
