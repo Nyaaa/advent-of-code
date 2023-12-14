@@ -22,17 +22,31 @@ def calculate_load(arr: NDArray) -> int:
     return value
 
 
-def platform(data: list[str]) -> int:
+def platform(data: list[str]) -> tuple[int, int]:
     """
     >>> print(platform(parsers.lines('test.txt')))
-    136"""
+    (136, 64)"""
     arr = np.array([list(i) for i in data], dtype=str)
     arr[arr == 'O'] = 1
     arr[arr == '#'] = 0
     arr[arr == '.'] = 2
     arr = arr.astype(np.dtype('u1'))
-    tilted = tilt(arr)
-    return calculate_load(tilted)
+    part1 = calculate_load(tilt(arr))
+
+    seen = {}
+    cycle = 0
+    while cycle <= 1_000_000_000:
+        for _ in range(4):
+            arr = tilt(arr)
+            arr = np.rot90(arr, -1)
+        cycle += 1
+        hashable = arr.tobytes()
+        if hashable in seen and cycle < 100_000:
+            cycle_len = cycle - seen[hashable]
+            cycles_left = (1000000000 - cycle) % cycle_len
+            cycle = 1000000000 - cycles_left + 1
+        seen[hashable] = cycle
+    return part1, calculate_load(arr)
 
 
-print(platform(parsers.lines(loader.get())))  # 110274
+print(platform(parsers.lines(loader.get())))  # 110274, 90982
