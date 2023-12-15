@@ -1,3 +1,6 @@
+import contextlib
+import re
+from collections import defaultdict
 from functools import reduce
 
 from tools import loader, parsers
@@ -12,12 +15,26 @@ def get_hash(step: str) -> int:
     return reduce(lambda x, y: (x + ord(y)) * 17 % 256, step, 0)
 
 
-def hasher(data: str) -> int:
+def hasher(data: str) -> tuple[int, int]:
     """
     >>> print(hasher(TEST))
-    1320"""
+    (1320, 145)"""
     steps = data.split(',')
-    return sum(get_hash(step) for step in steps)
+    part1 = part2 = 0
+    boxes = defaultdict(dict)
+    for step in steps:
+        part1 += get_hash(step)
+        label, op, val = re.findall(r'(\w+)([=-])(\d+)?', step)[0]
+        box = get_hash(label)
+        if op == '-':
+            with contextlib.suppress(KeyError):
+                boxes[box].pop(label)
+        else:
+            boxes[box][label] = int(val)
+    for box, lenses in boxes.items():
+        for i, value in enumerate(lenses.values(), start=1):
+            part2 += (1 + box) * i * value
+    return part1, part2
 
 
-print(hasher(parsers.string(loader.get())))  # 512797
+print(hasher(parsers.string(loader.get())))  # 512797, 262454
