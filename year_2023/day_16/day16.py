@@ -45,36 +45,53 @@ class Beam:
 
 class Contraption:
     def __init__(self, data: list[str]) -> None:
-        self.energized = set()
         self.mirrors = {}
         self.boundary = (len(data), len(data[0]))
-        self.beams = deque([Beam(self.boundary)])
         for i, row in enumerate(data):
             for j, tile in enumerate(row):
                 location = complex(i, j)
                 if tile in r'/\|-':
                     self.mirrors[location] = tile
-        self.energized = set()
 
-    def part_1(self) -> int:
+    def part_1(self, start: Beam = None) -> int:
         """
         >>> print(Contraption(parsers.lines('test.txt')).part_1())
         46"""
+        if not start:
+            start = Beam(self.boundary)
+        beams = deque([start])
+        energized = set()
         visited_splits = set()
-        while self.beams:
-            beam = self.beams.popleft()
+        while beams:
+            beam = beams.popleft()
             alive = True
             while alive:
-                self.energized.add(beam.location)
+                energized.add(beam.location)
                 tile = self.mirrors.get(beam.location)
                 new_beam = beam.rotate(tile)
                 if new_beam and new_beam.location not in visited_splits:
                     visited_splits.add(new_beam.location)
                     if new_beam.move():
-                        self.beams.append(new_beam)
+                        beams.append(new_beam)
                 alive = beam.move()
-        return len(self.energized)
+        return len(energized)
+
+    def part_2(self) -> int:
+        """
+        >>> print(Contraption(parsers.lines('test.txt')).part_2())
+        51"""
+        best_result = 0
+        starts = []
+        for i in range(self.boundary[1]):
+            starts.append(Beam(self.boundary, complex(0, i), 1))
+            starts.append(Beam(self.boundary, complex(self.boundary[0], i), -1))
+        for i in range(self.boundary[0]):
+            starts.append(Beam(self.boundary, complex(i, 0), 1j))
+            starts.append(Beam(self.boundary, complex(i, self.boundary[1]), -1j))
+        for start in starts:
+            best_result = max(best_result, self.part_1(start))
+        return best_result
 
 
 print(Contraption(parsers.lines(loader.get())).part_1())  # 7482
-
+print(Contraption(parsers.lines(loader.get())).part_2())  # 7896
