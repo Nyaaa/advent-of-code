@@ -36,9 +36,7 @@ class Beam:
         col_valid = 0 <= self.location.imag < self.boundary[1]
         if self.location in self.path:
             self.infinity += 1
-        if self.infinity > 30:
-            return False
-        if not row_valid or not col_valid:
+        if not row_valid or not col_valid or self.infinity > 30:
             return False
         return True
 
@@ -49,9 +47,8 @@ class Contraption:
         self.boundary = (len(data), len(data[0]))
         for i, row in enumerate(data):
             for j, tile in enumerate(row):
-                location = complex(i, j)
                 if tile in r'/\|-':
-                    self.mirrors[location] = tile
+                    self.mirrors[complex(i, j)] = tile
 
     def part_1(self, start: Beam = None) -> int:
         """
