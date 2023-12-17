@@ -33,10 +33,13 @@ class Factory:
         self.destination = complex(len(data) - 1, len(data[0]) - 1)
         self.seen = set()
 
-    def move(self, state: State) -> Generator[State]:
-        directions = [1j, -1j]
-        if state.distance < 3:
+    def move(self, state: State, part2: bool) -> Generator[State]:
+        directions = []
+        if (not part2 and state.distance < 3) or (part2 and state.distance < 10):
             directions.append(1)
+        if not part2 or state.distance >= 4:
+            directions.extend([1j, -1j])
+
         for direction in directions:
             _dir = state.direction * direction
             loc = state.location + _dir
@@ -50,18 +53,24 @@ class Factory:
                 self.seen.add(s)
                 yield s
 
-    def part_1(self) -> int:
+    def part_1(self, part2: bool) -> int:
         """
-        >>> print(Factory(parsers.lines('test.txt')).part_1())
-        102"""
+        >>> print(Factory(parsers.lines('test.txt')).part_1(part2=False))
+        102
+        >>> print(Factory(parsers.lines('test.txt')).part_1(part2=True))
+        94
+        >>> print(Factory(parsers.lines('test2.txt')).part_1(part2=True))
+        71"""
         queue = [State(0j, 1j), State(0j, 1)]
         while queue:
             state = heappop(queue)
-            if state.location == self.destination:
+            if (state.location == self.destination and
+                    (not part2 or (part2 and state.distance >= 4))):
                 return state.heat_loss
-            for s in self.move(state):
+            for s in self.move(state, part2):
                 heappush(queue, s)
         raise ValueError('Solution not found')
 
 
-print(Factory(parsers.lines(loader.get())).part_1())  # 942
+print(Factory(parsers.lines(loader.get())).part_1(part2=False))  # 942
+print(Factory(parsers.lines(loader.get())).part_1(part2=True))  # 1082
