@@ -11,15 +11,14 @@ accszExk
 acctuvwj
 abdefghi
 """
+LETTERS = tuple(string.ascii_lowercase)
+NUMBERS = tuple(range(26))
+WEIGHTS = dict(zip(LETTERS, NUMBERS, strict=True))
+WEIGHTS['S'] = 0
+WEIGHTS['E'] = 25
 
 
 class Graph:
-    letters = list(string.ascii_lowercase)
-    numbers = list(range(26))
-    weights = dict(zip(letters, numbers))
-    weights['S'] = 0
-    weights['E'] = 25
-
     def __init__(self, array: list, start: str) -> None:
         _grid = []
         self.start_coord = []
@@ -44,8 +43,8 @@ class Graph:
     def build_graph(self) -> None:
         for index, letter in np.ndenumerate(self.grid):
             for ajd_index, adj_value in common.get_adjacent(self.grid, index):
-                weight = self.weights[letter]
-                if self.weights[adj_value] <= weight + 1:
+                weight = WEIGHTS[letter]
+                if WEIGHTS[adj_value] <= weight + 1:
                     self.digraph.add_edge(index, ajd_index)
 
     def solve(self) -> int:

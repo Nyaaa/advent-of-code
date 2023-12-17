@@ -6,7 +6,7 @@ from tools import loader, parsers
 
 def get_doors(path: str) -> dict[str, bool]:
     _hash = hashlib.md5(path.encode()).hexdigest()[:4]
-    return dict(zip('UDLR', [i in 'bcdef' for i in _hash]))
+    return dict(zip('UDLR', [i in 'bcdef' for i in _hash], strict=True))
 
 
 def find_path(passcode: str) -> tuple[str, int]:

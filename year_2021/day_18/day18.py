@@ -1,7 +1,7 @@
 import math
 import re
+from collections.abc import Sequence
 from itertools import permutations
-from typing import Sequence
 
 from tools import loader, parsers
 
@@ -124,7 +124,7 @@ def magnitude(num: str) -> int:
     raise
 
 
-def part_1(data: Sequence[str]) -> int:
+def part_1(data: list[str]) -> int:
     """
     >>> print(part_1(parsers.lines('test.txt')))
     4140"""
@@ -132,7 +132,7 @@ def part_1(data: Sequence[str]) -> int:
     return magnitude(_sum)
 
 
-def part_2(data: Sequence[str]) -> int:
+def part_2(data: list[str]) -> int:
     """
     >>> print(part_2(parsers.lines('test.txt')))
     3993"""

@@ -39,7 +39,7 @@ class Plants:
         """Bruteforce, takes a while.
         >>> print(Plants(parsers.blocks('test.txt')).part_2())
         46"""
-        a = list(zip(self.seeds[::2], self.seeds[1::2]))
+        a = list(zip(self.seeds[::2], self.seeds[1::2], strict=True))
         seeds = [range(i[0], i[0] + i[1]) for i in a]
 
         for seed in count(1):

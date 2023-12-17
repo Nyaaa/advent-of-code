@@ -21,7 +21,7 @@ def part_1(data: list, chunk: int = 25, part2: bool = False) -> int:
             value = val
     if part2:
         lengths = []
-        for i, _v in enumerate(data):
+        for i in range(len(data)):
             counter = 0
             _sum = 0
             while _sum <= value:

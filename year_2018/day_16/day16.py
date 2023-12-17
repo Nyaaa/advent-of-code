@@ -18,11 +18,8 @@ class Program:
     def part_1(self) -> int:
         out = 0
         for before, instr, after in self.samples:
-            candidates = []
-            for operation in self.instructions:
-                if operation(instr, before.copy()) == after:
-                    candidates.append(operation)
-            if len(candidates) >= 3:
+            if sum(operation(instr, before.copy()) == after
+                   for operation in self.instructions) >= 3:
                 out += 1
         return out
 
@@ -36,11 +33,9 @@ class Program:
     def part_2(self) -> int:
         while self.instructions:
             for before, instr, after in self.samples:
-                candidates = []
-                for operation in self.instructions:
-                    if (operation(instr, before.copy()) == after and
-                            instr[0] not in self.known_instructions):
-                        candidates.append(operation)
+                candidates = [operation for operation in self.instructions if
+                              (operation(instr, before.copy()) == after and
+                               instr[0] not in self.known_instructions)]
                 if len(candidates) == 1:
                     self.known_instructions[instr[0]] = candidates[0]
                     self.instructions.remove(candidates[0])

@@ -13,8 +13,8 @@ def generate_map(data: str, rows: int) -> int:
 
     for _ in range(rows):
         zeros += sum(tiles)
-        row = [True] + tiles.copy() + [True]
-        for i, (a, b) in enumerate(zip(row, row[2:])):
+        row = [True, *tiles.copy(), True]
+        for i, (a, b) in enumerate(zip(row, row[2:])):  # noqa: B905
             tiles[i] = not ((a and not b) or (not a and b))
     return zeros
 

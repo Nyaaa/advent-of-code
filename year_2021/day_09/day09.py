@@ -1,5 +1,5 @@
+from collections.abc import Generator
 from math import prod
-from typing import Iterator
 
 import numpy as np
 
@@ -18,7 +18,7 @@ class Floor:
         self.grid = np.genfromtxt(data, delimiter=1, dtype=int)
         self.rows, self.cols = self.grid.shape
 
-    def get_lowest(self) -> Iterator[tuple[tuple[int, int], int]]:
+    def get_lowest(self) -> Generator[tuple[tuple[int, int], int]]:
         for index, point in np.ndenumerate(self.grid):
             if all(point < val for i, val in common.get_adjacent(self.grid, index)):
                 yield index, point

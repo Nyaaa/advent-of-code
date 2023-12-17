@@ -35,7 +35,7 @@ class FileSystem:
     def get_size(self, folder: str) -> int:
         size = 0
         for i in self.files[folder]:
-            name, file_size = list(i.items())[0]
+            name, file_size = next(iter(i.items()))
             if file_size != 0:
                 size += file_size
             elif self.folders[name] != 0:

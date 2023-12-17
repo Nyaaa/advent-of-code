@@ -34,7 +34,7 @@ class Factory:
 
         for line in data:
             nums = list(map(int, re.findall(r'\d+', line)))
-            bp = Blueprint(id=nums[0], ore=nums[1], clay=nums[2],
+            bp = Blueprint(ident=nums[0], ore=nums[1], clay=nums[2],
                            obsidian=(nums[3], nums[4]), geode=(nums[5], nums[6]))
             self.blueprints.append(bp)
 
@@ -64,7 +64,7 @@ class Factory:
                 continue
             done.add(state)
             time = state.time - 1
-            production = tuple(map(sum, zip(state.resources, state.robots)))
+            production = tuple(map(sum, zip(state.resources, state.robots, strict=True)))
 
             # geode robot
             if state.resources[0] >= bp.geode[0] and state.resources[2] >= bp.geode[1]:

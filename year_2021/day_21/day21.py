@@ -1,6 +1,6 @@
+from collections.abc import Generator
 from functools import cache
 from itertools import cycle, islice, product
-from typing import Iterator
 
 from tools import loader, parsers
 
@@ -9,7 +9,7 @@ Player 2 starting position: 8
 """
 
 
-def deterministic_dice() -> Iterator[int]:
+def deterministic_dice() -> Generator[int]:
     die = cycle(range(1, 101))
     yield from iter(lambda: sum(islice(die, 3)), [])
 

@@ -12,10 +12,9 @@ from tools import loader, parsers, timer
 DATA = parsers.blocks(loader.get())
 TEST = parsers.blocks('test.txt')
 # Precalculate all possible permutations of x, y, z
-ROTATIONS = []
-for r in permutations(['x', 'y', 'z']):
-    for s in product(['-', ''], repeat=3):
-        ROTATIONS.append([''.join(i) for i in zip(s, r)])
+ROTATIONS = [[''.join(i) for i in zip(s, r, strict=True)]
+             for r in permutations(['x', 'y', 'z'])
+             for s in product(['-', ''], repeat=3)]
 
 
 class Point(NamedTuple):

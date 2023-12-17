@@ -24,7 +24,7 @@ class Octopi:
             step += 1
             self.grid += 1
             fl = np.where(self.grid == 10)
-            flashed: deque[tuple[int, int]] = deque(zip(fl[0], fl[1]))  # row, col
+            flashed: deque[tuple[int, int]] = deque(zip(fl[0], fl[1], strict=True))  # row, col
             done = []
             while flashed:
                 i = flashed.popleft()

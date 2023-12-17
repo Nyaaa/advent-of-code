@@ -19,7 +19,7 @@ class Duet:
         except ValueError:
             return self.mem[value]
 
-    def run(self, receive: Queue[int] = None, send: Queue[int] = None) -> int:
+    def run(self, receive: Queue[int] | None = None, send: Queue[int] | None = None) -> int:
         step = count = 0
         if send is None:
             send = self.send_queue

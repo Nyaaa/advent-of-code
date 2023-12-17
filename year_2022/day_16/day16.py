@@ -23,8 +23,8 @@ class Cave:
             self,
             path: list,
             time: int,
-            done: list = None,
-            paths: list = None
+            done: list | None = None,
+            paths: list | None = None
     ) -> list[list[str]]:
         if paths is None:
             paths = []
@@ -34,7 +34,7 @@ class Cave:
         for node in self.traverse:
             distance = self.distances[path[-1]][node]
             if distance < time and node not in done:
-                self.path_finder(path + [node], time - distance - 1, done + [node], paths)
+                self.path_finder([*path, node], time - distance - 1, [*done, node], paths)
         return paths
 
     def total_flow(self, path: list[str], time: int) -> int:

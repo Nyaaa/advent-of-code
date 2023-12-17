@@ -10,7 +10,7 @@ def count_variants(string: str, check: tuple[int]) -> int:
     for index in range(len(string) - sum(next_check) - len(next_check) - curr_group_length + 1):
         left = f'{"." * index}{"#" * curr_group_length}.'
         right = string[len(left):]
-        if all(j in (i, '?') for i, j in zip(left, string)):
+        if all(j in (i, '?') for i, j in zip(left, string, strict=False)):
             if next_check:
                 variants += count_variants(right, tuple(next_check))
             elif '#' not in right:

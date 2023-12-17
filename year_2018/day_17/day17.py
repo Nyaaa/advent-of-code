@@ -1,6 +1,6 @@
 import re
 from collections import deque
-from itertools import zip_longest
+from itertools import starmap, zip_longest
 
 from more_itertools import minmax
 
@@ -23,12 +23,11 @@ class Scan:
                 fill = int(_x[1])
                 x = [fill]
                 y = range(int(_y[1]), int(_y[2]) + 1)
-            self.clay = self.clay.union(
-                {complex(i, j) for i, j in zip_longest(x, y, fillvalue=fill)})
+            self.clay = self.clay.union(starmap(complex, zip_longest(x, y, fillvalue=fill)))
         self.top, self.bottom = (i.imag for i in minmax(self.clay, key=lambda i: i.imag))
 
     def flow_sideways(
-            self, water: complex, direction: int, line: set = None
+            self, water: complex, direction: int, line: set | None = None
     ) -> tuple[bool, set[complex]]:
 
         if line is None:

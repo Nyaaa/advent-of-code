@@ -43,7 +43,7 @@ class Grove:
     def get_elves(self) -> list[tuple]:
         self.map = np.pad(self.map, pad_width=1, mode='constant', constant_values=0)
         positions = np.where(self.map == 1)
-        return list(zip(*positions))
+        return list(zip(*positions, strict=True))
 
     def part_1(self) -> int:
         """test part 1:

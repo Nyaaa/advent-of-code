@@ -42,7 +42,7 @@ class Forest:
         right = self.grid[_y][_x + 1:]
 
         # getting columns
-        up = [self.grid[i][_x] for i in range(0, _y)]
+        up = [self.grid[i][_x] for i in range(_y)]
         down = [self.grid[i][_x] for i in range(_y + 1, self.y)]
 
         s_right = self.get_score(right, 0)

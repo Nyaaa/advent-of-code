@@ -116,9 +116,7 @@ class Jigsaw:
         grid = self.compose_map()
         stacked_rows = []
         for row in range(self.size):
-            r = []
-            for col in range(self.size):
-                r.append(grid[row][col].pixels[1:-1, 1:-1])
+            r = [grid[row][col].pixels[1:-1, 1:-1] for col in range(self.size)]
             stacked_rows.append(np.hstack(r))
         final_image = np.vstack(stacked_rows)
 
@@ -131,7 +129,7 @@ class Jigsaw:
                         count += 1
             if count > 0:
                 return np.count_nonzero(final_image) - (count * np.count_nonzero(monster.pixels))
-        return None
+        raise ValueError('Solution not found')
 
 
 print(Jigsaw(parsers.blocks(loader.get())).part_1())  # 7492183537913

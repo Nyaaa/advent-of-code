@@ -7,7 +7,7 @@ from tools import loader, parsers
 
 def prep(data: list) -> tuple[int, ...]:
     data = sorted(int(i) for i in data)
-    joltages = [0] + data + [data[-1] + 3]
+    joltages = [0, *data, data[-1] + 3]
     return tuple(joltages)
 
 
@@ -21,7 +21,7 @@ def part_1(joltages: tuple[int, ...]) -> int:
 
 
 @cache
-def part_2(joltages: tuple[int, ...], item: int = None) -> int:
+def part_2(joltages: tuple[int, ...], item: int | None = None) -> int:
     """ test part 2:
     >>> print(part_2(TEST))
     19208"""
@@ -36,4 +36,4 @@ def part_2(joltages: tuple[int, ...], item: int = None) -> int:
 TEST = prep(parsers.lines('test.txt'))
 DATA = prep(parsers.lines(loader.get()))
 print(part_1(DATA))  # 2760
-print(part_2(TEST))  # 13816758796288
+print(part_2(DATA))  # 13816758796288

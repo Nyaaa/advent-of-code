@@ -19,7 +19,7 @@ def count_constellations(data: list[str]) -> int:
     graph = nx.Graph()
     for a, b in combinations(points, 2):
         graph.add_nodes_from([a, b])
-        if sum(abs(i - j) for i, j in zip(a, b)) <= 3:
+        if sum(abs(i - j) for i, j in zip(a, b, strict=True)) <= 3:
             graph.add_edge(a, b)
     return nx.number_connected_components(graph)
 

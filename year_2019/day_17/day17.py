@@ -1,4 +1,5 @@
 import re
+from itertools import starmap
 
 import numpy as np
 from more_itertools import split_at
@@ -31,7 +32,7 @@ def part_1() -> int:
 
 def get_path() -> str:
     img = get_map()
-    path = {complex(i, j) for i, j in np.argwhere(img == 1)}
+    path = set(starmap(complex, np.argwhere(img == 1)))
     pos = complex(*np.argwhere(img == 94)[0])  # 94 = ^
     direction = -1
     track = []
@@ -60,7 +61,7 @@ def get_path() -> str:
 def part_2() -> int:
     path = get_path() + ','
     pattern = re.compile(r'^(.{1,20})\1*?(.{1,20})(?:\1|\2)*?(.{1,20})(?:\1|\2|\3)*$')
-    chunks = dict(zip(re.match(pattern, path).groups(), ['A', 'B', 'C']))
+    chunks = dict(zip(re.match(pattern, path).groups(), ['A', 'B', 'C'], strict=True))
     program = ''
     for chunk, letter in chunks.items():
         path = re.sub(chunk, letter, path)

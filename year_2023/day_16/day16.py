@@ -80,11 +80,11 @@ class Contraption:
         best_result = 0
         starts = []
         for i in range(self.boundary[1]):
-            starts.append(Beam(self.boundary, complex(0, i), 1))
-            starts.append(Beam(self.boundary, complex(self.boundary[0], i), -1))
+            starts.extend((Beam(self.boundary, complex(0, i), 1),
+                           Beam(self.boundary, complex(self.boundary[0], i), -1)))
         for i in range(self.boundary[0]):
-            starts.append(Beam(self.boundary, complex(i, 0), 1j))
-            starts.append(Beam(self.boundary, complex(i, self.boundary[1]), -1j))
+            starts.extend((Beam(self.boundary, complex(i, 0), 1j),
+                           Beam(self.boundary, complex(i, self.boundary[1]), -1j)))
         for start in starts:
             best_result = max(best_result, self.part_1(start))
         return best_result

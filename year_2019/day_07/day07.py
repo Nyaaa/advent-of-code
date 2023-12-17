@@ -1,6 +1,5 @@
 from copy import deepcopy
 from itertools import permutations
-from typing import Iterable
 
 from tools import loader, parsers
 from year_2019 import intcode
@@ -10,8 +9,7 @@ init_pc = intcode.Intcode(parsers.lines(loader.get()))
 
 def part_1() -> int:
     best_result = 0
-    settings: Iterable[tuple[int]] = permutations(range(5), 5)
-    for setting in settings:
+    for setting in permutations(range(5), 5):
         result = [0]
         for i in range(5):
             pc = deepcopy(init_pc)
@@ -26,14 +24,13 @@ def part_1() -> int:
 
 def part_2() -> int:
     best_result = 0
-    settings: Iterable[tuple[int]] = permutations(range(5, 10), 5)
-    for setting in settings:
+    for setting in permutations(range(5, 10), 5):
         setting = iter(setting)
         pcs = [deepcopy(init_pc) for _ in range(5)]
         pcs_done = []
         result = [0]
         while True:
-            for _i, pc in enumerate(pcs):
+            for pc in pcs:
                 output = result[-1]
                 try:
                     sett = next(setting)

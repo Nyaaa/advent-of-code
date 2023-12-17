@@ -1,8 +1,8 @@
 from __future__ import annotations
 
+from collections.abc import Generator
 from dataclasses import dataclass, field
 from itertools import cycle
-from typing import Iterator
 
 from tools import loader, parsers
 
@@ -41,9 +41,8 @@ class Cart:
 
 
 class Tracks:
-    DIRECTIONS = {'^': -1, 'v': 1, '<': -1j, '>': 1j}
-
     def __init__(self, data: list[str]) -> None:
+        self.DIRECTIONS = {'^': -1, 'v': 1, '<': -1j, '>': 1j}
         self.map = {}
         self.carts = []
         _id = 1
@@ -57,7 +56,7 @@ class Tracks:
                     self.carts.append(Cart(_id, location, self.DIRECTIONS[tile]))
                     _id += 1
 
-    def simulate(self) -> Iterator[Cart]:
+    def simulate(self) -> Generator[Cart]:
         while len(self.carts) > 1:
             for cart in sorted(self.carts):
                 cart.location += cart.direction

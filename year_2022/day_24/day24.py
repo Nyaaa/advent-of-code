@@ -20,7 +20,7 @@ class Blizzard:
     def precalculate_maps(self) -> list[set[complex]]:
         map_list = []
         wind_map = [(complex(r, c), d) for d in DIRECTIONS
-                    for r, c in list(zip(*np.where(self.data == d)))]
+                    for r, c in list(zip(*np.where(self.data == d), strict=True))]
         for _ in range(self.map_num + 1):
             wind_map = self.generate_map(wind_map)
             map_list.append({point for point, d in wind_map})

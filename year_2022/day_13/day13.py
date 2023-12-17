@@ -1,3 +1,4 @@
+from ast import literal_eval
 from itertools import zip_longest
 
 from tools import loader, parsers
@@ -50,9 +51,8 @@ def part_2(data: list[str]) -> int:
     """test part 2:
     >>> part_2(parsers.lines('test13.txt'))
     140"""
-    data.append('[[2]]')
-    data.append('[[6]]')
-    sort = [flatten(eval(line)) for line in data if line != '']
+    data.extend(('[[2]]', '[[6]]'))
+    sort = [flatten(literal_eval(line)) for line in data if line]
     sort.sort()
     return (sort.index([2]) + 1) * (sort.index([6]) + 1)
 

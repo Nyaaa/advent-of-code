@@ -26,7 +26,7 @@ class Point:
 
     def compare(self, other: Point) -> Point:
         vals = []
-        for i, j in zip(self, other):
+        for i, j in zip(self, other, strict=True):
             if i > j:
                 vals.append(-1)
             elif i < j:

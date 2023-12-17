@@ -44,7 +44,7 @@ class Fuel:
             value = np.max(sums)
             if value > best:
                 best = value
-                result = np.unravel_index(sums.argmax(), sums.shape) + (i, )
+                result = (*np.unravel_index(sums.argmax(), sums.shape), i)
                 no_increase = 0
             elif value <= best:
                 no_increase += 1

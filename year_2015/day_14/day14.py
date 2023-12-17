@@ -13,7 +13,7 @@ def race(data: list[str], time: int) -> tuple[int, int]:
     reindeer = [tuple(map(int, re.findall(r'(\d+)', line))) for line in data]
     results = np.zeros((len(reindeer), time), dtype=int)
     for i, (speed, travel_time, rest_time) in enumerate(reindeer):
-        fly = cycle(chain(repeat(speed, travel_time),  repeat(0, rest_time)))
+        fly = cycle(chain(repeat(speed, travel_time), repeat(0, rest_time)))
         results[i] = np.fromiter(accumulate(fly), dtype=int, count=time)
 
     scores = np.zeros((len(reindeer)), dtype=int)

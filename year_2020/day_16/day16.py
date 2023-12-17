@@ -43,7 +43,7 @@ class Ticket:
 
     def part_2(self) -> int:
         self.part_1()
-        tickets = self.tickets + [self.own_ticket]
+        tickets = [*self.tickets, self.own_ticket]
         fields = defaultdict(list)
         for i in range(len(tickets[0])):
             for ticket in tickets:

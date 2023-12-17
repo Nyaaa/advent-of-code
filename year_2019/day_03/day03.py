@@ -9,9 +9,8 @@ U98,R91,D20,R16,D67,R40,U7,R15,U6,R7"""
 
 
 class PCB:
-    directions = {'R': 1j, 'L': -1j, 'U': 1, 'D': -1}
-
     def __init__(self, data: list[str]) -> None:
+        self.directions = {'R': 1j, 'L': -1j, 'U': 1, 'D': -1}
         self.wires = []
         for line in data:
             new_wire = []

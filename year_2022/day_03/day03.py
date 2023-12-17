@@ -4,7 +4,7 @@ from tools import loader, parsers
 
 letters = list(string.ascii_letters)
 numbers = list(range(1, 53))
-priority = dict(zip(letters, numbers))
+priority = dict(zip(letters, numbers, strict=True))
 test = ['vJrwpWtwJgWrhcsFMMfFFhFp',
         'jqHRNqRjqzjGDLGLrsFMfFZSrLrFZsSL',
         'PmmdzqPrVvPwwTWBwg',

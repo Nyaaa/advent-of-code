@@ -26,9 +26,9 @@ class Graph:
 
         for conn in self.nodes[node]:
             if not conn.islower() or conn not in seen:
-                paths += self.count_paths(extra_visit, conn, seen + (conn, ))
+                paths += self.count_paths(extra_visit, conn, (*seen, conn))
             elif extra_visit and conn != 'start':
-                paths += self.count_paths(False, conn, seen + (conn, ))
+                paths += self.count_paths(False, conn, (*seen, conn))
         return paths
 
 

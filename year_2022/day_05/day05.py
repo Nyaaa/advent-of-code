@@ -9,7 +9,7 @@ class Crane:
     def __init__(self, data: list[list[str]]) -> None:
         self.data = data[1]
         self.stack_list = []
-        load = [''.join(s) for s in zip(*data[0][:-1])]
+        load = [''.join(s) for s in zip(*data[0][:-1], strict=True)]
         stacks = list(filter(None, (re.findall(r'\w+', i.strip()) for i in load)))
         self.size = len(stacks)
         for i in range(self.size):
