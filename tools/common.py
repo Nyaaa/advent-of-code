@@ -9,7 +9,7 @@ from numba import njit
 from numpy.typing import NDArray
 
 
-@njit()
+@njit
 def get_adjacent(
         array: NDArray,
         position: tuple[int, int],
@@ -54,8 +54,7 @@ def trim_array(array: NDArray) -> NDArray:
         Numpy array of the minimal size that fits non-zero areas.
     """
     ones = np.where(array == 1)
-    trimmed = array[min(ones[0]): max(ones[0]) + 1, min(ones[1]): max(ones[1]) + 1]
-    return trimmed
+    return array[min(ones[0]): max(ones[0]) + 1, min(ones[1]): max(ones[1]) + 1]
 
 
 def convert_to_image(array: NDArray) -> NDArray:
@@ -92,17 +91,3 @@ class Point(NamedTuple):
 
     def manhattan_distance(self, other: Point) -> int:
         return abs(self.row - other.row) + abs(self.col - other.col)
-
-
-def slice_with_complex(arr: NDArray, value: complex) -> Any:
-    """
-    Return the value at the specified index in the input array.
-
-    Parameters:
-        arr: A 2D Numpy array.
-        value: An index to slice the array with.
-
-    Returns:
-        A value at the specified index in the input array.
-    """
-    return arr[int(value.real), int(value.imag)]

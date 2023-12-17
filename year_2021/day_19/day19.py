@@ -122,5 +122,5 @@ def start(data: list[Scanner]) -> tuple[int, int]:
     return part_1, part_2
 
 
-with timer.context():
+with timer.Context():
     print(start(parse(DATA)))  # 353, 10832

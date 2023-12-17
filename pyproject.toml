@@ -11,7 +11,6 @@ ignore = [
     'E226',  # triggers on complex numbers
     'PLW1641',  # doesn't know NamedTuple/dataclasses
 ]
-exclude = ['tools/*']
 extend-include = ["*.ipynb"]
 preview = true
 

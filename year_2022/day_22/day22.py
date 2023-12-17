@@ -3,7 +3,6 @@ import re
 import numpy as np
 
 from tools import loader, parsers
-from tools.common import slice_with_complex
 
 np.set_printoptions(threshold=np.inf, linewidth=np.inf)
 DIRECTIONS = {-1: 3,  # up
@@ -88,7 +87,7 @@ class Cube:
             self.location += self.direction
 
             try:
-                cell = slice_with_complex(self.map, self.location)
+                cell = self.map[int(self.location.real), int(self.location.imag)]
             except IndexError:
                 cell = ' '
 
@@ -97,7 +96,7 @@ class Cube:
                 case (' ', True): _next, self.direction = self.shift(current_location)
                 case _: _next = self.location
 
-            match slice_with_complex(self.map, _next):
+            match self.map[int(_next.real), int(_next.imag)]:
                 case '.' | 'X': self.location = _next
                 case '#': self.location, self.direction = current_location, current_direction
 

@@ -93,7 +93,7 @@ class Cave:
         return len(self.cavern) - 1 + skipped_height
 
 
-with timer.context():
+with timer.Context():
     print(Cave(*parsers.lines(loader.get())).start(2022))  # 3059
-with timer.context():
+with timer.Context():
     print(Cave(*parsers.lines(loader.get())).start(1_000_000_000_000))  # 1500874635587

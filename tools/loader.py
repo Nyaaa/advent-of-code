@@ -4,7 +4,7 @@ import re
 from pathlib import Path
 
 
-def get(year: int = None, day: int = None) -> Path:
+def get(year: int | None = None, day: int | None = None) -> Path:
     """Gets the input of the same day as the caller module.
 
     If year and day are not provided, attempts to determine them from the caller module.

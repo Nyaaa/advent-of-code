@@ -88,7 +88,7 @@ class Grove:
                     self.move(elf, moving[elf])
 
 
-with timer.context():
+with timer.Context():
     print(Grove(parsers.lines(loader.get())).part_1())  # 3757
-with timer.context():
+with timer.Context():
     print(Grove(parsers.lines(loader.get())).part_2())  # 918
