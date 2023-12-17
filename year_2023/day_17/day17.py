@@ -17,8 +17,7 @@ class State(NamedTuple):
         return self.heat_loss < other.heat_loss
 
     def __eq__(self, other: State) -> bool:
-        return ((self.location, self.direction, self.distance) ==
-                (other.location, other.direction, other.distance))
+        return (self.location, self.direction) == (other.location, other.direction)
 
     def __hash__(self) -> int:
         return hash((self.location, self.direction, self.distance))
@@ -53,13 +52,13 @@ class Factory:
                 self.seen.add(s)
                 yield s
 
-    def part_1(self, part2: bool) -> int:
+    def find_path(self, part2: bool) -> int:
         """
-        >>> print(Factory(parsers.lines('test.txt')).part_1(part2=False))
+        >>> print(Factory(parsers.lines('test.txt')).find_path(part2=False))
         102
-        >>> print(Factory(parsers.lines('test.txt')).part_1(part2=True))
+        >>> print(Factory(parsers.lines('test.txt')).find_path(part2=True))
         94
-        >>> print(Factory(parsers.lines('test2.txt')).part_1(part2=True))
+        >>> print(Factory(parsers.lines('test2.txt')).find_path(part2=True))
         71"""
         queue = [State(0j, 1j), State(0j, 1)]
         while queue:
@@ -72,5 +71,5 @@ class Factory:
         raise ValueError('Solution not found')
 
 
-print(Factory(parsers.lines(loader.get())).part_1(part2=False))  # 942
-print(Factory(parsers.lines(loader.get())).part_1(part2=True))  # 1082
+print(Factory(parsers.lines(loader.get())).find_path(part2=False))  # 942
+print(Factory(parsers.lines(loader.get())).find_path(part2=True))  # 1082
