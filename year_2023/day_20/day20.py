@@ -28,8 +28,8 @@ class Flipper(Module):
 
     def process(self, signal: bool, _: str) -> list[tuple[str, bool, str]]:
         if signal is False:
-            output = next(self.state)
-            return [(self.name, output, i) for i in self.targets]
+            out = next(self.state)
+            return [(self.name, out, i) for i in self.targets]
         return []
 
 
@@ -53,11 +53,9 @@ def signals(data: list[str]) -> tuple[int, int]:
         modules[name] = module_types[_from[0]](name=name, targets=_to)
 
     string = ' '.join(data)
-    conj = re.findall(r'&\w+', string)
-    for i in conj:
+    for i in re.findall(r'&\w+', string):
         name = i[1:]
-        inputs = re.findall(rf'(\w+) -> {name}', string)
-        for j in inputs:
+        for j in re.findall(rf'(\w+) -> {name}', string):
             modules[name].inputs[j] = False
 
     joint = re.findall(r'(\w+) -> rx', string)[0]  # assuming rx has 1 input
@@ -74,10 +72,9 @@ def signals(data: list[str]) -> tuple[int, int]:
         if part_1 and part_2:
             break
         queue = deque([('broadcaster', False, 'broadcaster')])
+        pulses[False] += 1
         while queue:
             source, signal, target = queue.popleft()
-            if source == target:
-                pulses[False] += 1
             if source in joint_inputs and signal:
                 high_pulses[source] = press
             module = modules.get(target)
