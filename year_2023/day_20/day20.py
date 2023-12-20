@@ -1,7 +1,7 @@
 import re
 from collections import defaultdict, deque
 from itertools import count, cycle
-from math import prod
+from math import lcm, prod
 
 from tools import loader, parsers
 
@@ -44,12 +44,7 @@ class Conjunction(Module):
         return [(self.name, out, i) for i in self.targets]
 
 
-def signals(data: list[str], part2: bool) -> int:
-    """
-    >>> print(signals(parsers.lines('test.txt'), part2=False))
-    32000000
-    >>> print(signals(parsers.lines('test2.txt'), part2=False))
-    11687500"""
+def signals(data: list[str]) -> tuple[int, int]:
     module_types = {'b': Broadcaster, '%': Flipper, '&': Conjunction}
     modules = {}
     for line in data:
@@ -59,38 +54,41 @@ def signals(data: list[str], part2: bool) -> int:
 
     string = ' '.join(data)
     conj = re.findall(r'&\w+', string)
-    # part2_inputs = re.findall(r'(\w+) -> xn', string)  # &xn -> rx
     for i in conj:
         name = i[1:]
         inputs = re.findall(rf'(\w+) -> {name}', string)
         for j in inputs:
             modules[name].inputs[j] = False
 
-    def push_button() -> dict[bool, int]:
-        pulses = {True: 0, False: 0}
-        for press in count():
-            if not part2 and press == 1000:
-                break
-            queue = deque([('broadcaster', False, 'broadcaster')])
-            while queue:
-                source, signal, target = queue.popleft()
-                if source == target:
-                    pulses[False] += 1
-                module = modules.get(target)
-                if not module:
-                    module = Module(name=target, targets=[])
-                    modules[target] = module
-                n = module.process(signal=signal, source=source)
-                for new_signal in n:
-                    if part2 and new_signal[1] is False and new_signal[2] == 'rx':
-                        return press
-                    queue.append(new_signal)
-                    pulses[new_signal[1]] += 1
-        return pulses
+    joint = re.findall(r'(\w+) -> rx', string)[0]  # assuming rx has 1 input
+    joint_inputs = re.findall(rf'(\w+) -> {joint}', string)
+    part_1 = part_2 = 0
+    pulses = {True: 0, False: 0}
+    high_pulses = {n: 0 for n in joint_inputs}
 
-    out = push_button()
-    return prod(out.values())
+    for press in count(1):
+        if press == 1001:
+            part_1 = prod(pulses.values())
+        if all(high_pulses.values()):
+            part_2 = lcm(*high_pulses.values())
+        if part_1 and part_2:
+            break
+        queue = deque([('broadcaster', False, 'broadcaster')])
+        while queue:
+            source, signal, target = queue.popleft()
+            if source == target:
+                pulses[False] += 1
+            if source in joint_inputs and signal:
+                high_pulses[source] = press
+            module = modules.get(target)
+            if not module:
+                module = Module(name=target, targets=[])
+                modules[target] = module
+            for new_signal in module.process(signal=signal, source=source):
+                queue.append(new_signal)
+                pulses[new_signal[1]] += 1
+
+    return part_1, part_2
 
 
-print(signals(parsers.lines(loader.get()), part2=False))  # 806332748
-# print(signals(parsers.lines(loader.get()), part2=True))
+print(signals(parsers.lines(loader.get())))  # 806332748, 228060006554227
