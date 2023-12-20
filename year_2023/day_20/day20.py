@@ -12,12 +12,12 @@ class Module:
         self.targets = targets
 
     @staticmethod
-    def process(signal: bool, source: str) -> list:  # noqa: ARG004
+    def process(*_: str | bool) -> list:
         return []
 
 
 class Broadcaster(Module):
-    def process(self, signal: bool, source: str) -> list[tuple[str, bool, str]]:  # noqa: ARG002
+    def process(self, signal: bool, _: str) -> list[tuple[str, bool, str]]:
         return [(self.name, signal, i) for i in self.targets]
 
 
@@ -26,7 +26,7 @@ class Flipper(Module):
         super().__init__(name, targets)
         self.state = cycle([True, False])
 
-    def process(self, signal: bool, source: str) -> list[tuple[str, bool, str]]:  # noqa: ARG002
+    def process(self, signal: bool, _: str) -> list[tuple[str, bool, str]]:
         if signal is False:
             output = next(self.state)
             return [(self.name, output, i) for i in self.targets]
@@ -84,7 +84,7 @@ def signals(data: list[str]) -> tuple[int, int]:
             if not module:
                 module = Module(name=target, targets=[])
                 modules[target] = module
-            for new_signal in module.process(signal=signal, source=source):
+            for new_signal in module.process(signal, source):
                 queue.append(new_signal)
                 pulses[new_signal[1]] += 1
 
