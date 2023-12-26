@@ -2,7 +2,7 @@ name: advent-of-code
 channels:
   - defaults
 dependencies:
-  - python=3.12
+  - python=3.11
   - networkx
   - shapely
   - more-itertools
@@ -12,3 +12,4 @@ dependencies:
   - conda-forge::pre-commit
   - conda-forge::notebook
   - conda-forge::seaborn
+  - sympy
