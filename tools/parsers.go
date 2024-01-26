@@ -11,7 +11,7 @@ func Read_lines(input string) []string {
     if err != nil {
         log.Fatal(err)
     }
-	return strings.Split(string(b), "\n")
+    return strings.Split(string(b), "\n")
 }
 
 func Split_blocks(input []string) [][]string {
