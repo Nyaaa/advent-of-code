@@ -4,9 +4,13 @@ import (
 	"log"
 	"os"
 	"strings"
+    "path/filepath"
+    "strconv"
+    "fmt"
+    "runtime"
 )
 
-func Read_lines(input string) []string {
+func ReadLines(input string) []string {
     b, err := os.ReadFile(input)
     if err != nil {
         log.Fatal(err)
@@ -14,7 +18,7 @@ func Read_lines(input string) []string {
     return strings.Split(string(b), "\n")
 }
 
-func Split_blocks(input []string) [][]string {
+func SplitBlocks(input []string) [][]string {
     var output [][]string
     var temp []string
     for _, item := range input {
@@ -26,4 +30,10 @@ func Split_blocks(input []string) [][]string {
         }
     }
     return output
+}
+
+func GetData(year int, day int) string {
+    _, file, _, _ := runtime.Caller(0)
+    basepath := filepath.Dir(file)
+    return filepath.Join(basepath, "../", "aoc-inputs", strconv.Itoa(year), fmt.Sprintf("day%02d.txt", day))
 }

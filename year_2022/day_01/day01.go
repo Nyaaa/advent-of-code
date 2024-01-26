@@ -4,13 +4,12 @@ import (
     "fmt"
     "aoc/tools"
 	"strconv"
-	"slices"
 	"sort"
 )
 
-func main() {
-	lines := tools.Read_lines("test.txt")
-	blocks := tools.Split_blocks(lines)
+func solve(input string) (int, int) {
+	lines := tools.ReadLines(input)
+	blocks := tools.SplitBlocks(lines)
 	var elves []int
 	for _, elf := range(blocks) {
 		value := 0
@@ -20,14 +19,18 @@ func main() {
 		}
 		elves = append(elves, value)
 	}
-	fmt.Println(slices.Max(elves))
-
 	sort.Ints(elves)
 	top3 := elves[len(elves)-3:]
+	part1 := top3[len(top3)-1]
 	part2 := 0
 	for i := 0; i < 3; i++ {
-        part2 += top3[i]
-    }
+		part2 += top3[i]
+	}
 
-	fmt.Println(part2)
+	return part1, part2
+}
+
+func main() {
+	fmt.Println(solve("test.txt"))
+	fmt.Println(solve(tools.GetData(2022, 01)))
 }
