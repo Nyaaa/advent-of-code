@@ -1,8 +1,8 @@
 package main
 
 import (
-    "fmt"
-    "aoc/tools"
+	"fmt"
+	"aoc/tools"
 	"strconv"
 	"sort"
 )
