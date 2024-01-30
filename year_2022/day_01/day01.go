@@ -1,28 +1,33 @@
 package main
 
 import (
-	"fmt"
 	"aoc/tools"
-	"strconv"
+	"fmt"
 	"sort"
+	"strconv"
 )
 
 func solve(input string) (int, int) {
 	lines := tools.ReadLines(input)
 	blocks := tools.SplitBlocks(lines)
-	var elves []int
-	for _, elf := range(blocks) {
+	elves := make([]int, len(blocks))
+
+	for i, elf := range blocks {
 		value := 0
-		for _, item := range(elf) {
+
+		for _, item := range elf {
 			v, _ := strconv.Atoi(item)
 			value += v
 		}
-		elves = append(elves, value)
+
+		elves[i] = value
 	}
+
 	sort.Ints(elves)
 	top3 := elves[len(elves)-3:]
-	part1 := top3[len(top3)-1]
+	part1 := top3[2]
 	part2 := 0
+
 	for i := 0; i < 3; i++ {
 		part2 += top3[i]
 	}
