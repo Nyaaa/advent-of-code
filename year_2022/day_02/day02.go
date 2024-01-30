@@ -26,7 +26,7 @@ func play(data []string) (int, int) {
 	part2 := 0
 	for _, line := range(data) {
 		if line != "" {
-			ln := strings.Split(line, " ")
+			ln := strings.Fields(line)
 			left := moves[ln[0]]
 			right := moves[ln[1]]
 			part1 += right + check_win(left, right)
