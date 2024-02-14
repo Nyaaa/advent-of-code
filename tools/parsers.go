@@ -8,6 +8,7 @@ import (
 	"runtime"
 	"strconv"
 	"strings"
+	"unicode"
 )
 
 func ReadLines(input string) []string {
@@ -18,6 +19,20 @@ func ReadLines(input string) []string {
 	}
 
 	return strings.Split(string(b), "\n")
+}
+
+func ReadString(input string) string {
+	b, err := os.ReadFile(input)
+
+	if err != nil {
+		log.Fatal(err)
+	}
+
+	clean := strings.TrimFunc(string(b), func(r rune) bool {
+		return !unicode.IsGraphic(r)
+	})
+
+	return clean
 }
 
 func SplitBlocks(input []string) [][]string {

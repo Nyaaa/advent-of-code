@@ -14,3 +14,13 @@ func StrToInt(strings []string) []int {
 
 	return output
 }
+
+func Counter(input string) map[rune]int {
+	counts := make(map[rune]int)
+
+	for _, char := range input {
+		counts[char]++
+	}
+
+	return counts
+}

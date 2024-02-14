@@ -21,4 +21,4 @@ linters:
 
 linters-settings:
   varnamelen:
-    max-distance: 10
+    max-distance: 15
