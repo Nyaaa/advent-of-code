@@ -3,7 +3,7 @@ from tools import loader, parsers
 
 class FileSystem:
     def __init__(self, data: list[str]) -> None:
-        self.files: dict[str:[list[dict]]] = {}  # { path : [{ path : size }] }
+        self.files: dict[str, list[dict]] = {}  # { path : [{ path : size }] }
         self.folders: dict[str, int] = {}  # { path : size }
 
         path = ''
