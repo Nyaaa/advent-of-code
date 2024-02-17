@@ -30,10 +30,9 @@ class Crane:
         >>> print(Crane(parsers.blocks('test.txt')).start(True))
         MCD"""
         for amount, _from, _to in self.get_moves():
-            if not part2:
-                crates = [self.stack_list[_from - 1].get() for _ in range(amount)]
-            else:
-                crates = reversed([self.stack_list[_from - 1].get() for _ in range(amount)])
+            crates = [self.stack_list[_from - 1].get() for _ in range(amount)]
+            if part2:
+                crates = reversed(crates)
             for crate in crates:
                 self.stack_list[_to - 1].put(crate)
         return ''.join(stack.get() for stack in self.stack_list)
