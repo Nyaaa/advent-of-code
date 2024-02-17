@@ -5,7 +5,8 @@ import (
 	"fmt"
 )
 
-func solve(data string, length int) int {
+func solve(input []string, length int) int {
+	data := input[0]
 	for i := 0; i <= len(data)-length; i++ {
 		counts := tools.Counter(data[i : i+length])
 		isValid := true
@@ -25,8 +26,8 @@ func solve(data string, length int) int {
 }
 
 func main() {
-	testData := "zcfzfwzzqfrljwzlrfnpqdbhtmscgvjw"
-	data := tools.ReadString(tools.GetData(2022, 06))
+	testData := []string{"zcfzfwzzqfrljwzlrfnpqdbhtmscgvjw"}
+	data := tools.ReadLines(tools.GetData(2022, 06))
 
 	fmt.Println(solve(testData, 4), solve(testData, 14))
 	fmt.Println(solve(data, 4), solve(data, 14))

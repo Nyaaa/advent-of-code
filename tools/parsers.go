@@ -1,38 +1,32 @@
 package tools
 
 import (
+	"bufio"
 	"fmt"
 	"log"
 	"os"
 	"path/filepath"
 	"runtime"
 	"strconv"
-	"strings"
-	"unicode"
 )
 
 func ReadLines(input string) []string {
-	b, err := os.ReadFile(input)
+	file, err := os.Open(input)
 
 	if err != nil {
 		log.Fatal(err)
 	}
 
-	return strings.Split(string(b), "\n")
-}
+	defer file.Close()
 
-func ReadString(input string) string {
-	b, err := os.ReadFile(input)
+	lines := []string{}
+	s := bufio.NewScanner(file)
 
-	if err != nil {
-		log.Fatal(err)
+	for s.Scan() {
+    	lines = append(lines, s.Text())
 	}
 
-	clean := strings.TrimFunc(string(b), func(r rune) bool {
-		return !unicode.IsGraphic(r)
-	})
-
-	return clean
+	return lines
 }
 
 func SplitBlocks(input []string) [][]string {
@@ -46,6 +40,10 @@ func SplitBlocks(input []string) [][]string {
 		} else {
 			temp = append(temp, item)
 		}
+	}
+
+	if temp != nil {
+		output = append(output, temp)
 	}
 
 	return output
