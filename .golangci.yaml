@@ -18,6 +18,7 @@ linters:
     - forbidigo
     - depguard
     - goimports
+    - cyclop
 
 linters-settings:
   varnamelen:
