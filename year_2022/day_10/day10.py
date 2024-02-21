@@ -4,29 +4,23 @@ from tools import loader, parsers
 class CRT:
     def __init__(self, data: list[str]) -> None:
         self.next_line = iter(data)
-        self.image = ['', '', '', '', '', '']
+        self.image = ''
         self.out = {}
         self.run()
 
     def run(self) -> None:
         x = 1
-        tick = timer = v_line = value = 0
-        offset = 20
-        row = -1
+        tick = timer = h_pos = value = 0
         cmd = ''
 
         while True:
             if tick % 40 == 0:
-                row += 1
-                v_line = 0
-            elif tick == 20:
+                self.image += '\n'
+                h_pos = 0
+            elif tick == 20 or (tick + 20) % 40 == 0:
                 self.out[tick] = x
-                offset = 60
-            elif tick == offset:
-                self.out[tick] = x
-                offset += 40
             tick += 1
-            v_line += 1
+            h_pos += 1
 
             if timer > 1:
                 timer -= 1
@@ -42,8 +36,7 @@ class CRT:
                 value = int(line[1]) if len(line) > 1 else None
                 timer = 2 if cmd == 'addx' else 1
 
-            sprite = (x, x + 1, x + 2)
-            self.image[row] += '█' if v_line in sprite else '⠀'
+            self.image += '█' if x <= h_pos <= x + 2 else '⠀'
 
     def part_1(self) -> int:
         """test part 1:
@@ -62,14 +55,7 @@ class CRT:
         ██████⠀⠀⠀⠀⠀⠀██████⠀⠀⠀⠀⠀⠀██████⠀⠀⠀⠀⠀⠀████
         ███████⠀⠀⠀⠀⠀⠀⠀███████⠀⠀⠀⠀⠀⠀⠀███████⠀⠀⠀⠀⠀
         """
-        result = ''
-        for row in self.image:
-            if result:
-                result += '\n'
-            for i in row:
-                result += i
-
-        return result
+        return self.image.strip()
 
 
 print(CRT(parsers.lines(loader.get())).part_1())  # 15680
