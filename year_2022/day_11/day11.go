@@ -18,14 +18,14 @@ type monkey struct {
 	inspections    int
 }
 
-func (m monkey) action(monkeys []monkey) []monkey {
+func (m monkey) action(monkeys []monkey, relief bool, modulo int) []monkey {
 	for _, item := range m.inventory {
+		newItem := item
 		value, err := strconv.Atoi(m.operationValue)
+
 		if err != nil {
 			value = item
 		}
-
-		newItem := item
 
 		if m.operation == "*" {
 			newItem *= value
@@ -33,7 +33,12 @@ func (m monkey) action(monkeys []monkey) []monkey {
 			newItem += value
 		}
 
-		newItem /= 3
+		if relief {
+			newItem /= 3
+		} else {
+			newItem %= modulo
+		}
+
 		target := m.targets[newItem%m.testValue == 0]
 		monkeys[target].inventory = append(monkeys[target].inventory, newItem)
 	}
@@ -41,10 +46,11 @@ func (m monkey) action(monkeys []monkey) []monkey {
 	return monkeys
 }
 
-func solve(input string, rounds int) int {
+func solve(input string, rounds int, relief bool) int {
 	data := tools.SplitBlocks(tools.ReadLines(input))
 	monkeys := []monkey{}
 	numbers := regexp.MustCompile(`\d+`)
+	modulo := 1
 
 	for _, block := range data {
 		testValue, _ := strconv.Atoi(strings.Fields(block[3])[3])
@@ -59,11 +65,12 @@ func solve(input string, rounds int) int {
 			inspections:    0,
 		}
 		monkeys = append(monkeys, m)
+		modulo *= m.testValue
 	}
 
 	for i := 0; i < rounds; i++ {
 		for j, m := range monkeys {
-			monkeys = m.action(monkeys)
+			monkeys = m.action(monkeys, relief, modulo)
 			monkeys[j].inspections += len(m.inventory)
 			monkeys[j].inventory = nil
 		}
@@ -80,6 +87,6 @@ func main() {
 	testData := "test11.txt"
 	data := tools.GetData(2022, 11)
 
-	fmt.Println(solve(testData, 20))
-	fmt.Println(solve(data, 20))
+	fmt.Println(solve(testData, 20, true), solve(testData, 10000, false))
+	fmt.Println(solve(data, 20, true), solve(data, 10000, false))
 }
