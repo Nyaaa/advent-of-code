@@ -4,6 +4,7 @@ import (
 	"aoc/tools"
 	"fmt"
 	"regexp"
+	"sort"
 	"strconv"
 	"strings"
 )
@@ -13,19 +14,39 @@ type monkey struct {
 	operation      string
 	operationValue string
 	testValue      int
-	targetTrue     int
-	targetFalse    int
+	targets        map[bool]int
+	inspections    int
 }
 
-func (m monkey) action() {
-	fmt.Println(m)
+func (m monkey) action(monkeys []monkey) []monkey {
+	for _, item := range m.inventory {
+		value, err := strconv.Atoi(m.operationValue)
+		if err != nil {
+			value = item
+		}
+
+		newItem := item
+
+		if m.operation == "*" {
+			newItem *= value
+		} else {
+			newItem += value
+		}
+
+		newItem /= 3
+		target := m.targets[newItem%m.testValue == 0]
+		monkeys[target].inventory = append(monkeys[target].inventory, newItem)
+	}
+
+	return monkeys
 }
 
-func solve(input [][]string, rounds int) int {
+func solve(input string, rounds int) int {
+	data := tools.SplitBlocks(tools.ReadLines(input))
 	monkeys := []monkey{}
 	numbers := regexp.MustCompile(`\d+`)
 
-	for _, block := range input {
+	for _, block := range data {
 		testValue, _ := strconv.Atoi(strings.Fields(block[3])[3])
 		targetTrue, _ := strconv.Atoi(strings.Fields(block[4])[5])
 		targetFalse, _ := strconv.Atoi(strings.Fields(block[5])[5])
@@ -34,23 +55,31 @@ func solve(input [][]string, rounds int) int {
 			operation:      strings.Fields(block[2])[4],
 			operationValue: strings.Fields(block[2])[5],
 			testValue:      testValue,
-			targetTrue:     targetTrue,
-			targetFalse:    targetFalse,
+			targets:        map[bool]int{true: targetTrue, false: targetFalse},
+			inspections:    0,
 		}
 		monkeys = append(monkeys, m)
 	}
 
 	for i := 0; i < rounds; i++ {
-		for _, m := range monkeys {
-			m.action()
+		for j, m := range monkeys {
+			monkeys = m.action(monkeys)
+			monkeys[j].inspections += len(m.inventory)
+			monkeys[j].inventory = nil
 		}
 	}
 
-	return 0
+	sort.Slice(monkeys, func(i, j int) bool {
+		return monkeys[i].inspections > monkeys[j].inspections
+	})
+
+	return monkeys[0].inspections * monkeys[1].inspections
 }
 
 func main() {
-	testData := tools.SplitBlocks(tools.ReadLines("test11.txt"))
+	testData := "test11.txt"
+	data := tools.GetData(2022, 11)
 
 	fmt.Println(solve(testData, 20))
+	fmt.Println(solve(data, 20))
 }
