@@ -1,87 +1,66 @@
+import operator
 import re
+from dataclasses import dataclass
 
 from tools import loader, parsers
 
 
+@dataclass
 class Monke:
-    def __init__(self, _id: int) -> None:
-        self.id: int = _id
-        self.inventory: list[int] = []
-        self.test: int = 0
-        self.target_true: int = 0
-        self.target_false: int = 0
-        self.op: str = ''
-        self.op_val: str = ''
-        self.inspected: int = 0
+    inventory: list[int]
+    test: int
+    targets: dict[bool, int]
+    operation: operator
+    op_val: str
+    inspected: int = 0
 
     def action(self, relief: bool, monkeys: list, modulo: int) -> None:
-        for i, item in enumerate(self.inventory):
-            self.inspected += 1
-
+        for item in self.inventory:
             try:
                 value = int(self.op_val)
             except ValueError:
                 value = item
 
-            if self.op == '*':
-                item *= value
-            else:
-                item += value
+            item = self.operation(item, value)
 
             if relief:
                 item //= 3
             else:
                 item %= modulo
 
-            self.inventory[i] = item
-
-        for item in self.inventory:
-            if item % self.test == 0:
-                monkeys[self.target_true].inventory.append(item)
-            else:
-                monkeys[self.target_false].inventory.append(item)
+            target = self.targets[item % self.test == 0]
+            monkeys[target].inventory.append(item)
+        self.inspected += len(self.inventory)
         self.inventory.clear()
 
 
-class Main:
-    def __init__(self, data: list[list[str]]) -> None:
-        self.monkeys = []
-        self.modulo = 1
+def solve(data: list[list[str]], rounds: int, relief: bool) -> int:
+    """
+    >>> print(solve(parsers.blocks('test11.txt'), 20, True))
+    10605
+    >>> print(solve(parsers.blocks('test11.txt'), 10000, False))
+    2713310158"""
+    monkeys = []
+    modulo = 1
 
-        for monke in data:
-            index = int(re.search(r'\d+', monke[0]).group())
-            self.monkeys.append(Monke(index))
-            self.monkeys[index].inventory = [int(i) for i in re.findall(r'\d+', monke[1])]
-            self.monkeys[index].op, self.monkeys[index].op_val = \
-                re.search(r'([+*]) ([A-Za-z0-9]+)', monke[2]).group().split()
-            self.monkeys[index].test = int(re.search(r'\d+', monke[3]).group())
-            self.monkeys[index].target_true = int(re.search(r'\d+', monke[4]).group())
-            self.monkeys[index].target_false = int(re.search(r'\d+', monke[5]).group())
+    for monke in data:
+        m = Monke(
+            inventory=list(map(int, re.findall(r'\d+', monke[1]))),
+            operation=operator.add if monke[2].split()[4] == '+' else operator.mul,
+            op_val=monke[2].split()[-1],
+            test=int(monke[3].split()[3]),
+            targets={True: int(monke[4].split()[5]), False: int(monke[5].split()[5])},
+        )
+        monkeys.append(m)
+        modulo *= m.test
 
-        for monkey in self.monkeys:
-            self.modulo *= monkey.test
+    for _ in range(rounds):
+        for monkey in monkeys:
+            monkey.action(relief, monkeys, modulo)
 
-    def start(self, rounds: int, relief: bool) -> int:
-        """test part 1:
-        >>> print(Main(parsers.blocks('test11.txt')).start(20, True))
-        10605
-
-        test part 2:
-        >>> print(Main(parsers.blocks('test11.txt')).start(10000, False))
-        2713310158"""
-        _round = 0
-        while _round < rounds:
-            _round += 1
-            for monkey in self.monkeys:
-                monkey.action(relief, self.monkeys, self.modulo)
-
-        activity = [monkey.inspected for monkey in self.monkeys]
-        activity.sort()
-        return activity[-1] * activity[-2]
+    monkeys.sort(key=lambda x: x.inspected, reverse=True)
+    return monkeys[0].inspected * monkeys[1].inspected
 
 
-# part 1
-print(Main(parsers.blocks(loader.get())).start(20, True))  # 78678
-
-# part 2
-print(Main(parsers.blocks(loader.get())).start(10000, False))  # 15333249714
+print(solve(parsers.blocks(loader.get()), rounds=20, relief=True))  # 78678
+print(solve(parsers.blocks(loader.get()), rounds=10000, relief=False))  # 15333249714

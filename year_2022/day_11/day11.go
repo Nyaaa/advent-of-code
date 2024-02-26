@@ -20,7 +20,6 @@ type monkey struct {
 
 func (m monkey) action(monkeys []monkey, relief bool, modulo int) []monkey {
 	for _, item := range m.inventory {
-		newItem := item
 		value, err := strconv.Atoi(m.operationValue)
 
 		if err != nil {
@@ -28,19 +27,19 @@ func (m monkey) action(monkeys []monkey, relief bool, modulo int) []monkey {
 		}
 
 		if m.operation == "*" {
-			newItem *= value
+			item *= value
 		} else {
-			newItem += value
+			item += value
 		}
 
 		if relief {
-			newItem /= 3
+			item /= 3
 		} else {
-			newItem %= modulo
+			item %= modulo
 		}
 
-		target := m.targets[newItem%m.testValue == 0]
-		monkeys[target].inventory = append(monkeys[target].inventory, newItem)
+		target := m.targets[item%m.testValue == 0]
+		monkeys[target].inventory = append(monkeys[target].inventory, item)
 	}
 
 	return monkeys
