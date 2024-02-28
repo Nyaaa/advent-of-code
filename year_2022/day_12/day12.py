@@ -1,75 +1,44 @@
-import string
+from pathlib import Path
 
 import networkx as nx
 import numpy as np
 
-from tools import common, loader, parsers
-
-test = """Sabqponm
-abcryxxl
-accszExk
-acctuvwj
-abdefghi
-"""
-LETTERS = tuple(string.ascii_lowercase)
-NUMBERS = tuple(range(26))
-WEIGHTS = dict(zip(LETTERS, NUMBERS, strict=True))
-WEIGHTS['S'] = 0
-WEIGHTS['E'] = 25
+from tools import common, loader
 
 
 class Graph:
-    def __init__(self, array: list, start: str) -> None:
-        _grid = []
-        self.start_coord = []
-        self.end_coord = None
-        self.start_letter = start
-        self.end_letter = 'E'
+    def __init__(self, data: str | Path, start: str) -> None:
+        grid = np.genfromtxt(data, delimiter=1, dtype=str)
+        self.start_coord = np.argwhere(grid == start)
+        self.end_coord = tuple(np.argwhere(grid == 'E')[0])
         self.digraph = nx.DiGraph()
+        grid[grid == 'E'] = 'z'
+        grid[grid == 'S'] = 'a'
+        numerical = grid.view(np.int32)
 
-        for row, line in enumerate(array):
-            new_row = []
-            for col, letter in enumerate(line):
-                if letter == self.start_letter:
-                    self.start_coord.append((row, col))
-                elif letter == self.end_letter:
-                    self.end_coord = (row, col)
-                new_row.append(letter)
-            _grid.append(new_row)
-
-        self.grid = np.array(_grid, dtype=str)
-        self.build_graph()
-
-    def build_graph(self) -> None:
-        for index, letter in np.ndenumerate(self.grid):
-            for ajd_index, adj_value in common.get_adjacent(self.grid, index):
-                weight = WEIGHTS[letter]
-                if WEIGHTS[adj_value] <= weight + 1:
+        for index, letter in np.ndenumerate(numerical):
+            for ajd_index, adj_value in common.get_adjacent(numerical, index):
+                if adj_value <= letter + 1:
                     self.digraph.add_edge(index, ajd_index)
 
     def solve(self) -> int:
-        """test part1:
-        >>> Graph(parsers.inline_test(test), 'S').solve()
+        """
+        >>> Graph('test.txt', 'S').solve()
         31
-
-        test part 2:
-        >>> Graph(parsers.inline_test(test), 'a').solve()
+        >>> Graph('test.txt', 'a').solve()
         29
         """
         distance = float('inf')
         for point in self.start_coord:
             try:
                 attempt = nx.shortest_path_length(
-                    self.digraph, source=point, target=self.end_coord
+                    self.digraph, source=tuple(point), target=self.end_coord
                 )
             except nx.exception.NetworkXNoPath:
                 continue
-            if attempt <= distance:
-                distance = attempt
+            distance = min(attempt, distance)
         return distance
 
 
-# part 1
-print(Graph(parsers.lines(loader.get()), 'S').solve())  # 449
-# part 2
-print(Graph(parsers.lines(loader.get()), 'a').solve())  # 443
+print(Graph(loader.get(), 'S').solve())  # 449
+print(Graph(loader.get(), 'a').solve())  # 443
