@@ -4,7 +4,7 @@ from itertools import zip_longest
 from tools import loader, parsers
 
 
-def compare(left: list, right: list) -> bool | None:
+def compare(left: list, right: list) -> bool:
     if not isinstance(left, list): left = [left]
     if not isinstance(right, list): right = [right]
 
@@ -20,9 +20,9 @@ def compare(left: list, right: list) -> bool | None:
                 return i < j
         else:
             out = compare(i, j)
-            if out is not None:
+            if out:
                 return out
-    return None
+    return False
 
 
 def flatten(list_of_lists: list) -> list:
@@ -39,12 +39,12 @@ def part_1(data: list[list[str]]) -> int:
     """test part 1:
     >>> part_1(parsers.blocks('test13.txt'))
     13"""
-    result = {True: [], False: []}
-    for index in range(1, len(data) + 1):
-        c_left, c_right = map(eval, data[index - 1])
-        res = compare(c_left, c_right)
-        result[res].append(index)
-    return sum(result[True])
+    result = 0
+    for index, pair in enumerate(data):
+        c_left, c_right = map(literal_eval, pair)
+        if compare(c_left, c_right):
+            result += index + 1
+    return result
 
 
 def part_2(data: list[str]) -> int:
