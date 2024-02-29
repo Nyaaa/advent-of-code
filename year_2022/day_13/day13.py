@@ -4,7 +4,7 @@ from itertools import zip_longest
 from tools import loader, parsers
 
 
-def compare(left: list, right: list) -> bool:
+def compare(left: list, right: list) -> bool | None:
     if not isinstance(left, list): left = [left]
     if not isinstance(right, list): right = [right]
 
@@ -20,9 +20,9 @@ def compare(left: list, right: list) -> bool:
                 return i < j
         else:
             out = compare(i, j)
-            if out:
+            if out is not None:
                 return out
-    return False
+    return None
 
 
 def flatten(list_of_lists: list) -> list:
