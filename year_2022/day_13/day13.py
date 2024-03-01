@@ -1,38 +1,28 @@
 from ast import literal_eval
+from functools import cmp_to_key
 from itertools import zip_longest
 
 from tools import loader, parsers
 
 
-def compare(left: list, right: list) -> bool | None:
+def compare(left: list, right: list) -> int:
     if not isinstance(left, list): left = [left]
     if not isinstance(right, list): right = [right]
 
-    zipped = list(zip_longest(left, right))
-    for i, j in zipped:
-        if j is None:
-            return False
-        if i is None:
-            return True
-
-        if isinstance(i, int) and isinstance(j, int):
-            if i != j:
-                return i < j
-        else:
-            out = compare(i, j)
-            if out is not None:
-                return out
-    return None
-
-
-def flatten(list_of_lists: list) -> list:
-    if len(list_of_lists) == 0:
-        return list_of_lists
-    if isinstance(list_of_lists[0], list):
-        if len(list_of_lists[0]) == 0:
-            list_of_lists[0] = [0]
-        return flatten(list_of_lists[0]) + flatten(list_of_lists[1:])
-    return list_of_lists[:1] + flatten(list_of_lists[1:])
+    for i, j in zip_longest(left, right):
+        match i, j:
+            case _, None:
+                return 1
+            case None, _:
+                return -1
+            case int(), int():
+                if i != j:
+                    return i - j
+            case _:
+                out = compare(i, j)
+                if out != 0:
+                    return out
+    return 0
 
 
 def part_1(data: list[list[str]]) -> int:
@@ -40,10 +30,9 @@ def part_1(data: list[list[str]]) -> int:
     >>> part_1(parsers.blocks('test13.txt'))
     13"""
     result = 0
-    for index, pair in enumerate(data):
-        c_left, c_right = map(literal_eval, pair)
-        if compare(c_left, c_right):
-            result += index + 1
+    for index, pair in enumerate(data, start=1):
+        if compare(*map(literal_eval, pair)) < 0:
+            result += index
     return result
 
 
@@ -52,9 +41,9 @@ def part_2(data: list[str]) -> int:
     >>> part_2(parsers.lines('test13.txt'))
     140"""
     data.extend(('[[2]]', '[[6]]'))
-    sort = [flatten(literal_eval(line)) for line in data if line]
-    sort.sort()
-    return (sort.index([2]) + 1) * (sort.index([6]) + 1)
+    data = [literal_eval(line) for line in data if line]
+    data.sort(key=cmp_to_key(compare))
+    return (data.index([[2]]) + 1) * (data.index([[6]]) + 1)
 
 
 print(part_1(parsers.blocks(loader.get())))  # 5252

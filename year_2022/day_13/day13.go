@@ -4,6 +4,7 @@ import (
 	"aoc/tools"
 	"encoding/json"
 	"fmt"
+	"sort"
 )
 
 func unmarshal(str string) []any {
@@ -39,14 +40,26 @@ func compare(left, right any) int {
 
 func solve(input string) (int, int) {
 	data := tools.SplitBlocks(tools.ReadLines(input))
-	part1, part2 := 0, 0
+	part1, part2 := 0, 1
+	dataFull := []any{[]any{[]any{2.0}}, []any{[]any{6.0}}}
 
 	for i, pair := range data {
 		left := unmarshal(pair[0])
 		right := unmarshal(pair[1])
+		dataFull = append(dataFull, left, right)
 
 		if compare(left, right) <= 0 {
 			part1 += i + 1
+		}
+	}
+
+	sort.Slice(dataFull, func(i, j int) bool {
+		return compare(dataFull[i], dataFull[j]) <= 0
+	})
+
+	for i, line := range dataFull {
+		if fmt.Sprint(line) == "[[2]]" || fmt.Sprint(line) == "[[6]]" {
+			part2 *= i + 1
 		}
 	}
 
