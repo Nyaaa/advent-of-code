@@ -2,7 +2,7 @@ import numpy as np
 
 from tools import loader, parsers
 
-np.set_printoptions(threshold=np.inf, linewidth=200)
+# np.set_printoptions(threshold=np.inf, linewidth=200)
 
 
 class Cave:
@@ -11,9 +11,9 @@ class Cave:
         since adding dynamic stretching adds extra complexity to the code.
         May need to increase it if code fails."""
         self.left, self.right = 500, 700
-        self.cavern = np.zeros((1, self.right))
+        self.cavern = np.zeros((1, self.right), dtype=int)
         self.draw_cavern(
-            [[[int(i) for i in coord.split(',')] for coord in line.split(' -> ')] for line in data]
+            [[list(map(int, coord.split(','))) for coord in line.split(' -> ')] for line in data]
         )
         if part == 2:
             self.increase_depth(1, 0)
@@ -39,10 +39,8 @@ class Cave:
                 slice_y = np.s_[next_y:y + 1, x] if y - next_y > 0 else np.s_[y:next_y + 1, x]
                 self.cavern[slice_y] = 1
 
-    def increase_depth(self, lines: int, char: int) -> None:
-        self.cavern = np.pad(
-            self.cavern, [(0, lines), (0, 0)], mode='constant', constant_values=char
-        )
+    def increase_depth(self, lines: int, value: int) -> None:
+        self.cavern = np.pad(self.cavern, [(0, lines), (0, 0)], constant_values=value)
 
     def fall(self, row: int, column: int) -> None:
         if self.cavern[0][column] == 1:
