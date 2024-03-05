@@ -1,4 +1,5 @@
-from dataclasses import dataclass
+import re
+from typing import NamedTuple
 
 from shapely import clip_by_rect, union_all
 from shapely.geometry import LineString, Polygon, mapping
@@ -6,19 +7,16 @@ from shapely.geometry import LineString, Polygon, mapping
 from tools import loader, parsers
 
 
-@dataclass
-class Node:
+class Sensor(NamedTuple):
     row: int
     col: int
-
-    def __hash__(self) -> int:
-        return hash(str(self))
-
-
-@dataclass
-class Sensor:
-    node: Node
     distance: int
+
+    def get_coverage(self) -> Polygon:
+        return Polygon([(self.row - self.distance, self.col),
+                        (self.row, self.col - self.distance),
+                        (self.row + self.distance, self.col),
+                        (self.row, self.col + self.distance)])
 
 
 class Main:
@@ -30,20 +28,14 @@ class Main:
         self.max_x = 0
 
         for line in data:
-            newstr = ''.join((ch if ch in '0123456789-' else ' ') for ch in line)
-            coord = [int(i) for i in newstr.split()]
-            sensor = Node(coord[0], coord[1])
-            beacon = Node(coord[2], coord[3])
-            distance = abs(sensor.row - beacon.row) + abs(sensor.col - beacon.col)
-            sensor = Sensor(sensor, distance)
+            coord = list(map(int, re.findall('-?\\d+', line)))
+            distance = abs(coord[0] - coord[2]) + abs(coord[1] - coord[3])
+            sensor = Sensor(coord[0], coord[1], distance)
             self.sensors.append(sensor)
-            self.area.append(Polygon([(sensor.node.row - sensor.distance, sensor.node.col),
-                                      (sensor.node.row, sensor.node.col - sensor.distance),
-                                      (sensor.node.row + sensor.distance, sensor.node.col),
-                                      (sensor.node.row, sensor.node.col + sensor.distance)]))
+            self.area.append(sensor.get_coverage())
 
-        self.min_x = min(sensor.node.row - sensor.distance for sensor in self.sensors)
-        self.max_x = max(sensor.node.row + sensor.distance for sensor in self.sensors)
+        self.min_x = min(sensor.row - sensor.distance for sensor in self.sensors)
+        self.max_x = max(sensor.row + sensor.distance for sensor in self.sensors)
 
     def part_1(self, y: int) -> int:
         """Calculate coverage areas usig Manhattan distance,
@@ -58,6 +50,7 @@ class Main:
     def part_2(self, lim: int) -> int:
         """Merge all radii, clip them with a bounding box,
         get center point coordinates
+        FIXME: test fails
         >>> Main(parsers.lines('test15.txt')).part_2(20)
         56000011"""
         merge = union_all(self.area)
