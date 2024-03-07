@@ -8,15 +8,12 @@ import (
 )
 
 func solve(input string) (int, string) {
-	instructions := tools.ReadLines(input)
-	register := 1
-	cycle := 0
-	index := 0
-	skip := 0
-	addValue := 0
-	part1 := 0
-	hPos := 0
-	part2 := ""
+	var (
+		instructions                              = tools.ReadLines(input)
+		register                                  = 1
+		cycle, index, skip, addValue, part1, hPos int
+		part2                                     string
+	)
 
 	for index < len(instructions) {
 		cycle++

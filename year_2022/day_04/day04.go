@@ -11,8 +11,7 @@ func isInRange(value int, min int, max int) bool {
 }
 
 func solve(input []string) (int, int) {
-	part1 := 0
-	noOverlaps := 0
+	var part1, noOverlaps int
 
 	for _, line := range input {
 		if line == "" {

@@ -10,9 +10,11 @@ import (
 )
 
 func getDirSizes(data []string) (map[string][]string, map[string]int) {
-	currPath := ""
-	dirTree := map[string][]string{}
-	fileSizes := map[string]int{}
+	var (
+		currPath  string
+		dirTree   = map[string][]string{}
+		fileSizes = map[string]int{}
+	)
 
 	for _, line := range data {
 		if line == "" {

@@ -8,10 +8,11 @@ import (
 )
 
 func solve(input string) (int, int) {
-	forest := [][]int{}
-	data := tools.ReadLines(input)
-	part1 := 0
-	part2 := 0
+	var (
+		forest       = [][]int{}
+		data         = tools.ReadLines(input)
+		part1, part2 int
+	)
 
 	for _, line := range data {
 		if line == "" {
