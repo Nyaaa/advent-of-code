@@ -6,19 +6,40 @@ import (
 	"regexp"
 )
 
-type cave [][]int
+type cave struct {
+	grid   [][]bool
+	blocks int
+	done   bool
+}
 
 func (c *cave) increaseDepth(rows int) {
 	for i := 0; i < rows; i++ {
-		newRow := make([]int, len((*c)[0]))
-		*c = append(*c, newRow)
+		newRow := make([]bool, len(c.grid[0]))
+		c.grid = append(c.grid, newRow)
 	}
 }
 
-func drawCave(data []string, part2 bool) (cave, int, int) {
+func (c *cave) fall(row, column int) {
+	switch {
+	case c.grid[0][column] || row == len(c.grid):
+		c.done = true
+	case !c.grid[row][column]:
+		c.fall(row+1, column)
+	case !c.grid[row][column-1]:
+		c.fall(row, column-1)
+	case !c.grid[row][column+1]:
+		c.fall(row, column+1)
+	default:
+		c.grid[row-1][column] = true
+		c.blocks++
+	}
+}
+
+func solve(input string, part2 bool) int {
+	data := tools.ReadLines(input)
 	nums := regexp.MustCompile(`\d+`)
-	left, right := 500, 700
-	cavern := cave{make([]int, right)}
+	row := make([]bool, 700)
+	cavern := cave{[][]bool{row}, 0, false}
 
 	for _, line := range data {
 		values := tools.StrToInt(nums.FindAllString(line, -1))
@@ -28,19 +49,18 @@ func drawCave(data []string, part2 bool) (cave, int, int) {
 			nextX, nextY := values[i+2], values[i+3]
 			minX, maxX := min(wallX, nextX), max(wallX, nextX)
 			minY, maxY := min(wallY, nextY), max(wallY, nextY)
-			left, right = min(minX, left), max(maxX, right)
 
-			if maxY > len(cavern) {
-				add := maxY + 1 - len(cavern)
+			if maxY > len(cavern.grid) {
+				add := maxY + 1 - len(cavern.grid)
 				cavern.increaseDepth(add)
 			}
 
 			for i := minX; i <= maxX; i++ {
-				cavern[wallY][i] = 1
+				cavern.grid[wallY][i] = true
 			}
 
 			for i := minY; i <= maxY; i++ {
-				cavern[i][wallX] = 1
+				cavern.grid[i][wallX] = true
 			}
 		}
 	}
@@ -48,50 +68,16 @@ func drawCave(data []string, part2 bool) (cave, int, int) {
 	if part2 {
 		cavern.increaseDepth(2)
 
-		for i := 0; i < len(cavern[0]); i++ {
-			cavern[len(cavern)-1][i] = 1
+		for i := 0; i < len(cavern.grid[0]); i++ {
+			cavern.grid[len(cavern.grid)-1][i] = true
 		}
 	}
 
-	return cavern, left, right
-}
-
-func fall(cavern *cave, left, right *int, row, column int) bool {
-	c := (*cavern)
-	result := true
-
-	switch {
-	case c[0][column] == 1 || row == len(c):
-		return false
-	case c[row][column] != 1:
-		result = fall(cavern, left, right, row+1, column)
-	case c[row][column-1] != 1:
-		result = fall(cavern, left, right, row, column-1)
-	case c[row][column+1] != 1:
-		result = fall(cavern, left, right, row, column+1)
-	default:
-		c[row-1][column] = 1
-		*left = min(*left, column)
-		*right = max(*right, column)
+	for !cavern.done {
+		cavern.fall(0, 500)
 	}
 
-	return result
-}
-
-func solve(input string, part2 bool) int {
-	cavern, left, right := drawCave(tools.ReadLines(input), part2)
-	counter := 0
-	placed := true
-
-	for placed {
-		placed = fall(&cavern, &left, &right, 0, 500)
-
-		if placed {
-			counter++
-		}
-	}
-
-	return counter
+	return cavern.blocks
 }
 
 func main() {
