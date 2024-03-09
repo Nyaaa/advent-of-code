@@ -3,35 +3,44 @@ package main
 import (
 	"aoc/tools"
 	"fmt"
-	mapset "github.com/deckarep/golang-set/v2"
-	"strings"
 )
 
-func charToInt(char string) int {
-	val := int([]rune(char)[0])
-	if strings.ToUpper(char) == char {
+func charToInt(val byte) int {
+	if val < 95 {
 		val -= 38
 	} else {
 		val -= 96
 	}
 
-	return val
+	return int(val)
+}
+
+func intersect(left, right []byte) []byte {
+	seen := map[byte]bool{}
+	result := []byte{}
+
+	for _, char := range left {
+		seen[char] = true
+	}
+
+	for _, char := range right {
+		if seen[char] {
+			result = append(result, char)
+		}
+	}
+
+	return result
 }
 
 func part1(data []string) int {
 	result := 0
 
 	for _, line := range data {
-		if line == "" {
-			continue
-		}
-
-		chars := strings.Split(line, "")
 		mid := len(line) / 2
-		left := mapset.NewSet[string](chars[:mid]...)
-		right := mapset.NewSet[string](chars[mid:]...)
-		common := left.Intersect(right)
-		result += charToInt(<-common.Iter())
+		left := []byte(line[:mid])
+		right := []byte(line[mid:])
+		common := intersect(left, right)
+		result += charToInt(common[0])
 	}
 
 	return result
@@ -41,12 +50,12 @@ func part2(data []string) int {
 	result := 0
 
 	for i := 0; i < len(data)-1; i += 3 {
-		left := mapset.NewSet[string](strings.Split(data[i], "")...)
-		mid := mapset.NewSet[string](strings.Split(data[i+1], "")...)
-		right := mapset.NewSet[string](strings.Split(data[i+2], "")...)
-		common := left.Intersect(mid)
-		common = common.Intersect(right)
-		result += charToInt(<-common.Iter())
+		left := []byte(data[i])
+		mid := []byte(data[i+1])
+		right := []byte(data[i+2])
+		common := intersect(left, mid)
+		common = intersect(common, right)
+		result += charToInt(common[0])
 	}
 
 	return result
@@ -54,13 +63,7 @@ func part2(data []string) int {
 
 func main() {
 	data := tools.ReadLines(tools.GetData(2022, 03))
-	testData := []string{
-		"vJrwpWtwJgWrhcsFMMfFFhFp",
-		"jqHRNqRjqzjGDLGLrsFMfFZSrLrFZsSL",
-		"PmmdzqPrVvPwwTWBwg",
-		"wMqvLMZHhHMvwLHjbvcjnnSBnvTQFn",
-		"ttgJtRGJQctTZtZT",
-		"CrZsJsPPZsGzwwsLwLmpwMDw"}
+	testData := tools.ReadLines("test.txt")
 	fmt.Println(part1(testData), part2(testData))
 	fmt.Println(part1(data), part2(data))
 }

@@ -5,12 +5,6 @@ from tools import loader, parsers
 letters = list(string.ascii_letters)
 numbers = list(range(1, 53))
 priority = dict(zip(letters, numbers, strict=True))
-test = ['vJrwpWtwJgWrhcsFMMfFFhFp',
-        'jqHRNqRjqzjGDLGLrsFMfFZSrLrFZsSL',
-        'PmmdzqPrVvPwwTWBwg',
-        'wMqvLMZHhHMvwLHjbvcjnnSBnvTQFn',
-        'ttgJtRGJQctTZtZT',
-        'CrZsJsPPZsGzwwsLwLmpwMDw']
 
 
 def common(one: str, *rest: str) -> list:
@@ -19,7 +13,7 @@ def common(one: str, *rest: str) -> list:
 
 def part_1(data: list[str]) -> int:
     """test part 1:
-    >>> print(part_1(test))
+    >>> print(part_1(parsers.lines('test.txt')))
     157"""
     value = 0
     for rucksack in data:
@@ -31,7 +25,7 @@ def part_1(data: list[str]) -> int:
 
 def part_2(data: list[str]) -> int:
     """test part 2:
-    >>> print(part_2(test))
+    >>> print(part_2(parsers.lines('test.txt')))
     70"""
     value = 0
     for i in range(0, len(data), 3):
