@@ -1,4 +1,5 @@
-from collections import Counter, deque
+import math
+from collections import deque
 
 import regex as re
 
@@ -16,31 +17,22 @@ def lottery(data: list[str]) -> tuple[int, int]:
         ticket = set(map(int, re.findall(r'\d+', ticket)))
         tickets[i] = (winning, ticket)
 
-    part1 = 0
+    part1 = part2 = 0
     for winning, ticket in tickets.values():
-        matches = winning.intersection(ticket)
-        value = 0 if not matches else 1
-        for _ in range(len(matches) - 1):
-            value *= 2
-        part1 += value
+        if matches := winning.intersection(ticket):
+            part1 += int(math.pow(2, len(matches) - 1))
 
-    queue = deque([*tickets.items()])
-    all_tickets = []
+    queue = deque([*tickets])
     seen = {}
     while queue:
-        index, (winning, ticket) = queue.popleft()
-        all_tickets.append(index)
-        if index in seen:
-            queue.extend(seen[index])
-            continue
-        matches = len(winning.intersection(ticket))
-        new_tickets = []
-        for i in range(1, matches + 1):
-            next_ticket = index + i
-            new_tickets.append((next_ticket, tickets[next_ticket]))
-        seen[index] = new_tickets
-        queue.extend(new_tickets)
-    part2 = Counter(all_tickets).total()
+        index = queue.popleft()
+        part2 += 1
+        if index not in seen:
+            winning, ticket = tickets[index]
+            matches = len(winning.intersection(ticket))
+            new_tickets = [index + i + 1 for i in range(matches)]
+            seen[index] = new_tickets
+        queue.extend(seen[index])
 
     return part1, part2
 
