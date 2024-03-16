@@ -95,8 +95,7 @@ func solve(input string, part2 bool) int {
 		}
 
 		for l, leftCard := range i.cards {
-			rightCard := j.cards[l]
-			if leftCard != rightCard {
+			if rightCard := j.cards[l]; leftCard != rightCard {
 				return cmp.Compare(leftCard, rightCard)
 			}
 		}
