@@ -1,7 +1,7 @@
 package main
 
 import (
-	"aoc/tools"
+	"github.com/Nyaaa/advent-of-code/tools"
 	"encoding/json"
 	"fmt"
 	"sort"

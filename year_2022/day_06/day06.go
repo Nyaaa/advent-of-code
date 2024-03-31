@@ -1,8 +1,8 @@
 package main
 
 import (
-	"aoc/tools"
 	"fmt"
+	"github.com/Nyaaa/advent-of-code/tools"
 )
 
 func solve(input []string, length int) int {
