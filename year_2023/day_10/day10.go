@@ -43,9 +43,23 @@ func getTrack(c cart, pipes map[complex128]string) []complex128 {
 	return track
 }
 
+func part2(track []complex128) int {
+	area := 0.0
+
+	for i := 0; i < len(track); i++ {
+		area += (imag(track[i]) * real(track[(i+1)%len(track)]))
+		area -= (real(track[i]) * imag(track[(i+1)%len(track)]))
+	}
+
+	if area < 0 {
+		area = -area
+	}
+
+	return int(area/2) - (len(track) / 2) + 1
+}
+
 func solve(input string) (int, int) {
 	data := tools.ReadLines(input)
-	part2 := 0
 	pipes := map[complex128]string{}
 	pipeChars := [7]string{"-", "|", "F", "7", "J", "L", "S"}
 	cart := cart{0, 0, 0}
@@ -82,10 +96,10 @@ func solve(input string) (int, int) {
 
 	track := getTrack(cart, pipes)
 
-	return len(track) / 2, part2
+	return len(track) / 2, part2(track)
 }
 
 func main() {
-	fmt.Println(solve("test.txt"))
+	fmt.Println(solve("test3.txt"))
 	fmt.Println(solve(tools.GetData(2023, 10)))
 }
