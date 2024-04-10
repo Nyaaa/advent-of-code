@@ -51,11 +51,7 @@ func part2(track []complex128) int {
 		area -= (real(track[i]) * imag(track[(i+1)%len(track)]))
 	}
 
-	if area < 0 {
-		area = -area
-	}
-
-	return int(area/2) - (len(track) / 2) + 1
+	return tools.Abs(int(area))/2 - (len(track) / 2) + 1
 }
 
 func solve(input string) (int, int) {

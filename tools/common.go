@@ -48,3 +48,25 @@ func LCM(integers ...int) int {
 
 	return result
 }
+
+func Abs(number int) int {
+	if number < 0 {
+		return -number
+	}
+
+	return number
+}
+
+func MinMax(integers ...int) (int, int) {
+	min, max := integers[0], integers[0]
+
+	for _, i := range integers {
+		if i > max {
+			max = i
+		} else if i < min {
+			min = i
+		}
+	}
+
+	return min, max
+}
