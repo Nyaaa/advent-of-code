@@ -32,7 +32,7 @@ class Crane:
         for amount, _from, _to in self.get_moves():
             crates = [self.stack_list[_from - 1].get() for _ in range(amount)]
             if part2:
-                crates = reversed(crates)
+                crates.reverse()
             for crate in crates:
                 self.stack_list[_to - 1].put(crate)
         return ''.join(stack.get() for stack in self.stack_list)

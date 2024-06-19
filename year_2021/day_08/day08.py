@@ -12,7 +12,7 @@ class Display:
         """
         >>> print(Display(parsers.lines('test.txt')).part_1())
         26"""
-        return sum([sum(1 for i in out if len(i) in DIGITS) for _, out in self.data])
+        return sum(sum(1 for i in out if len(i) in DIGITS) for _, out in self.data)
 
     def part_2(self) -> int:
         """

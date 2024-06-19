@@ -4,16 +4,19 @@ requires-python = ">=3.11"
 
 [tool.ruff]
 line-length = 99
+extend-include = ["*.ipynb"]
+preview = true
+target-version = "py312"
+
+[tool.ruff.lint]
 select = ['E', 'F', 'UP', 'NPY', 'SIM', 'ICN', 'C4', 'A', 'B', 'ANN', 'N', 'I', 'Q',
     'W', 'PL', 'RET', 'FURB', 'RUF', 'PERF', 'PIE', 'ARG', 'PTH', 'PD', 'PGH', 'TRY']
 ignore = [
-    'E701', 'ANN101', 'PLR2004', 'PLW2901', 'TRY003',  # that's just too much
-    'E226',  # triggers on complex numbers
-    'PLW1641',  # doesn't know NamedTuple/dataclasses
+    'E701', 'ANN101', 'PLR2004', 'PLW2901', 'TRY003', # that's just too much
+    'E226', # triggers on complex numbers
+    'PLW1641', # doesn't know NamedTuple/dataclasses
 ]
-extend-include = ["*.ipynb"]
-preview = true
 
-[tool.ruff.flake8-quotes]
+[tool.ruff.lint.flake8-quotes]
 inline-quotes = 'single'
 multiline-quotes = 'double'

@@ -117,8 +117,7 @@ def start(data: list[Scanner]) -> tuple[int, int]:
     part_2 = 0
     for i, j in permutations(located, 2):
         distance = i.location.manhattan(j.location)
-        if distance > part_2:
-            part_2 = distance
+        part_2 = max(distance, part_2)
     return part_1, part_2
 
 

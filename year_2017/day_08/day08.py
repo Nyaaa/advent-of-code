@@ -21,8 +21,7 @@ def registers(data: list[str]) -> tuple[int, int]:
         reg0, op0, val0, _, reg1, op1, val1 = line.split()
         if OPERATIONS[op1](register[reg1], int(val1)):
             register[reg0] = OPERATIONS[op0](register[reg0], int(val0))
-            if register[reg0] > highest:
-                highest = register[reg0]
+            highest = max(register[reg0], highest)
     return max(register.values()), highest
 
 

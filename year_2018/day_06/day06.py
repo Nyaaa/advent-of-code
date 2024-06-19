@@ -1,3 +1,5 @@
+import operator
+
 import numpy as np
 
 from tools import loader, parsers
@@ -6,8 +8,8 @@ from tools import loader, parsers
 class Area:
     def __init__(self, data: list[str]) -> None:
         self.points = {(int(row), int(col)): 0 for col, row in (line.split(', ') for line in data)}
-        self.max_col = max(self.points, key=lambda x: x[1])[1]
-        self.max_row = max(self.points, key=lambda x: x[0])[0]
+        self.max_col = max(self.points, key=operator.itemgetter(1))[1]
+        self.max_row = max(self.points, key=operator.itemgetter(0))[0]
         self.grid = np.zeros((self.max_row + 2, self.max_col + 2), dtype=int)
         for p in self.points:
             self.grid[p] = 1
@@ -26,7 +28,7 @@ class Area:
             distances = [(self.manhattan_distance(point, i), i) for i in self.points]
             if sum(i[0] for i in distances) < max_distance:
                 part2 += 1
-            closest_point = min(distances, key=lambda x: x[0])[1]
+            closest_point = min(distances, key=operator.itemgetter(0))[1]
             self.points[closest_point] += 1
             if (point[0] == 0 or point[0] == self.max_row
                     or point[1] == 0 or point[1] == self.max_col):

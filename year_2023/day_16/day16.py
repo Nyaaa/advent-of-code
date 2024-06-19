@@ -21,7 +21,7 @@ class Beam:
                 self.direction *= -1j if self.direction.real == 0 else 1j
             case '/':
                 self.direction *= 1j if self.direction.real == 0 else -1j
-            case  '|' if self.direction.real == 0:
+            case '|' if self.direction.real == 0:
                 new_beam = Beam(self.boundary, self.location, self.direction * -1j)
                 self.direction *= 1j
             case '-' if self.direction.imag == 0:
@@ -36,9 +36,7 @@ class Beam:
         col_valid = 0 <= self.location.imag < self.boundary[1]
         if self.location in self.path:
             self.infinity += 1
-        if not row_valid or not col_valid or self.infinity > 30:
-            return False
-        return True
+        return not (not row_valid or not col_valid or self.infinity > 30)
 
 
 class Contraption:

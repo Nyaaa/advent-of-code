@@ -16,7 +16,7 @@ def optimize_seating(data: list[str], part2: bool) -> int:
         value = '-' if info[1] == 'lose' else '+'
         guests[info[0]][info[3]] = int(value + info[2])
     if part2:
-        guests['self'] = {k: 0 for k in guests}
+        guests['self'] = dict.fromkeys(guests, 0)
     best_happiness = 0
     for combo in permutations(guests.keys(), len(guests)):
         happiness = 0

@@ -86,7 +86,7 @@ class Battle:
                 targetable = [i for i in enemies if i[1] > 0 and i[0] not in targeted]
                 if not targetable:
                     continue
-                target, max_damage = max(
+                target, _max_damage = max(
                     targetable, key=lambda g: (g[1], g[0].effective_power, g[0].initiative))
                 targeted.add(target)
                 attacker.target = target

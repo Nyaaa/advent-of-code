@@ -26,7 +26,7 @@ class Cave:
                 geo_index = y * 48271
             else:
                 geo_index = region_erosion[y, x - 1] * region_erosion[y - 1, x]
-            if (y, x) in [(0, 0), self.target]:
+            if (y, x) in {(0, 0), self.target}:
                 geo_index = 0
             erosion = (geo_index + self.depth) % 20183
             region_erosion[y, x] = erosion

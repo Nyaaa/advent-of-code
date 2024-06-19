@@ -13,8 +13,8 @@ class Snafu:
         """
         >>> print(Snafu([]).snafu_to_decimal('2=-01'))
         976"""
-        return sum([SNAFU_INT[val] * (5 ** (abs(pos) - 1))
-                    for pos, val in enumerate(snafu, start=-len(snafu))])
+        return sum(SNAFU_INT[val] * (5 ** (abs(pos) - 1))
+                   for pos, val in enumerate(snafu, start=-len(snafu)))
 
     @staticmethod
     def decimal_to_snafu(dec: int) -> str:
@@ -36,5 +36,3 @@ class Snafu:
 
 
 print(Snafu(parsers.lines(loader.get())).part_1())  # 2=10---0===-1--01-20
-
-

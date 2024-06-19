@@ -37,8 +37,7 @@ def maze(data: list[str], part2: bool) -> int:
             path.append(start)
         for a, b in pairwise(path):
             length += get_distance(graph, a, b)
-        if length < shortest:
-            shortest = length
+        shortest = min(length, shortest)
     return shortest
 
 

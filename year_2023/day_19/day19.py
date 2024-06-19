@@ -76,7 +76,7 @@ def part_2(data: list[list[str]]) -> int:
     >>> print(part_2(parsers.blocks('test.txt')))
     167409079868000"""
     _, rules = parse_input(data)
-    part = {i: (1, 4000) for i in 'xmas'}
+    part = dict.fromkeys('xmas', (1, 4000))
     queue = deque([(part, rules['in'])])
     results = {'A': [], 'R': []}
     while queue:

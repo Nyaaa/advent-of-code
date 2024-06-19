@@ -30,9 +30,9 @@ class Test(TestCase):
             (2, 1): [((1, 1), 5), ((2, 0), 7), ((2, 2), 9)],
         }
 
-        for i in results:
-            actual = list(common.get_adjacent(ARRAY, i))
-            expected = results[i]
+        for k, v in results.items():
+            actual = list(common.get_adjacent(ARRAY, k))
+            expected = v
             self.assertEqual(actual, expected)
 
     def test_get_adjacent_with_corners(self) -> None:
@@ -51,9 +51,9 @@ class Test(TestCase):
             (2, 1): [((1, 1), 5), ((2, 0), 7), ((2, 2), 9), ((1, 0), 4), ((1, 2), 6)],
         }
 
-        for i in results:
-            actual = list(common.get_adjacent(ARRAY, i, with_corners=True))
-            expected = results[i]
+        for k, v in results.items():
+            actual = list(common.get_adjacent(ARRAY, k, with_corners=True))
+            expected = v
             self.assertEqual(actual, expected)
 
     def test_get_adjacent_with_self(self) -> None:
@@ -61,7 +61,7 @@ class Test(TestCase):
             (1, 1): [((0, 1), 2), ((1, 0), 4), ((1, 2), 6), ((2, 1), 8), ((1, 1), 5)],
         }
 
-        for i in results:
-            actual = list(common.get_adjacent(ARRAY, i, with_self=True))
-            expected = results[i]
+        for k, v in results.items():
+            actual = list(common.get_adjacent(ARRAY, k, with_self=True))
+            expected = v
             self.assertEqual(actual, expected)

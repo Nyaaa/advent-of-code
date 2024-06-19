@@ -43,7 +43,7 @@ class CRT:
         >>> print(CRT(parsers.lines('test10.txt')).part_1())
         13140
         """
-        return sum([i * self.out[i] for i in self.out])
+        return sum(i * self.out[i] for i in self.out)
 
     def part_2(self) -> str:
         """test part 1:

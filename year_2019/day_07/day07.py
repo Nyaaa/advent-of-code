@@ -17,8 +17,7 @@ def part_1() -> int:
             sett = setting[i]
             res = pc.run([sett, output])
             result.append(res)
-        if result[-1] > best_result:
-            best_result = result[-1]
+        best_result = max(result[-1], best_result)
     return best_result
 
 
@@ -45,8 +44,7 @@ def part_2() -> int:
                     result.extend(res)
             if len(pcs_done) == 5:
                 break
-        if result[-1] > best_result:
-            best_result = result[-1]
+        best_result = max(result[-1], best_result)
     return best_result
 
 

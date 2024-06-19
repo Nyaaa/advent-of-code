@@ -117,11 +117,8 @@ def magnitude(num: str) -> int:
         digit_left, digit_right = SINGLES.finditer(match.group())
         magn = int(digit_left.group()) * 3 + int(digit_right.group()) * 2
         num = f'{left}{magn}{right}'
-        try:
-            return int(num)
-        except ValueError:
-            return magnitude(num)
-    raise
+        return int(num) if num.isdigit() else magnitude(num)
+    raise ValueError('Value not found')
 
 
 def part_1(data: list[str]) -> int:
@@ -140,8 +137,7 @@ def part_2(data: list[str]) -> int:
     for nums in permutations(data, 2):
         _sum = snailfish_sum(nums)
         result = magnitude(_sum)
-        if result > max_num:
-            max_num = result
+        max_num = max(result, max_num)
     return max_num
 
 

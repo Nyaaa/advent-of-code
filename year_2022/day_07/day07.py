@@ -28,7 +28,7 @@ class FileSystem:
         while True:
             for folder in self.folders:
                 size = self.get_size(folder)
-                self.folders.update({folder: size})
+                self.folders[folder] = size
             if self.folders['//'] != 0:
                 break
 
@@ -50,7 +50,7 @@ class FileSystem:
         95437"""
 
         return sum(
-            [self.folders[folder] for folder in self.folders if self.folders[folder] <= 100000]
+            self.folders[folder] for folder in self.folders if self.folders[folder] <= 100000
         )
 
     def part_2(self) -> int:
@@ -64,7 +64,7 @@ class FileSystem:
         target = needed - free
 
         return min(
-            [self.folders[folder] for folder in self.folders if self.folders[folder] >= target]
+            self.folders[folder] for folder in self.folders if self.folders[folder] >= target
         )
 
 

@@ -10,8 +10,8 @@ replacements = dict(line[::-1].split(' >= ') for line in DATA[0])
 
 part1 = set()
 for value, key in replacements.items():
-    for match in re.finditer(key, molecule):
-        part1.add(f'{molecule[:match.start()]}{value}{molecule[match.end():]}')
+    part1.update(f'{molecule[:match.start()]}{value}{molecule[match.end():]}'
+                 for match in re.finditer(key, molecule))
 
 print(len(part1))  # 576
 

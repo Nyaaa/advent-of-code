@@ -62,7 +62,7 @@ class Maze:
                 new_g.add_edge((*u, i), (*v, i))
             rows, cols = self.map.shape
             for tp in self.portals.values():
-                if tp[0][0] in [2, rows - 3] or tp[0][1] in [2, cols - 3]:
+                if tp[0][0] in {2, rows - 3} or tp[0][1] in {2, cols - 3}:
                     outer, inner = tp
                 else:
                     inner, outer = tp

@@ -47,8 +47,8 @@ class Blizzard:
     def adjacent(self, point: complex, map_num: int) -> list[complex]:
         points = [point + adj for adj in (1j, -1j, -1, 1, 0)]
         return [point for point in points if
-                (1 <= point.real < self.max_rows - 1 and 1 <= point.imag < self.max_cols - 1
-                 or point in (self.start, self.end))
+                ((1 <= point.real < self.max_rows - 1 and 1 <= point.imag < self.max_cols - 1)
+                 or point in {self.start, self.end})
                 and point not in self.map_list[map_num]]
 
     def search(self, start: complex, end: complex, time: int) -> int:

@@ -23,7 +23,7 @@ class Probe:
             elif col_speed < 0:
                 col_speed += 1
 
-            max_height = row if row > max_height else max_height
+            max_height = max(max_height, row)
             if self.row_min <= row <= self.row_max and self.col_min <= col <= self.col_max:
                 return max_height
         return None

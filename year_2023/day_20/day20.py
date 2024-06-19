@@ -44,25 +44,10 @@ class Conjunction(Module):
         return [(self.name, out, i) for i in self.targets]
 
 
-def signals(data: list[str]) -> tuple[int, int]:
-    module_types = {'b': Broadcaster, '%': Flipper, '&': Conjunction}
-    modules = {}
-    for line in data:
-        _from, *_to = re.findall(r'[%&]?\w+', line)
-        name = _from if _from == 'broadcaster' else _from[1:]
-        modules[name] = module_types[_from[0]](name=name, targets=_to)
-
-    string = ' '.join(data)
-    for i in re.findall(r'&\w+', string):
-        name = i[1:]
-        for j in re.findall(rf'(\w+) -> {name}', string):
-            modules[name].inputs[j] = False
-
-    joint = re.findall(r'(\w+) -> rx', string)[0]  # assuming rx has 1 input
-    joint_inputs = re.findall(rf'(\w+) -> {joint}', string)
+def count_pulses(joint_inputs: list[str], modules: dict[str, Module]) -> tuple[int, int]:
     part_1 = part_2 = 0
     pulses = {True: 0, False: 0}
-    high_pulses = {n: 0 for n in joint_inputs}
+    high_pulses = dict.fromkeys(joint_inputs, 0)
 
     for press in count(1):
         if press == 1001:
@@ -84,8 +69,26 @@ def signals(data: list[str]) -> tuple[int, int]:
             for new_signal in module.process(signal, source):
                 queue.append(new_signal)
                 pulses[new_signal[1]] += 1
-
     return part_1, part_2
+
+
+def signals(data: list[str]) -> tuple[int, int]:
+    module_types = {'b': Broadcaster, '%': Flipper, '&': Conjunction}
+    modules = {}
+    for line in data:
+        _from, *_to = re.findall(r'[%&]?\w+', line)
+        name = _from if _from == 'broadcaster' else _from[1:]
+        modules[name] = module_types[_from[0]](name=name, targets=_to)
+
+    string = ' '.join(data)
+    for i in re.findall(r'&\w+', string):
+        name = i[1:]
+        for j in re.findall(rf'(\w+) -> {name}', string):
+            modules[name].inputs[j] = False
+
+    joint = re.findall(r'(\w+) -> rx', string)[0]  # assuming rx has 1 input
+    joint_inputs = re.findall(rf'(\w+) -> {joint}', string)
+    return count_pulses(joint_inputs, modules)
 
 
 print(signals(parsers.lines(loader.get())))  # 806332748, 228060006554227

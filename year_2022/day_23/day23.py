@@ -60,9 +60,9 @@ class Grove:
                 intention = self.plan(elf, new_choice)
                 if intention:
                     moving[elf] = intention
-            for elf in moving:
-                if Counter(moving.values())[moving[elf]] == 1:
-                    self.move(elf, moving[elf])
+            for elf, move in moving.items():
+                if Counter(moving.values())[move] == 1:
+                    self.move(elf, move)
         trimmed = common.trim_array(self.map)
         return np.count_nonzero(trimmed == 0)
 
@@ -83,9 +83,9 @@ class Grove:
                     moving[elf] = intention
             if not moving:
                 return counter
-            for elf in moving:
-                if Counter(moving.values())[moving[elf]] == 1:
-                    self.move(elf, moving[elf])
+            for elf, move in moving.items():
+                if Counter(moving.values())[move] == 1:
+                    self.move(elf, move)
 
 
 with timer.Context():

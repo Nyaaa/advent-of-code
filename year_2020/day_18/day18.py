@@ -65,7 +65,7 @@ def do_brackets(expr: str, advanced: bool = False) -> int:
 
 
 def calculate(data: list, part2: bool = False) -> int:
-    return sum([do_brackets(line, advanced=part2) for line in data])
+    return sum(do_brackets(line, advanced=part2) for line in data)
 
 
 print(calculate(parsers.lines(loader.get())))  # 202553439706

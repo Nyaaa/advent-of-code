@@ -18,8 +18,7 @@ def walk(data: str) -> tuple[int, int]:
     for step in data.split(','):
         loc += DIRECTIONS[step]
         dist = int(abs(loc.real) + abs(loc.imag))
-        if dist > max_dist:
-            max_dist = dist
+        max_dist = max(dist, max_dist)
     return dist, max_dist
 
 

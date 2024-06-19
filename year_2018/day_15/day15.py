@@ -21,6 +21,12 @@ class Unit:
     def in_range(self, other: Unit) -> bool:
         return self.distance(other) <= 1
 
+    def is_killed(self, attacker: Unit) -> bool:
+        self.hp -= attacker.atk
+        if self.hp <= 0:
+            self.alive = False
+        return self.alive
+
 
 class Battle:
     def __init__(self, data: list[str]) -> None:
@@ -28,7 +34,7 @@ class Battle:
         self.units = []
         for row, line in enumerate(data):
             for col, char in enumerate(line):
-                if char not in (' ', '#'):
+                if char not in {' ', '#'}:
                     self.grid.add(complex(row, col))
                 if char.isalpha():
                     self.units.append(Unit(complex(row, col), 0 if char == 'E' else 1))
@@ -90,7 +96,7 @@ class Battle:
                     continue
                 enemies = [i for i in units if i.team != unit.team and i.alive]
                 if not enemies:
-                    return rounds * sum([i.hp for i in units if i.alive])
+                    return rounds * sum(i.hp for i in units if i.alive)
                 closest_distance, closest_path = self.find_path(unit, enemies)
                 if closest_path and closest_distance > 0:
                     unit.position = closest_path
@@ -99,12 +105,8 @@ class Battle:
                     targets = [i for i in units if
                                i.team != unit.team and i.distance(unit) == 1 and i.alive]
                     target = min(targets, key=lambda u: (u.hp, u.position.real, u.position.imag))
-                    if target:
-                        target.hp -= unit.atk
-                        if target.hp <= 0:
-                            target.alive = False
-                            if part2 and target.team == 0:
-                                return 0
+                    if target and not target.is_killed(unit) and part2 and target.team == 0:
+                        return 0
             rounds += 1
 
 

@@ -28,7 +28,7 @@ class RepairDroid:
                     self.target = pos
                 if result != 0j:
                     self.G.add_edge(pos, prev_pos)
-                    self.current += DIRECTIONS[direction]
+                    self.current += vector
                     self.discover_map(direction, pos)
         if self.current != 0j:
             rev = TRACEBACK[prev_dir]

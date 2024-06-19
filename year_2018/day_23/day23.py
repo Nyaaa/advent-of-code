@@ -4,7 +4,7 @@ import re
 from collections.abc import Generator
 from dataclasses import dataclass
 from functools import cached_property
-from itertools import product
+from itertools import product, starmap
 from queue import PriorityQueue
 
 from tools import loader, parsers
@@ -71,7 +71,7 @@ class BoundingBox:
 
     def generate_new(self) -> Generator[BoundingBox]:
         new_size = self.size // 2
-        for octant in (Point(*i) for i in product((0, 1), repeat=3)):
+        for octant in starmap(Point, product((0, 1), repeat=3)):
             corner_a = self.corner_a + octant * new_size
             yield BoundingBox(corner_a=corner_a,
                               corner_b=corner_a + new_size,

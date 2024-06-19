@@ -1,6 +1,6 @@
 import re
 from dataclasses import dataclass, field
-from itertools import product
+from itertools import product, starmap
 
 from tools import loader, parsers
 
@@ -33,8 +33,7 @@ class Chunk:
                     case '1': out += '1'
                     case '0': out += bin_val[i]
                     case 'X': out += 'X'
-            for a in (out.replace('X', '{}').format(*p)
-                      for p in product('01', repeat=out.count('X'))):
+            for a in starmap(out.replace('X', '{}').format, product('01', repeat=out.count('X'))):
                 output[int(a, 2)] = val
         return output
 

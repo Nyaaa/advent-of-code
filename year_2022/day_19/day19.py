@@ -111,7 +111,7 @@ class Factory:
         """
         >>> print(Factory(parsers.lines('test.txt')).part_1())
         33"""
-        return sum([bp.ident * self.evaluate(bp, State(24)) for bp in self.blueprints])
+        return sum(bp.ident * self.evaluate(bp, State(24)) for bp in self.blueprints)
 
     def part_2(self) -> int:
         """

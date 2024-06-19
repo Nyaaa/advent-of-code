@@ -3,7 +3,7 @@ from tools import loader, parsers
 
 class Fish:
     def __init__(self, data: str) -> None:
-        self.school = {n: 0 for n in reversed(range(9))}
+        self.school = dict.fromkeys(reversed(range(9)), 0)
         for i in data.split(','):
             self.school[int(i)] += 1
 
@@ -17,7 +17,7 @@ class Fish:
         time = 0
         while time != timer:
             time += 1
-            new_dist = {n: 0 for n in reversed(range(9))}
+            new_dist = dict.fromkeys(reversed(range(9)), 0)
             for i in self.school:
                 if i - 1 < 0:
                     new_dist[6] += self.school[i]

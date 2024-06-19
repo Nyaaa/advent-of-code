@@ -29,8 +29,7 @@ def part_2(data: str) -> int:
     for i in ascii_lowercase:
         new = data.replace(i, '').replace(i.upper(), '')
         result = part_1(new)
-        if result < shortest:
-            shortest = result
+        shortest = min(result, shortest)
     return shortest
 
 

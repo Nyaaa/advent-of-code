@@ -67,11 +67,11 @@ class Cave:
                 filtered[s] = 0
             filtered[s] = max(filtered[s], self.total_flow(path, 26))
 
-        for path1 in filtered:
-            for path2 in filtered:
+        for path1, value1 in filtered.items():
+            for path2, value2 in filtered.items():
                 combo = set().union(path1, path2)
                 if len(combo) + 1 >= len(path1) + len(path2):
-                    pressure = max(pressure, filtered[path1] + filtered[path2])
+                    pressure = max(pressure, value1 + value2)
 
         return pressure
 

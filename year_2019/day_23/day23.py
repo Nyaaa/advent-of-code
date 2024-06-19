@@ -13,7 +13,7 @@ class Network:
         self.queue = defaultdict(list)
         for i, pc in self.net.items():
             pc.run([i])
-        self.idle = {i: False for i in self.net}
+        self.idle = dict.fromkeys(self.net, False)
 
     def start(self, part2: bool) -> int:
         result = 0

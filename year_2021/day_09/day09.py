@@ -36,7 +36,7 @@ class Floor:
         """
         >>> print(Floor(parsers.inline_test(TEST)).part_1())
         15"""
-        return sum([i[1] + 1 for i in self.get_lowest()])
+        return sum(i[1] + 1 for i in self.get_lowest())
 
     def part_2(self) -> int:
         """
