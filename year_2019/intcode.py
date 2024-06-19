@@ -36,7 +36,7 @@ class Intcode:
             case _:
                 return self.data[index]
 
-    def run(self, input_value: list[int] | None = None) -> int | list[int]:
+    def run(self, input_value: list[int] | None = None) -> int | list[int]:  # noqa: PLR0912, PLR0915
         """
         Args:
             input_value: A list of program input values.

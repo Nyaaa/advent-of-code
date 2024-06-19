@@ -96,7 +96,7 @@ def start(data: list[str], limit: bool) -> int:
                     result.remove(cube)
                     break
                 if command.intersects(cube):
-                    result.extend(cube.split(command))
+                    result.extend(cube.split(command))  # noqa: B909
             else:
                 break
         if command.op:

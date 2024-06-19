@@ -33,7 +33,7 @@ class Cube:
             case 1: row = np.nonzero(self.map[:, col])[0][0]
         return complex(row, col)
 
-    def shift(self, loc: complex) -> tuple[complex, complex]:
+    def shift(self, loc: complex) -> tuple[complex, complex]:  # noqa: PLR0912
         """Hardcoded rotations because screw this puzzle.
 
             |1|2|
