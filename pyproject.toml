@@ -1,6 +1,17 @@
 [project]
 name = "advent-of-code"
-requires-python = ">=3.11"
+requires-python = ">= 3.12"
+authors = [{name = "Nyaaa", email = "1457047+Nyaaa@users.noreply.github.com"}]
+description = "Add a short description here"
+version = "0.1.0"
+dependencies = []
+
+[build-system]
+requires = ["hatchling"]
+build-backend = "hatchling.build"
+
+[tool.hatch.build.targets.wheel]
+packages = ["tools"]
 
 [tool.ruff]
 line-length = 99
@@ -20,3 +31,25 @@ ignore = [
 [tool.ruff.lint.flake8-quotes]
 inline-quotes = 'single'
 multiline-quotes = 'double'
+
+[tool.pixi.project]
+channels = ["conda-forge"]
+platforms = ["win-64", "linux-64"]
+
+[tool.pixi.pypi-dependencies]
+advent-of-code = { path = ".", editable = true }
+
+[tool.pixi.tasks]
+
+[tool.pixi.dependencies]
+networkx = ">=3.3,<4"
+shapely = ">=2.0.6,<3"
+more-itertools = ">=10.4.0,<11"
+regex = ">=2024.7.24,<2025"
+numba = ">=0.60.0,<0.61"
+numpy = ">=2.0.1,<3"
+pre-commit = ">=3.8.0,<4"
+notebook = ">=7.2.1,<8"
+seaborn = ">=0.13.2,<0.14"
+sympy = ">=1.13.2,<2"
+pixi-pycharm = ">=0.0.6,<0.0.7"

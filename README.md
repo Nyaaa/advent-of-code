@@ -15,11 +15,11 @@ All input data is parsed, with very rare exceptions where parsing is not practic
 
 ## Setup
 
-This project uses [Conda](https://conda.io/projects/conda/en/latest/index.html) to manage virtual environments and
+This project uses [Pixi](https://prefix.dev/) to manage virtual environments and
 dependencies.
 
 To create a new virtual environment and install all required libraries, run:\
-`conda env create -f environment.yml`
+`pixi install`
 
 Linting is handled by a global installation of Ruff, to enable pre-commit hooks run\
 `pre-commit install`
