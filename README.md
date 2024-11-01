@@ -15,11 +15,11 @@ All input data is parsed, with very rare exceptions where parsing is not practic
 
 ## Setup
 
-This project uses [Pixi](https://prefix.dev/) to manage virtual environments and
+This project uses [UV](https://docs.astral.sh/uv/) to manage virtual environments and
 dependencies.
 
 To create a new virtual environment and install all required libraries, run:\
-`pixi install`
+`uv sync`
 
 Linting is handled by a global installation of Ruff, to enable pre-commit hooks run\
 `pre-commit install`
@@ -34,4 +34,5 @@ Linting is handled by a global installation of Ruff, to enable pre-commit hooks 
 [![Completion Status](https://img.shields.io/endpoint?url=https://raw.githubusercontent.com/Nyaaa/advent-of-code/master/year_2020/badge.json)](https://github.com/Nyaaa/advent-of-code/tree/master/year_2020)\
 [![Completion Status](https://img.shields.io/endpoint?url=https://raw.githubusercontent.com/Nyaaa/advent-of-code/master/year_2021/badge.json)](https://github.com/Nyaaa/advent-of-code/tree/master/year_2021)\
 [![Completion Status](https://img.shields.io/endpoint?url=https://raw.githubusercontent.com/Nyaaa/advent-of-code/master/year_2022/badge.json)](https://github.com/Nyaaa/advent-of-code/tree/master/year_2022)\
-[![Completion Status](https://img.shields.io/endpoint?url=https://raw.githubusercontent.com/Nyaaa/advent-of-code/master/year_2023/badge.json)](https://github.com/Nyaaa/advent-of-code/tree/master/year_2023)
+[![Completion Status](https://img.shields.io/endpoint?url=https://raw.githubusercontent.com/Nyaaa/advent-of-code/master/year_2023/badge.json)](https://github.com/Nyaaa/advent-of-code/tree/master/year_2023)\
+[![Completion Status](https://img.shields.io/endpoint?url=https://raw.githubusercontent.com/Nyaaa/advent-of-code/master/year_2024/badge.json)](https://github.com/Nyaaa/advent-of-code/tree/master/year_2024)
