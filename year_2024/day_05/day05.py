@@ -1,26 +1,20 @@
-from collections import defaultdict, deque
+from collections import defaultdict
 
 from tools import loader, parsers
 
 
-def sort_pages(rules: list[tuple[int, ...]], pages: tuple[int, ...]) -> tuple[int, ...]:
-    pages_ordered: deque[int] = deque([])
-    ordr: dict[int, set[int]] = defaultdict(set)
+def sort_pages(rules: list[tuple[int, ...]], pages: list[int]) -> list[int]:
+    ordr = defaultdict(set)
     for i in pages:
         for left, right in rules:
             if left not in pages or right not in pages:
                 continue
             if i == left:
                 ordr[left].add(right)
-    sorted_rules = sorted(ordr.items(), key=lambda x: len(x[1]))
-    sorted_pages = set()
-    for left, right in sorted_rules:
-        right_filtered = {i for i in right if i not in sorted_pages}
-        pages_ordered.appendleft(left)
-        sorted_pages.add(left)
-        pages_ordered.extend(right_filtered)
-        sorted_pages.update(right_filtered)
-    return tuple(pages_ordered)
+    sorted_rules = sorted(ordr.items(), key=lambda x: len(x[1]), reverse=True)
+    result = [i[0] for i in sorted_rules]
+    result.extend(sorted_rules[-1][1])
+    return result
 
 
 def page_sorter(data: list[list[str]]) -> tuple[int, int]:
@@ -29,7 +23,7 @@ def page_sorter(data: list[list[str]]) -> tuple[int, int]:
     (143, 123)"""
     ordering, page_numbers = data
     ordering = [tuple(map(int, line.split('|'))) for line in ordering]
-    pages = [tuple(map(int, line.split(','))) for line in page_numbers]
+    pages = [list(map(int, line.split(','))) for line in page_numbers]
     part1 = part2 = 0
     for line in pages:
         correct_order = sort_pages(ordering, line)
