@@ -22,11 +22,11 @@ def evaluate(expr: list[int | Callable], expect: int) -> int:
     return expr[0]
 
 
-def part1(data: list[str], part2: bool) -> int:
+def calibrate(data: list[str], part2: bool) -> int:
     """
-    >>> print(part1(parsers.lines('test.txt'), part2=False))
+    >>> print(calibrate(parsers.lines('test.txt'), part2=False))
     3749
-    >>> print(part1(parsers.lines('test.txt'), part2=True))
+    >>> print(calibrate(parsers.lines('test.txt'), part2=True))
     11387"""
     ops = [operator.add, operator.mul]
     if part2:
@@ -42,5 +42,5 @@ def part1(data: list[str], part2: bool) -> int:
     return result
 
 
-print(part1(parsers.lines(loader.get()), part2=False))  # 3312271365652
-print(part1(parsers.lines(loader.get()), part2=True))  # 509463489296712
+print(calibrate(parsers.lines(loader.get()), part2=False))  # 3312271365652
+print(calibrate(parsers.lines(loader.get()), part2=True))  # 509463489296712
