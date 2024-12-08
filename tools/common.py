@@ -81,6 +81,9 @@ class Point(NamedTuple):
     def __add__(self, other: Point) -> Point:
         return Point(self.row + other.row, self.col + other.col)
 
+    def __sub__(self, other: Point) -> Point:
+        return Point(self.row - other.row, self.col - other.col)
+
     def __radd__(self, other: Point) -> Point:
         if other == 0:
             other = Point(0, 0)
@@ -91,3 +94,8 @@ class Point(NamedTuple):
 
     def manhattan_distance(self, other: Point) -> int:
         return abs(self.row - other.row) + abs(self.col - other.col)
+
+    def is_on_grid(self, max_rows: int, max_cols: int | None = None) -> bool:
+        if max_cols is None:
+            max_cols = max_rows
+        return 0 <= self.row < max_rows and 0 <= self.col < max_cols
