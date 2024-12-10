@@ -19,10 +19,9 @@ def get_nodes_part2(a: Point, b: Point, d: Point, limit: int) -> Generator[Point
     for point in (a, b):
         for op in (operator.add, operator.sub):
             while True:
-                new = op(point, d)
-                if new.is_on_grid(limit):
-                    yield new
-                    point = new
+                point = op(point, d)
+                if point.is_on_grid(limit):
+                    yield point
                 else:
                     break
 
