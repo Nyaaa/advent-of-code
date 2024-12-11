@@ -5,11 +5,11 @@ from collections.abc import Generator
 from typing import Any, NamedTuple
 
 import numpy as np
-from numba import njit
+from numba import jit
 from numpy.typing import NDArray
 
 
-@njit
+@jit(nopython=True, cache=True)
 def get_adjacent(
         array: NDArray,
         position: tuple[int, int],
