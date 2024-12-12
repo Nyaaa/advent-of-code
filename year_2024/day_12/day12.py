@@ -1,19 +1,18 @@
-import heapq
 from collections import defaultdict
 from itertools import starmap
 
 import networkx as nx
 import numpy as np
+from more_itertools.more import consecutive_groups, ilen
 
 from tools import common, loader, parsers
 from tools.common import Point
 
 
 def count_sides(group: set[tuple[int, int]]) -> int:
-    outer_nodes = list(starmap(Point, group))
+    nodes = set(starmap(Point, group))
     edges = defaultdict(list)
-    nodes = set(outer_nodes)
-    for node in outer_nodes:
+    for node in nodes:
         if (new := node + Point(-1, 0)) not in nodes:
             edges[f'above {node.row}'].append(new.col)
         if (new := node + Point(1, 0)) not in nodes:
@@ -23,18 +22,7 @@ def count_sides(group: set[tuple[int, int]]) -> int:
         if (new := node + Point(0, 1)) not in nodes:
             edges[f'right {node.col}'].append(new.row)
 
-    edge_count = 0
-    for values in edges.values():
-        heapq.heapify(values)
-        edge_count += 1
-        previous = heapq.heappop(values)
-        while values:
-            current = heapq.heappop(values)
-            if current - previous != 1:
-                edge_count += 1
-            previous = current
-
-    return edge_count
+    return sum(ilen(consecutive_groups(sorted(values))) for values in edges.values())
 
 
 def get_fence(data: list[str], part2: bool) -> int:
