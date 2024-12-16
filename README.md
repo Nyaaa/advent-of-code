@@ -26,10 +26,10 @@ Linting is handled by a global installation of Ruff, to enable pre-commit hooks 
 
 <!-- AOC TILES BEGIN -->
 <h1 align="center">
-  Advent of Code - 480/480 ⭐
+  Advent of Code - 482/482 ⭐
 </h1>
 <h1 align="center">
-  2024 - 30 ⭐ - Python
+  2024 - 32 ⭐ - Python
 </h1>
 <a href="year_2024/day_01/day01.py">
   <img src=".aoc_tiles/tiles/2024/01.png" width="161px">
@@ -75,6 +75,9 @@ Linting is handled by a global installation of Ruff, to enable pre-commit hooks 
 </a>
 <a href="year_2024/day_15/day15.py">
   <img src=".aoc_tiles/tiles/2024/15.png" width="161px">
+</a>
+<a href="year_2024/day_16/day16.py">
+  <img src=".aoc_tiles/tiles/2024/16.png" width="161px">
 </a>
 <h1 align="center">
   2023 - 50 ⭐ - Python
