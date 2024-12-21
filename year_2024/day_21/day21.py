@@ -10,11 +10,11 @@ from tools import common, loader, parsers
 
 
 class Numpad:
-    def __init__(self, keypad: NDArray) -> None:
+    def __init__(self, buttons: NDArray) -> None:
         self.graph = nx.Graph()
-        for i, button in np.ndenumerate(keypad):
+        for i, button in np.ndenumerate(buttons):
             self.graph.add_node(button, pos=complex(*i))
-            for adj_i, adj_val in common.get_adjacent(keypad, i):
+            for adj_i, adj_val in common.get_adjacent(buttons, i):
                 self.graph.add_node(adj_val, pos=complex(*adj_i))
                 self.graph.add_edge(button, adj_val)
         self.graph.remove_node('.')
