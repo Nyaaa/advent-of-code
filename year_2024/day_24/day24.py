@@ -69,10 +69,10 @@ def part_2(data: list[list[str]]) -> str:
         successors = list(graph.successors(out))
         if (
                 (out.startswith('z') and op != 'XOR' and out != 'z45')  # noqa: PLR0916
-                or (op == 'XOR' and not any(i.startswith(j)
-                                            for j in ('x', 'y', 'z') for i in [a, b, out]))
+                or (op == 'XOR' and (
+                    len(successors) == 1
+                    or not any(i.startswith(j) for j in ('x', 'y', 'z') for i in [a, b, out])))
                 or (op == 'AND' and 'x00' not in {a, b} and len(successors) > 1)
-            or (op == 'XOR' and len(successors) == 1)
         ):
             sus.add(out)
 
