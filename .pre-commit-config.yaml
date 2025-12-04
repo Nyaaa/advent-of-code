@@ -14,5 +14,5 @@ repos:
   rev: 0.6.4
   hooks:
     - id: aoc-tiles
-      args: [ --auto-add-tiles-to-git=amend ]
+      args: [ --auto-add-tiles-to-git=amend, --what-to-show-on-right-side=checkmark ]
       stages: [ post-commit ]
