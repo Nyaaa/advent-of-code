@@ -15,8 +15,7 @@ def network(data: list[str], start: str) -> int:
     @cache
     def count_paths(node: str, visits: int) -> int:
         match node:
-            case 'dac': visits += 1
-            case 'fft': visits += 1
+            case 'dac' | 'fft': visits += 1
             case 'out': return 1 if visits == 2 else 0
         return sum(count_paths(i, visits) for i in graph[node])
 
