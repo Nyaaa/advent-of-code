@@ -10,7 +10,7 @@ def network(data: list[str], start: str) -> int:
     >>> print(network(parsers.lines('test2.txt'), start='svr'))
     2
     """
-    graph = {left: list(right.split(' ')) for (left, right) in (line.split(': ') for line in data)}
+    graph = {left: list(right.split(' ')) for left, right in (line.split(': ') for line in data)}
 
     @cache
     def count_paths(node: str, visits: int) -> int:
